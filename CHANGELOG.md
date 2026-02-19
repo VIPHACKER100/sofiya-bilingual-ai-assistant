@@ -5,6 +5,43 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [5.0.0] — 2026-02-19
+
+### Added
+
+#### New Services (10)
+- **`themeService.ts`**: 4 switchable themes (sofiya/classic/focus/zen) with localStorage persistence
+- **`i18nService.ts`**: Multi-language support for EN, HI, ES, FR, DE, JA with translation system
+- **`analyticsService.ts`**: Event tracking, session management, auto-flush queue
+- **`notificationService.ts`**: Toast notifications with auto-dismiss, info/success/warning/error types
+- **`cacheService.ts`**: TTL-based in-memory caching with getOrFetch pattern
+- **`storageService.ts`**: Enhanced localStorage wrapper with export/import
+- **`privacyControlService.ts`**: Privacy modes (private/standard/optimized) with granular controls
+- **`smartHomeSceneManager.ts`**: 8 pre-built scenes + custom scene creation
+- **`conversationEngineService.ts`**: Multi-intent parsing, entity extraction, sentiment analysis
+- **`loggerService.ts`**: Debug logging with levels and export
+
+#### New Hooks
+- **`useUndoRedo.ts`**: Undo/Redo state management for tasks
+- **`useCommon.ts`**: 15+ utility hooks (debounce, throttle, localStorage, mediaQuery, etc.)
+
+#### Accessibility
+- **`accessibilityService.ts`**: ARIA labels, screen reader announcements, keyboard navigation, focus trap
+
+#### Testing
+- **`tests/commandProcessor.test.ts`**: 45+ unit tests for command processor
+- **`tests/privacy.test.ts`**: Privacy service tests
+- **`tests/e2e.spec.ts`**: Playwright E2E tests
+- **`playwright.config.ts`**: Multi-browser testing config (Chromium, Firefox, Safari, Mobile)
+
+### Changed
+
+- **package.json**: Added vitest and @playwright/test as devDependencies
+- **useAssistant.ts**: Integrated analytics tracking and theme service
+- **README.md**: Updated architecture, features, and testing sections
+
+---
+
 ## [4.3.0] — 2026-02-19
 
 ### Added

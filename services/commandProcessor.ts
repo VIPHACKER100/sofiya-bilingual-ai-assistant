@@ -2,6 +2,7 @@
 import { SecurityService } from './securityService';
 import { PersonalityMode } from '../types';
 import { AIService } from './aiService';
+import { emotionService } from './emotionService';
 
 export interface ProcessedCommand {
   actionType: string;
@@ -9,7 +10,8 @@ export interface ProcessedCommand {
   spokenResponse?: string;
   language: 'en' | 'hi';
   externalUrl?: string;
-  data?: any;
+  data?: Record<string, unknown>;
+  emotion?: string;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -217,19 +219,29 @@ export const processTranscript = async (
   const lowerText = cleanText.toLowerCase();
   const detectedLang = detectLanguage(cleanText);
   const isHindi = detectedLang === 'hi';
+  const emotionAnalysis = emotionService.analyzeEmotion(cleanText);
+
+  // Auto-adjust personality if in DEFAULT mode based on emotion
+  let activePersonality = personality;
+  if (personality === PersonalityMode.DEFAULT) {
+    const recommended = emotionService.getRecommendedPersonality(emotionAnalysis);
+    if (recommended === 'SASS') activePersonality = PersonalityMode.SASS;
+    if (recommended === 'FOCUS') activePersonality = PersonalityMode.FOCUS;
+  }
 
   const createResponse = (
     type: string,
     baseResp: string,
-    data?: any,
+    data?: Record<string, unknown>,
     externalUrl?: string
   ): ProcessedCommand => ({
     actionType: type,
     response: baseResp,
-    spokenResponse: personalizeResponse(baseResp, personality, detectedLang, type),
+    spokenResponse: personalizeResponse(baseResp, activePersonality, detectedLang, type),
     language: detectedLang,
     data,
-    externalUrl
+    externalUrl,
+    emotion: emotionAnalysis.emotion
   });
 
   // ── Security Gate ────────────────────────────────────────────────────────
@@ -278,14 +290,13 @@ export const processTranscript = async (
 
   // ── System Status / Greeting ─────────────────────────────────────────────
   if (
-    lowerText.match(/\b(status|report|system|online|alive|how are you|kaisi ho|kaisi hain)\b/) ||
-    lowerText.match(/\b(namaste sofiya|hello sofiya|hi sofiya|hey sofiya)\b/)
+    lowerText.match(/\b(status|report|system|online|alive|how are you|kaisi ho|kaisi hain|hello|hi|hey|namaste|नमस्ते)\b/)
   ) {
     const now = new Date();
     const hour = now.getHours();
     const greeting = hour < 12 ? (isHindi ? 'सुप्रभात' : 'Good Morning') : hour < 17 ? (isHindi ? 'नमस्ते' : 'Good Afternoon') : (isHindi ? 'शुभ संध्या' : 'Good Evening');
-    const enResp = `${greeting}! All systems nominal. I'm fully operational and ready to assist. Version 4.2 active.`;
-    const hiResp = `${greeting}! सभी सिस्टम ठीक हैं। मैं पूरी तरह से तैयार हूँ। वर्शन 4.2 सक्रिय है।`;
+    const enResp = `${greeting}! All systems nominal. I'm fully operational and ready to assist. Version 4.3 active.`;
+    const hiResp = `${greeting}! सभी सिस्टम ठीक हैं। मैं पूरी तरह से तैयार हूँ। वर्शन 4.3 सक्रिय है।`;
     return createResponse('SYSTEM_STATUS', isHindi ? hiResp : enResp);
   }
 
@@ -492,7 +503,7 @@ export const processTranscript = async (
   }
 
   // ── Math / Calculator ────────────────────────────────────────────────────
-  const mathMatch = lowerText.match(/(\d+(?:\.\d+)?)\s*([\+\-\*\/])\s*(\d+(?:\.\d+)?)/);
+  const mathMatch = lowerText.match(/(\d+(?:\.\d+)?)\s*([-+*/])\s*(\d+(?:\.\d+)?)/);
   if (mathMatch) {
     try {
       // eslint-disable-next-line no-eval
@@ -521,10 +532,16 @@ export const processTranscript = async (
 
   // ── Web Search (final fallback) ──────────────────────────────────────────
   const query = extractQuery(cleanText, ['search', 'find', 'google', 'look up', 'dhundo', 'khojo', 'please']);
+
+  // Final safety check: If query is just a greeting, don't search
+  if (query.match(/^(hello|hi|hey|namaste|नमस्ते)$/i)) {
+    return createResponse('SYSTEM_STATUS', isHindi ? "नमस्ते! मैं आपकी क्या सहायता कर सकती हूँ?" : "Hello! How can I help you today?");
+  }
+
   return createResponse(
     'SEARCH_QUERY',
     isHindi ? `खोज रही हूँ: "${query}"` : `Searching the web for "${query}"`,
-    null,
+    undefined,
     `https://www.google.com/search?q=${encodeURIComponent(query || cleanText)}`
   );
 };

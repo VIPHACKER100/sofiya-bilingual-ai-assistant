@@ -250,6 +250,86 @@ All state lives in `App.tsx` using React `useState` hooks. No external state lib
 
 ---
 
+## Extended Services (v5.0+)
+
+### `themeService.ts` — Theme Management
+
+Manages 4 visual themes with localStorage persistence.
+
+| Theme | Primary Color | Description |
+|---|---|---|
+| sofiya | #8b5cf6 (violet) | Default futuristic AI look |
+| classic | #06b6d4 (cyan) | Standard interface |
+| focus | #ef4444 (red) | Productivity mode |
+| zen | #10b981 (emerald) | Mindfulness protocol |
+
+### `i18nService.ts` — Internationalization
+
+Provides translations for 6 languages: EN, HI, ES, FR, DE, JA
+
+- Browser language auto-detection
+- Translation key fallback system
+- Persisted language preference
+
+### `analyticsService.ts` — Event Tracking
+
+Tracks user interactions for insights:
+- Session start/end
+- Command execution
+- Widget open/close
+- Theme/language changes
+- Voice activation
+- Auto-flush queue (30s)
+
+### `notificationService.ts` — Toast Notifications
+
+Provides in-app notifications:
+- Types: info, success, warning, error
+- Auto-dismiss support
+- Subscribe/publish pattern
+
+### `cacheService.ts` — TTL Caching
+
+In-memory cache with time-to-live:
+- `set(key, data, ttl)`
+- `get(key)` — returns null if expired
+- `getOrFetch(key, fetcher, ttl)` — fetch-if-miss pattern
+- Auto-cleanup every 60s
+
+### `privacyControlService.ts` — Privacy Modes
+
+Granular privacy controls:
+
+| Mode | Cloud Processing | Third-Party Sharing |
+|---|---|---|
+| private | ❌ | ❌ |
+| standard | ✅ | ✅ |
+| optimized | ✅ | ✅ |
+
+### `smartHomeSceneManager.ts` — Scene Orchestration
+
+8 pre-built smart home scenes:
+- Movie Night, Good Morning, Focus Work
+- Bedtime, Party Mode, Relax
+- Away Mode, Arriving Home
+
+### `healthMonitoringService.ts` — Health Metrics
+
+Detailed health tracking:
+- Steps, Heart Rate, Sleep Quality
+- Calories, Activity Minutes, Hydration
+- Wellness Score calculation
+- Personalized insights
+
+### `conversationEngineService.ts` — Advanced NLP
+
+Multi-intent parsing and sentiment:
+- Multi-intent detection ("book flight AND add reminder")
+- Entity extraction (time, numbers, locations)
+- Sentiment analysis (positive/negative/neutral)
+
+---
+
 ## Environment Variables
 
 | Variable | Required | Description |

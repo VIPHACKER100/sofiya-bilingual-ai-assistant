@@ -82,7 +82,7 @@ export const NewsWidget = React.memo(({ news, loading, isVisible, language, onCl
                 <div className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 h-0 group-hover:h-8 transition-all duration-300 accent-bg ${accentClass} rounded-full`}></div>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[8px] text-slate-600 font-mono tracking-widest font-black uppercase">
-                    {new Date(item.pubDate).toLocaleDateString([], { month: 'short', day: 'numeric' })} // {new Date(item.pubDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    {new Date(item.pubDate).toLocaleDateString([], { month: 'short', day: 'numeric' })} {/* {new Date(item.pubDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} */}
                   </span>
                   <ExternalLink className="w-3 h-3 text-slate-700 group-hover:text-cyan-500 transition-colors" />
                 </div>

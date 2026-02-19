@@ -4,7 +4,7 @@
 
 > *Your intelligent, voice-powered AI companion that speaks both English and Hindi*
 
-[![Version](https://img.shields.io/badge/version-4.3.0-8b5cf6?style=for-the-badge)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-5.0.0-8b5cf6?style=for-the-badge)](CHANGELOG.md)
 [![React](https://img.shields.io/badge/React-19-61dafb?style=for-the-badge&logo=react)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178c6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org)
 [![Vite](https://img.shields.io/badge/Vite-6-646cff?style=for-the-badge&logo=vite)](https://vitejs.dev)
@@ -42,6 +42,21 @@ Built with React 19, TypeScript, and the Web Speech API, SOFIYA runs entirely in
 | 🔒 **Sentry Mode** | Camera-based surveillance with motion detection |
 | ✏️ **Drawing Canvas** | Full in-browser freehand drawing tool |
 | 🖌️ **Visual Themes** | Sofiya (violet), Classic (cyan), Focus (red), Zen (emerald) |
+
+### Advanced Features (v5.0+)
+
+| Feature | Description |
+|---|---|
+| 🌐 **Multi-Language Support** | English, Hindi, Spanish, French, German, Japanese |
+| 📊 **Analytics Dashboard** | Event tracking, session metrics, engagement insights |
+| 🔔 **Notification System** | Toast notifications with auto-dismiss |
+| 💾 **Cache Service** | TTL-based in-memory caching |
+| 🗄️ **Storage Service** | Enhanced localStorage with export/import |
+| 🛡️ **Privacy Controls** | Private, Standard, Optimized modes |
+| 💡 **Scene Manager** | 8 pre-built smart home scenes + custom scenes |
+| 📈 **Health Monitoring** | Detailed metrics, insights, wellness score |
+| 💭 **Conversation Engine** | Multi-intent parsing, entity extraction, sentiment |
+| ♿ **Accessibility** | ARIA labels, keyboard navigation, screen reader |
 
 ---
 
@@ -134,20 +149,55 @@ See [CONFIGURATION.md](CONFIGURATION.md) for all options.
 
 ```
 sofiya-bilingual-ai-assistant/
-├── services/
-│   ├── commandProcessor.ts  # Intent detection & command routing
-│   ├── aiService.ts         # OpenRouter API integration
-│   ├── voiceService.ts      # Web Speech API (STT + TTS)
-│   ├── soundService.ts      # Procedural audio feedback
-│   └── securityService.ts   # Input sanitization & threat detection
-├── components/              # 19 React UI components
-├── App.tsx                  # Root application & state orchestration
-├── types.ts                 # TypeScript types & enums
-├── constants.ts             # App constants & contact directory
-└── index.html               # Entry point with Tailwind CDN
+├── services/                      # Core services (20 total)
+│   ├── commandProcessor.ts       # Intent detection & command routing
+│   ├── aiService.ts             # OpenRouter API integration
+│   ├── voiceService.ts           # Web Speech API (STT + TTS)
+│   ├── soundService.ts           # Procedural audio feedback
+│   ├── securityService.ts        # Input sanitization & threat detection
+│   ├── themeService.ts           # Theme management (4 themes)
+│   ├── i18nService.ts            # Multi-language translations
+│   ├── analyticsService.ts       # Event tracking & metrics
+│   ├── cacheService.ts           # TTL-based caching
+│   ├── storageService.ts         # localStorage wrapper
+│   ├── notificationService.ts    # Toast notifications
+│   ├── privacyControlService.ts  # Privacy mode controls
+│   ├── smartHomeSceneManager.ts  # Scene orchestration
+│   ├── healthMonitoringService.ts # Health metrics & insights
+│   ├── conversationEngineService.ts # Multi-intent parsing
+│   ├── accessibilityService.ts   # ARIA & keyboard utilities
+│   └── loggerService.ts          # Debug logging
+├── hooks/                        # React hooks
+│   ├── useAssistant.ts          # Main state management
+│   ├── useUndoRedo.ts           # Undo/Redo functionality
+│   └── useCommon.ts             # Utilities (15+ hooks)
+├── components/                   # 19 React UI components
+├── tests/                        # Unit & E2E tests
+├── App.tsx                       # Root application & state orchestration
+├── types.ts                      # TypeScript types & enums
+├── constants.ts                  # App constants & contact directory
+└── index.html                    # Entry point with Tailwind CDN
 ```
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed system design.
+
+---
+
+## 🧪 Testing
+
+```bash
+# Run unit tests
+npm run test
+
+# Run unit tests with UI
+npm run test:ui
+
+# Run E2E tests
+npm run test:e2e
+
+# Run E2E tests with UI
+npm run test:e2e:ui
+```
 
 ---
 

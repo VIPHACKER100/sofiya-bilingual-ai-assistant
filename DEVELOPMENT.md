@@ -1,45 +1,79 @@
-# 🛠️ SOFIYA — Development Guide
+# Development & Refinement Plan
 
-This guide is for developers looking to extend or modify SOFIYA's capabilities.
-
-## 📁 Key File Structure
-
-- `App.tsx`: The main UI shell and orchestration hub.
-- `hooks/useAssistant.ts`: **Core Logic**. State management, command execution, and service integration.
-- `services/commandProcessor.ts`: **The Brain**. Intent recognition via regex and language scoring.
-- `services/voiceService.ts`: Integration with Web Speech API for TTS and STT.
-- `services/soundService.ts`: Procedural UI sound generation.
-- `services/weatherService.ts`: Standalone module for fetching meteorological data.
-- `services/newsService.ts`: Standalone module for retrieving live global headlines.
-- `components/`: Individual UI widgets (Weather, Media, Health, etc.).
-
-## 🚀 Adding a New Command
-
-1. **Define Intent**: Go to `services/commandProcessor.ts`.
-2. **Add Regex**: Add a new `if` block with a `lowerText.match()` regex.
-3. **Create Response**: Return `createResponse('YOUR_ACTION_TYPE', 'Response text', { ...optionalData })`.
-4. **Handle Action**: (Optional) In `hooks/useAssistant.ts`, add a handler for `YOUR_ACTION_TYPE` if you need to update UI state.
-
-## 🎨 Changing Themes
-
-Themes (Protocols) are defined in `index.html` (for global styles) and handled via state in `useAssistant`.
-
-- **Colors**: CSS variables in `index.html` or inline Tailwind classes in `App.tsx`.
-- **Transitions**: UI uses Framer Motion (if installed) or standard CSS transitions.
-
-## 🧪 Testing
-
-Since SOFIYA uses the Web Speech API, testing is best done manually in a browser:
-
-1. Run `npm run dev`.
-2. Open Chrome or Edge.
-3. Use the **Interactive Marquee** to test command routing without speaking.
-4. Use the console to monitor `ProcessedCommand` objects from `commandProcessor.ts`.
-
-## 🛠️ Performance Optimization
-
-- **Rerenders**: Most state is centralized in `useAssistant`. Avoid putting heavy logic inside components that rerender frequently (like the `ArcReactor`).
-- **Audio**: Procedural sounds are generated on the fly. Don't trigger too many sound effects simultaneously to avoid audio clipping.
+Goal: refine and update the project to improve code quality, maintainability, and developer experience.
 
 ---
-*See [ARCHITECTURE.md](ARCHITECTURE.md) for data flow diagrams.*
+
+## ✅ Completed (v5.0)
+
+### Testing Infrastructure
+- **Vitest** - Unit testing framework
+- **Playwright** - E2E testing with multi-browser support
+- **45+ unit tests** for command processor
+- **E2E tests** for core functionality
+
+### New Services (10)
+- `themeService.ts` - Theme management
+- `i18nService.ts` - Multi-language support
+- `analyticsService.ts` - Event tracking
+- `notificationService.ts` - Toast notifications
+- `cacheService.ts` - TTL caching
+- `storageService.ts` - Enhanced localStorage
+- `privacyControlService.ts` - Privacy modes
+- `smartHomeSceneManager.ts` - Scene orchestration
+- `conversationEngineService.ts` - Advanced NLP
+- `loggerService.ts` - Debug logging
+
+### New Hooks (2)
+- `useUndoRedo.ts` - Undo/Redo state
+- `useCommon.ts` - 15+ utility hooks
+
+### Accessibility
+- `accessibilityService.ts` - ARIA, keyboard nav
+
+---
+
+## 📋 Current Status
+
+### Scripts Available
+
+```bash
+# Development
+npm run dev              # Start dev server
+npm run build            # Production build
+npm run preview          # Preview build
+
+# Code Quality
+npm run lint            # Run ESLint
+npm run typecheck       # TypeScript check
+npm run format          # Prettier format
+
+# Testing
+npm run test            # Unit tests (Vitest)
+npm run test:ui         # Unit tests with UI
+npm run test:e2e        # E2E tests (Playwright)
+npm run test:e2e:ui    # E2E tests with UI
+```
+
+### Package.json Updated
+- Added: `vitest`, `@playwright/test`
+- Added test scripts
+- Version bumped to 5.0.0
+
+---
+
+## 🔜 Future Enhancements
+
+- Wire up husky/pre-commit to enforce linting on commit
+- Expand test coverage to 80%+
+- Fine-tune lint rules to suit project needs
+- Add component storybook
+- Performance profiling with Lighthouse CI
+
+---
+
+## Notes
+
+- All changes are non-destructive; they do not alter application logic
+- Test files are in `tests/` directory
+- Playwright config supports Chromium, Firefox, Safari, and mobile browsers

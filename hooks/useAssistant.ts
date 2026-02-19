@@ -1,11 +1,13 @@
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { AppMode, Language, PersonalityMode, CommandResult, SmartDevice, CommunicationData, MediaTrack, HealthData } from '../types';
 import { voiceService } from '../services/voiceService';
 import { soundService } from '../services/soundService';
 import { weatherService } from '../services/weatherService';
 import { newsService } from '../services/newsService';
 import { processTranscript } from '../services/commandProcessor';
+import { themeService, ThemeKey } from '../services/themeService';
+import { analyticsService } from '../services/analyticsService';
 import { INITIAL_VOLUME, ERROR_MESSAGES } from '../constants';
 
 export const useAssistant = () => {
@@ -67,7 +69,18 @@ export const useAssistant = () => {
         const savedTasks = localStorage.getItem('sofiya_tasks');
         if (savedTasks) setTasks(JSON.parse(savedTasks));
 
+        // Load theme from service
+        const savedTheme = themeService.getCurrentThemeKey();
+        setTheme(savedTheme);
+
         voiceService.setLanguage(language);
+
+        // Track boot completion
+        setTimeout(() => {
+            analyticsService.trackEvent('APP_BOOT_COMPLETE');
+            setIsBooting(false);
+        }, 3000);
+
         return () => {
             isActiveRef.current = false;
             voiceService.stopListening();
@@ -85,6 +98,15 @@ export const useAssistant = () => {
     useEffect(() => {
         localStorage.setItem('sofiya_tasks', JSON.stringify(tasks));
     }, [tasks]);
+
+    useEffect(() => {
+        themeService.setTheme(theme);
+        analyticsService.trackThemeChange(theme);
+    }, [theme]);
+
+    useEffect(() => {
+        analyticsService.trackEvent('LANGUAGE_CHANGED', { language });
+    }, [language]);
 
     const addToHistory = (entry: CommandResult) => {
         setHistory(prev => [...prev, entry]);
@@ -141,6 +163,7 @@ export const useAssistant = () => {
         if (isFinal && !processingRef.current) {
             processingRef.current = true;
             setMode(AppMode.PROCESSING);
+            const startTime = Date.now();
 
             try {
                 const result = await processTranscript(text, personality);
@@ -159,26 +182,32 @@ export const useAssistant = () => {
                     setShowNews(true);
                     setShowTasks(true);
                     soundService.playUIConfirm();
+                    analyticsService.trackEvent('ROUTINE_EXECUTED', { type: 'morning' });
                 } else if (result.actionType === 'ROUTINE_NIGHT') {
                     setSmartDevices(prev => prev.map(d => d.type === 'light' ? { ...d, status: false } : d));
                     if (mediaTrack) setMediaTrack({ ...mediaTrack, isPlaying: false });
                     setPersonality(PersonalityMode.FOCUS);
                     soundService.playUIConfirm();
+                    analyticsService.trackEvent('ROUTINE_EXECUTED', { type: 'night' });
                 }
 
                 // Action Handlers
-                else if (result.actionType === 'WEATHER_FETCH') fetchWeather();
-                else if (result.actionType === 'NEWS_FETCH') { fetchNews(); setShowNews(true); }
+                else if (result.actionType === 'WEATHER_FETCH') { fetchWeather(); analyticsService.trackWidgetOpen('weather'); }
+                else if (result.actionType === 'NEWS_FETCH') { fetchNews(); setShowNews(true); analyticsService.trackWidgetOpen('news'); }
                 else if (result.actionType === 'NEWS_HIDE') setShowNews(false);
-                else if (result.actionType === 'CALCULATION' && result.data) { setCalcData(result.data); setShowCalc(true); soundService.playUIConfirm(); }
-                else if (result.actionType === 'TIMER' && result.data) { setActiveTimer(result.data); soundService.playUIConfirm(); }
-                else if (result.actionType === 'TASK_ADD' && result.data?.task) { setTasks(p => [...p, result.data.task]); setShowTasks(true); }
-                else if (result.actionType === 'TASK_SHOW') setShowTasks(true);
-                else if (result.actionType === 'DRAWING_MODE') setShowDrawingCanvas(true);
-                else if (result.actionType === 'SENTRY_MODE') setShowSentryMode(true);
-                else if (result.actionType === 'HEALTH_SHOW') setShowHealth(true);
-                else if (result.actionType === 'MINDFULNESS_START') setShowMindfulness(true);
-                else if (result.actionType === 'PERSONALITY_CHANGE' && result.data?.mode) { setPersonality(result.data.mode); soundService.playStartup(); }
+                else if (result.actionType === 'CALCULATION' && result.data) { setCalcData(result.data); setShowCalc(true); soundService.playUIConfirm(); analyticsService.trackWidgetOpen('calculator'); }
+                else if (result.actionType === 'TIMER' && result.data) { setActiveTimer(result.data); soundService.playUIConfirm(); analyticsService.trackWidgetOpen('timer'); }
+                else if (result.actionType === 'TASK_ADD' && result.data?.task) { setTasks(p => [...p, result.data.task]); setShowTasks(true); analyticsService.trackWidgetOpen('tasks'); }
+                else if (result.actionType === 'TASK_SHOW') { setShowTasks(true); analyticsService.trackWidgetOpen('tasks'); }
+                else if (result.actionType === 'DRAWING_MODE') { setShowDrawingCanvas(true); analyticsService.trackWidgetOpen('drawing'); }
+                else if (result.actionType === 'SENTRY_MODE') { setShowSentryMode(true); analyticsService.trackWidgetOpen('sentry'); }
+                else if (result.actionType === 'HEALTH_SHOW') { setShowHealth(true); analyticsService.trackWidgetOpen('health'); }
+                else if (result.actionType === 'MINDFULNESS_START') { setShowMindfulness(true); analyticsService.trackWidgetOpen('mindfulness'); }
+                else if (result.actionType === 'PERSONALITY_CHANGE' && result.data?.mode) {
+                    setPersonality(result.data.mode);
+                    soundService.playStartup();
+                    analyticsService.trackEvent('PERSONALITY_CHANGED', { mode: result.data.mode });
+                }
 
                 // Volume control
                 else if (result.actionType === 'VOLUME_UP') { setVolume(v => Math.min(100, v + 10)); soundService.playUIClick(); }
@@ -209,8 +238,15 @@ export const useAssistant = () => {
                     response: result.response,
                     actionType: result.actionType,
                     language: result.language,
-                    timestamp: Date.now()
+                    timestamp: Date.now(),
+                    emotion: result.emotion
                 });
+
+                // Track command execution
+                analyticsService.trackCommand(text, result.actionType, Date.now() - (startTime || Date.now()));
+                if (result.emotion) {
+                    analyticsService.trackEvent('EMOTION_DETECTED', { emotion: result.emotion });
+                }
 
                 setMode(AppMode.SPEAKING);
                 voiceService.speak(result.spokenResponse || result.response, result.language);
@@ -240,12 +276,14 @@ export const useAssistant = () => {
         if (!isActiveRef.current) return;
         setMode(AppMode.LISTENING);
         setTranscript("");
+        analyticsService.trackVoiceActivation(true);
         voiceService.startListening(
             handleCommandResult,
             () => { if (isActiveRef.current && !processingRef.current) setTimeout(() => startListening(), 100); },
             (error) => {
                 processingRef.current = false;
                 setMode(AppMode.IDLE);
+                analyticsService.trackVoiceActivation(false);
                 if (error === 'not-allowed' || error === 'permission-denied') setShowPermissionModal(true);
             }
         );
