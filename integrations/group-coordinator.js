@@ -47,7 +47,7 @@ export class GroupCoordinator {
         const freeSlots = this.findFreeSlots(busySlots, startDate, endDate, durationMinutes);
 
         // Apply preferred time filter
-        const filteredSlots = preferredTime 
+        const filteredSlots = preferredTime
             ? this.filterByPreferredTime(freeSlots, preferredTime)
             : freeSlots;
 
@@ -106,8 +106,8 @@ export class GroupCoordinator {
             if (slotEnd <= end) {
                 const isBusy = busySlots.some(busy => {
                     return (current >= busy.start && current < busy.end) ||
-                           (slotEnd > busy.start && slotEnd <= busy.end) ||
-                           (current <= busy.start && slotEnd >= busy.end);
+                        (slotEnd > busy.start && slotEnd <= busy.end) ||
+                        (current <= busy.start && slotEnd >= busy.end);
                 });
 
                 if (!isBusy) {

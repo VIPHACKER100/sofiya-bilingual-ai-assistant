@@ -16,10 +16,10 @@ export class DeviceController {
         this.googleHome = options.googleHome || new GoogleHomeConnector();
         this.alexa = options.alexa || new AlexaConnector();
         this.ifttt = options.ifttt || new IFTTTConnector();
-        
+
         // Device name mapping (friendly names → device IDs)
         this.deviceMap = new Map();
-        
+
         // Command queue for handling multiple requests
         this.commandQueue = [];
         this.processingQueue = false;

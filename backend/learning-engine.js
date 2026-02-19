@@ -40,7 +40,7 @@ export class LearningEngine {
         // In production, present questions to user and collect answers
         // For now, simulate assessment
         const answers = this.simulateAnswers(assessmentQuestions);
-        
+
         const score = this.calculateScore(assessmentQuestions, answers);
         const level = this.determineLevel(score);
 
@@ -97,8 +97,8 @@ export class LearningEngine {
     simulateAnswers(questions) {
         return questions.map(q => ({
             questionId: q.id,
-            answer: q.type === 'multiple_choice' ? q.options[1] : 
-                   q.type === 'yes_no' ? 'yes' : 'I want to learn the basics'
+            answer: q.type === 'multiple_choice' ? q.options[1] :
+                q.type === 'yes_no' ? 'yes' : 'I want to learn the basics'
         }));
     }
 
@@ -180,7 +180,7 @@ export class LearningEngine {
         for (let day = 1; day <= days; day++) {
             for (let step = 1; step <= stepsPerDay; step++) {
                 const stepNumber = (day - 1) * stepsPerDay + step;
-                
+
                 path.push({
                     day,
                     step: stepNumber,
@@ -202,7 +202,7 @@ export class LearningEngine {
      */
     generateStepTitle(topic, level, stepNumber, totalSteps) {
         const phase = stepNumber <= totalSteps * 0.3 ? 'Introduction' :
-                     stepNumber <= totalSteps * 0.7 ? 'Core Concepts' : 'Advanced Topics';
+            stepNumber <= totalSteps * 0.7 ? 'Core Concepts' : 'Advanced Topics';
 
         return `${phase}: ${topic} - Step ${stepNumber}`;
     }

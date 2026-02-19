@@ -34,7 +34,7 @@ export class MeetingBriefing {
 
         for (const event of events) {
             const attendees = event.attendees || [];
-            
+
             for (const attendee of attendees) {
                 if (attendee && attendee !== '') {
                     const briefing = await this.generateBriefingForPerson(userId, attendee, event);
@@ -265,7 +265,7 @@ export class MeetingBriefing {
         }
 
         const message = this.formatBriefingMessage(briefing);
-        
+
         await this.notificationService.sendNotification({
             userId,
             type: 'meeting_briefing',

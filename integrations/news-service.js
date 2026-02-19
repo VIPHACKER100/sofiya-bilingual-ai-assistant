@@ -388,7 +388,7 @@ export class NewsService {
      */
     extractTopics(articles) {
         const topicCounts = {};
-        
+
         articles.forEach(article => {
             const words = article.title.toLowerCase().split(/\s+/);
             words.forEach(word => {

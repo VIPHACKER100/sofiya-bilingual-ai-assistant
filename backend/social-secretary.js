@@ -121,7 +121,7 @@ export class SocialSecretary {
 
         for (const contact of birthdays) {
             const bday = new Date(contact.birthday);
-            
+
             for (const daysBefore of reminderDays) {
                 const reminderDate = new Date(bday);
                 reminderDate.setDate(reminderDate.getDate() - daysBefore);

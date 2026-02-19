@@ -17,7 +17,7 @@ export class CalendarService {
         this.redirectUri = options.redirectUri || process.env.GOOGLE_CALENDAR_REDIRECT_URI;
         this.accessToken = options.accessToken || null;
         this.refreshToken = options.refreshToken || null;
-        
+
         this.oauth2Client = null;
         this.calendar = null;
     }
@@ -72,12 +72,12 @@ export class CalendarService {
      */
     async exchangeCode(code) {
         const { tokens } = await this.oauth2Client.getToken(code);
-        
+
         this.accessToken = tokens.access_token;
         this.refreshToken = tokens.refresh_token;
-        
+
         this.oauth2Client.setCredentials(tokens);
-        
+
         return tokens;
     }
 
@@ -221,7 +221,7 @@ export class CalendarService {
     async createEventFromText(text) {
         // Parse natural language
         const parsed = parseNaturalDate(text);
-        
+
         const eventData = {
             title: parsed.title || 'New Event',
             start: parsed.date || new Date(),
@@ -323,7 +323,7 @@ export class CalendarService {
         return events.filter(event => {
             const eventStart = new Date(event.start);
             const eventEnd = new Date(event.end);
-            
+
             // Check for overlap
             return (startTime < eventEnd && endTime > eventStart);
         });

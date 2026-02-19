@@ -18,7 +18,7 @@ export class SceneManager {
         this.googleHome = options.googleHome || new GoogleHomeConnector();
         this.alexa = options.alexa || new AlexaConnector();
         this.ifttt = options.ifttt || new IFTTTConnector();
-        
+
         // Pre-built scenes
         this.preBuiltScenes = {
             movie_night: {
@@ -137,7 +137,7 @@ export class SceneManager {
                     action,
                     error: error.message
                 });
-                
+
                 // If atomic execution required, rollback on error
                 if (scene.atomic) {
                     await this.rollbackScene(sceneId, results);

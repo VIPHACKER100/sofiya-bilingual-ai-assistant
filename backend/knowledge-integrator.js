@@ -122,7 +122,7 @@ export class KnowledgeIntegrator {
         // In production, use Google Maps API or similar
         // For now, check if topic contains location keywords
         const locationKeywords = ['city', 'country', 'place', 'location', 'map'];
-        const hasLocation = locationKeywords.some(keyword => 
+        const hasLocation = locationKeywords.some(keyword =>
             topic.toLowerCase().includes(keyword)
         );
 
@@ -254,7 +254,7 @@ export class KnowledgeIntegrator {
 
         // Get user's reading history for context
         const history = await this.getUserReadingHistory(userId);
-        
+
         // Find connections to previously read topics
         const connections = this.findTopicConnections(topic, history);
 
@@ -313,8 +313,8 @@ export class KnowledgeIntegrator {
             // Simple keyword matching (in production, use semantic similarity)
             const currentWords = currentTopic.toLowerCase().split(/\s+/);
             const historyWords = entry.topic.toLowerCase().split(/\s+/);
-            
-            const commonWords = currentWords.filter(word => 
+
+            const commonWords = currentWords.filter(word =>
                 historyWords.includes(word) && word.length > 3
             );
 

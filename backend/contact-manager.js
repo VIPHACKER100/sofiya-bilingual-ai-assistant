@@ -30,7 +30,7 @@ export class ContactManager {
 
         // Load contacts into cache
         await this.refreshCache();
-        
+
         console.log('[ContactManager] Initialized');
     }
 
@@ -70,12 +70,12 @@ export class ContactManager {
             ]);
 
             const contact = this.formatContact(result.rows[0]);
-            
+
             // Update cache
             this.cache.set(`${userId}:${name.toLowerCase()}`, contact);
-            
+
             console.log(`[ContactManager] Added contact: ${name} (${normalizedNumber})`);
-            
+
             return contact;
         } catch (error) {
             console.error('[ContactManager] Error adding contact:', error);
@@ -95,7 +95,7 @@ export class ContactManager {
         }
 
         const searchKey = nameOrNickname.toLowerCase();
-        
+
         // Check cache first
         const cacheKey = `${userId}:${searchKey}`;
         if (this.cache.has(cacheKey)) {
@@ -121,10 +121,10 @@ export class ContactManager {
             }
 
             const contact = this.formatContact(result.rows[0]);
-            
+
             // Update cache
             this.cache.set(cacheKey, contact);
-            
+
             return contact;
         } catch (error) {
             console.error('[ContactManager] Error finding contact:', error);
@@ -146,7 +146,7 @@ export class ContactManager {
             `;
 
             const result = await this.db.query(query, [userId]);
-            
+
             return result.rows.map(row => this.formatContact(row));
         } catch (error) {
             console.error('[ContactManager] Error getting contacts:', error);
@@ -195,16 +195,16 @@ export class ContactManager {
             `;
 
             const result = await this.db.query(query, values);
-            
+
             if (result.rows.length === 0) {
                 throw new Error('Contact not found');
             }
 
             const contact = this.formatContact(result.rows[0]);
-            
+
             // Update cache
             this.cache.set(`${userId}:${contact.name.toLowerCase()}`, contact);
-            
+
             return contact;
         } catch (error) {
             console.error('[ContactManager] Error updating contact:', error);
@@ -227,7 +227,7 @@ export class ContactManager {
             `;
 
             const result = await this.db.query(query, [userId, contactId]);
-            
+
             if (result.rows.length === 0) {
                 return false;
             }
@@ -316,8 +316,8 @@ export class ContactManager {
             userId: row.user_id,
             name: row.name,
             phone: row.phone,
-            metadata: typeof row.metadata === 'string' 
-                ? JSON.parse(row.metadata) 
+            metadata: typeof row.metadata === 'string'
+                ? JSON.parse(row.metadata)
                 : row.metadata || {},
             createdAt: row.created_at,
             updatedAt: row.updated_at

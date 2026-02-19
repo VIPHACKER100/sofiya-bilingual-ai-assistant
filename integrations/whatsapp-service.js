@@ -15,7 +15,7 @@ export class WhatsAppService {
         this.accountSid = options.accountSid || process.env.TWILIO_ACCOUNT_SID;
         this.authToken = options.authToken || process.env.TWILIO_AUTH_TOKEN;
         this.whatsappNumber = options.whatsappNumber || process.env.TWILIO_WHATSAPP_NUMBER;
-        
+
         // Initialize Twilio client
         this.client = null;
         if (this.accountSid && this.authToken) {
@@ -64,7 +64,7 @@ export class WhatsAppService {
         console.log(`[WhatsApp] Sending message to ${normalizedNumber}`);
 
         let lastError = null;
-        
+
         // Retry logic
         for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
             try {
@@ -76,8 +76,8 @@ export class WhatsAppService {
 
                 // Add media if provided
                 if (options.mediaUrl) {
-                    messageOptions.mediaUrl = Array.isArray(options.mediaUrl) 
-                        ? options.mediaUrl 
+                    messageOptions.mediaUrl = Array.isArray(options.mediaUrl)
+                        ? options.mediaUrl
                         : [options.mediaUrl];
                 }
 
@@ -134,7 +134,7 @@ export class WhatsAppService {
 
         try {
             const message = await this.client.messages(messageId).fetch();
-            
+
             return {
                 messageId: message.sid,
                 status: message.status,

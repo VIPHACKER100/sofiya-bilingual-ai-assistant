@@ -176,8 +176,8 @@ export class NutritionService {
 
         // Get available ingredients from fridge if not provided
         const ingredients = availableIngredients || await this.getFridgeInventory(userId);
-        const userRestrictions = dietaryRestrictions.length > 0 
-            ? dietaryRestrictions 
+        const userRestrictions = dietaryRestrictions.length > 0
+            ? dietaryRestrictions
             : await this.getUserDietaryRestrictions(userId);
 
         // Find matching recipes
@@ -197,7 +197,7 @@ export class NutritionService {
 
             // Calculate match score based on available ingredients
             const matchScore = this.calculateMatchScore(recipe.ingredients, ingredients);
-            
+
             if (matchScore > 0.3) { // At least 30% match
                 suggestions.push({
                     ...recipe,
@@ -222,7 +222,7 @@ export class NutritionService {
         const availableLower = availableIngredients.map(i => i.toLowerCase());
         const recipeLower = recipeIngredients.map(i => i.toLowerCase());
 
-        const matches = recipeLower.filter(ing => 
+        const matches = recipeLower.filter(ing =>
             availableLower.some(avail => avail.includes(ing) || ing.includes(avail))
         ).length;
 
@@ -235,7 +235,7 @@ export class NutritionService {
      */
     getMissingIngredients(recipeIngredients, availableIngredients) {
         const availableLower = availableIngredients.map(i => i.toLowerCase());
-        
+
         return recipeIngredients.filter(ing => {
             const ingLower = ing.toLowerCase();
             return !availableLower.some(avail => avail.includes(ingLower) || ingLower.includes(avail));

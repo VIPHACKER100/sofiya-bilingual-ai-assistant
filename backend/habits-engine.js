@@ -15,7 +15,7 @@ export class HabitsEngine {
         this.db = options.db || null;
         this.habitDetector = options.habitDetector || new HabitDetector({ db: options.db });
         this.reminderEngine = options.reminderEngine || null;
-        
+
         this.actionLog = [];
         this.userPreferences = new Map();
     }
