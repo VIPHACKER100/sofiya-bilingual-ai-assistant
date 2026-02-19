@@ -1,0 +1,8 @@
+{
+  "name": "SOFIYA - Bilingual AI Assistant",
+  "description": "A futuristic voice-controlled AI assistant supporting English and Hindi commands for web navigation, messaging, and system control.",
+  "requestFramePermissions": [
+    "microphone",
+    "camera"
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "name": "sofiya-bilingual-ai-assistant",
+  "description": "SOFIYA — A futuristic, voice-controlled bilingual AI assistant supporting English & Hindi commands.",
+  "version": "4.2.0",
+  "private": true,
+  "type": "module",
+  "author": "VIPHACKER100",
+  "license": "MIT",
+  "homepage": "https://github.com/VIPHACKER100/sofiya-bilingual-ai-assistant",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/VIPHACKER100/sofiya-bilingual-ai-assistant.git"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
