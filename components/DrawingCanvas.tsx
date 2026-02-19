@@ -1,7 +1,7 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Eraser, Download, X, Palette, Brush, Shield } from 'lucide-react';
+import { Eraser, Download, X, Palette, Brush, Shield, Zap, Activity } from 'lucide-react';
 import { soundService } from '../services/soundService';
 
 interface DrawingCanvasProps {
@@ -9,7 +9,7 @@ interface DrawingCanvasProps {
   language: 'en' | 'hi';
 }
 
-export const DrawingCanvas: React.FC<DrawingCanvasProps> = React.memo(({ onClose, language }) => {
+export const DrawingCanvas = React.memo(({ onClose, language }: DrawingCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [color, setColor] = useState('#8b5cf6'); // Default to Violet
@@ -31,8 +31,6 @@ export const DrawingCanvas: React.FC<DrawingCanvasProps> = React.memo(({ onClose
 
     const handleResize = () => {
       if (canvas) {
-        // Preservation of data during resize would require a temp buffer, 
-        // but for this implementation we'll just reset bounds.
         canvas.width = window.innerWidth * 0.8;
         canvas.height = window.innerHeight * 0.6;
       }
@@ -131,44 +129,52 @@ export const DrawingCanvas: React.FC<DrawingCanvasProps> = React.memo(({ onClose
   ];
 
   return (
-    <div className="fixed inset-0 z-[120] flex flex-col items-center justify-center p-4 lg:p-12 overflow-hidden">
-      {/* Background with cinematic effects */}
+    <div className="fixed inset-0 z-[120] flex flex-col items-center justify-center p-6 lg:p-16 overflow-hidden">
+      {/* Cinematic Background */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="absolute inset-0 bg-black/95 backdrop-blur-2xl z-0"
+        className="absolute inset-0 bg-black/95 backdrop-blur-3xl z-0"
       />
       <div className="scanline opacity-10 z-10"></div>
       <div className="vignette z-10"></div>
+      <div className="absolute inset-0 grid-hud opacity-[0.03] z-10 pointer-events-none"></div>
 
-      <div className="relative z-20 w-full max-w-6xl h-full flex flex-col">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-10 px-4">
-          <div className="flex flex-col">
-            <div className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-cyan-500 rounded-full animate-pulse shadow-[0_0_15px_#06b6d4]"></div>
-              <h2 className="text-3xl font-black text-white tracking-widest uppercase italic leading-none">
+      <div className="relative z-20 w-full max-w-7xl h-full flex flex-col">
+        {/* Superior Header */}
+        <div className="flex justify-between items-center mb-12 px-6">
+          <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} className="flex flex-col gap-2">
+            <div className="flex items-center gap-4">
+              <div className="w-4 h-4 rounded-full bg-cyan-500 animate-pulse shadow-[0_0_20px_#06b6d4]"></div>
+              <h2 className="text-4xl font-black text-white tracking-[0.2em] uppercase italic leading-none text-gradient">
                 {language === 'hi' ? 'डिजिटल कैनवास' : 'NEURAL_SKETCH'}
               </h2>
             </div>
-            <div className="flex items-center gap-2 mt-2 opacity-30 text-[9px] font-mono text-cyan-400 tracking-[0.4em] uppercase">
-              <Shield className="w-3 h-3" />
-              SECURE_DRAW_ENV // 0xF22B
+            <div className="flex items-center gap-3 opacity-40 text-[10px] font-black font-mono tracking-[0.5em] text-cyan-400 uppercase">
+              <Shield className="w-3.5 h-3.5" />
+              SECURE_WORKSPACE // 0xF22B
+              <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full ml-4 animate-ping"></div>
             </div>
-          </div>
-          <button
+          </motion.div>
+          <motion.button
+            whileHover={{ rotate: 90, scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
             onClick={onClose}
-            title="Terminate Sketch"
-            className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-slate-500 hover:text-white hover:bg-white/5 transition-all group active:scale-95"
+            title="Terminate Module"
+            className="w-14 h-14 rounded-2xl border border-white/10 flex items-center justify-center text-slate-500 hover:text-white hover:bg-white/10 transition-all group active:scale-95 shadow-2xl"
           >
-            <X className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" />
-          </button>
+            <X className="w-7 h-7" />
+          </motion.button>
         </div>
 
-        {/* Canvas Area */}
-        <div className="flex-1 relative group rounded-[2.5rem] bg-slate-900 shadow-[inset_0_2px_40px_rgba(0,0,0,0.8)] border border-white/5 p-4 overflow-hidden mb-8">
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+        {/* Neural Drawing Environment */}
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="flex-1 relative group rounded-[3rem] bg-black/40 shadow-[inset_0_2px_100px_rgba(0,0,0,0.9)] border border-white/5 p-4 overflow-hidden mb-12 cyber-border"
+        >
+          <div className="absolute inset-0 radial-dots opacity-20"></div>
 
           <canvas
             ref={canvasRef}
@@ -182,68 +188,86 @@ export const DrawingCanvas: React.FC<DrawingCanvasProps> = React.memo(({ onClose
             onTouchEnd={stopDrawing}
           />
 
-          {/* HUD Elements */}
-          <div className="absolute top-8 left-8 z-20 pointer-events-none opacity-20 font-mono text-[9px] tracking-widest text-slate-500 flex flex-col gap-1 uppercase">
-            <span>RES: {window.innerWidth}x{window.innerHeight}</span>
-            <span>UPLINK: ACTIVE</span>
+          {/* Telemetry HUD */}
+          <div className="absolute bottom-12 left-12 z-20 pointer-events-none opacity-20 font-mono text-[9px] tracking-widest text-slate-500 flex gap-12 uppercase">
+            <div className="flex items-center gap-2">
+              <Activity className="w-3 h-3" />
+              DENSITY: 0.81hz
+            </div>
+            <div className="flex items-center gap-2">
+              <Zap className="w-3 h-3" />
+              LATENCY: 4ms
+            </div>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Tools Bar */}
-        <div className="flex flex-wrap gap-8 justify-center items-center pb-8">
-          {/* Color Palette */}
-          <div className="flex items-center gap-4 glass-panel p-4 rounded-3xl border border-white/10 shadow-2xl">
-            <Palette className="w-4 h-4 text-slate-500 mr-2" />
-            <div className="flex gap-3">
-              {colors.map((c) => (
-                <button
-                  key={c.name}
-                  onClick={() => { setColor(c.hex); soundService.playUIClick(); }}
-                  title={`Use ${c.name} color`}
-                  className={`w-7 h-7 rounded-xl transition-all duration-300 hover:scale-110 active:scale-90 relative ${color === c.hex ? 'scale-125 shadow-lg' : 'opacity-40 hover:opacity-100'}`}
-                  style={{ backgroundColor: c.hex }}
-                >
-                  {color === c.hex && (
-                    <motion.div
-                      layoutId="activeColor"
-                      className="absolute -inset-1.5 border-2 border-white rounded-2xl opacity-50"
-                    />
-                  )}
-                </button>
-              ))}
+        {/* Pro Tools Dashboard */}
+        <div className="flex flex-wrap gap-10 justify-between items-center pb-12 px-6">
+          <div className="flex gap-10">
+            {/* Color Matrix */}
+            <div className="flex items-center gap-6 glass-panel p-5 rounded-[2rem] border border-white/10 shadow-2xl">
+              <div className="flex gap-4">
+                {colors.map((c) => (
+                  <button
+                    key={c.name}
+                    onClick={() => { setColor(c.hex); soundService.playUIClick(); }}
+                    title={`Use ${c.name} color`}
+                    className={`w-8 h-8 rounded-xl transition-all duration-500 hover:scale-110 active:scale-90 relative ${color === c.hex ? 'scale-125 shadow-2xl z-10' : 'opacity-40 hover:opacity-100'}`}
+                    style={{ backgroundColor: c.hex }}
+                  >
+                    {color === c.hex && (
+                      <motion.div
+                        layoutId="activeColor"
+                        className="absolute -inset-1.5 border border-white/40 rounded-2xl"
+                      />
+                    )}
+                  </button>
+                ))}
+              </div>
+              <div className="w-px h-8 bg-white/10 mx-2"></div>
+              <Palette className="w-5 h-5 text-slate-500" />
+            </div>
+
+            {/* Brush Dynamics */}
+            <div className="flex items-center gap-6 glass-panel p-5 rounded-[2rem] border border-white/10 shadow-2xl px-10 group">
+              <Brush className={`w-5 h-5 ${color === '#ffffff' ? 'text-white' : 'accent-text'}`} style={{ color: color }} />
+              <div className="relative flex items-center">
+                <input
+                  type="range" min="1" max="25"
+                  value={lineWidth}
+                  title="Adjust Line Width"
+                  onChange={(e) => setLineWidth(parseInt(e.target.value))}
+                  className="w-52 accent-cyan-500 bg-white/5 rounded-full h-1 appearance-none cursor-pointer"
+                />
+                <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-white/5 px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-mono text-white">
+                  SIZE_{lineWidth}PX
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Brush Size */}
-          <div className="flex items-center gap-5 glass-panel p-4 rounded-3xl border border-white/10 shadow-2xl px-6">
-            <Brush className="w-4 h-4 text-slate-500" />
-            <input
-              type="range" min="1" max="20"
-              value={lineWidth}
-              onChange={(e) => setLineWidth(parseInt(e.target.value))}
-              className="w-32 accent-cyan-500 bg-white/5 rounded-full h-1"
-            />
-            <span className="text-[10px] font-mono text-white font-bold w-4 text-center">{lineWidth}</span>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex gap-4">
-            <button
+          {/* Master Actions */}
+          <div className="flex gap-6">
+            <motion.button
+              whileHover={{ scale: 1.03, backgroundColor: 'rgba(239, 68, 68, 0.1)' }}
+              whileTap={{ scale: 0.97 }}
               onClick={clearCanvas}
-              title="Purge Data"
-              className="px-8 py-4 glass-panel border border-white/5 text-slate-500 hover:text-red-400 hover:bg-red-500/5 rounded-2xl text-[10px] font-black tracking-[0.2em] uppercase transition-all shadow-xl active:scale-95 flex items-center gap-2"
+              title="Purge Sketch Buffer"
+              className="px-10 py-5 glass-panel border border-white/5 text-slate-500 hover:text-red-500 rounded-[1.5rem] text-[11px] font-black tracking-[0.4em] uppercase transition-all shadow-2xl flex items-center gap-3 group"
             >
-              <Eraser className="w-4 h-4" />
+              <Eraser className="w-4 h-4 group-hover:rotate-12 transition-transform" />
               {language === 'hi' ? 'साफ़ करें' : 'PURGE'}
-            </button>
-            <button
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.03, boxShadow: '0 0 50px rgba(6, 182, 212, 0.3)' }}
+              whileTap={{ scale: 0.97 }}
               onClick={saveDrawing}
-              title="Extract Data"
-              className="px-8 py-4 bg-cyan-600/20 border border-cyan-500/30 text-cyan-400 hover:bg-cyan-600/40 rounded-2xl text-[10px] font-black tracking-[0.2em] uppercase transition-all shadow-xl active:scale-95 flex items-center gap-2"
+              title="Export Signal Data"
+              className="px-10 py-5 bg-cyan-600/10 border border-cyan-500/20 text-cyan-400 hover:text-white hover:bg-cyan-500 rounded-[1.5rem] text-[11px] font-black tracking-[0.4em] uppercase transition-all shadow-2xl flex items-center gap-3 group"
             >
-              <Download className="w-4 h-4" />
+              <Download className="w-4 h-4 group-hover:-translate-y-1 transition-transform" />
               {language === 'hi' ? 'सेव करें' : 'EXTRACT'}
-            </button>
+            </motion.button>
           </div>
         </div>
       </div>

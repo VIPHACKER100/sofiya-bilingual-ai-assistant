@@ -108,7 +108,7 @@ const App: React.FC = () => {
                 />
               </div>
               <div className="flex flex-col">
-                <h1 className="text-5xl font-black tracking-[0.15em] font-mono leading-none flex items-baseline gap-2">
+                <h1 className="text-5xl font-black tracking-[0.15em] font-mono leading-none flex items-baseline gap-2 text-gradient">
                   {currentProtocol.name.split('.')[0]}
                   <span className="text-xl opacity-20 font-light">.{currentProtocol.name.split('.')[1]}</span>
                 </h1>
