@@ -5,7 +5,7 @@ export const CONTACTS: Record<string, string> = {
   "dad": "919876543211",
   "boss": "919876543212",
   "raj": "919876543213",
-  
+
   // Hindi keys (Devanagari)
   "मम्मी": "919876543210",
   "पिता जी": "919876543211",
@@ -43,4 +43,24 @@ export const ERROR_MESSAGES = {
   }
 };
 
+
 export const INITIAL_VOLUME = 60;
+
+export const TRY_COMMANDS = [
+  "Play lo-fi music",
+  "Send message to Mom",
+  "Activate sentry mode",
+  "Start breathing",
+  "Turn on lights",
+  "Show news",
+  "Good morning",
+  "Good night",
+  "Status report",
+  "What time is it?",
+  "Tell me a joke",
+  "Awaaz badhao",
+  "Batti jalao",
+  "Namaste Sofiya",
+  "Samachar dikhao",
+  "Mausam kya hai?"
+];

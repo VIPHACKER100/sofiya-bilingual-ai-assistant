@@ -11,21 +11,22 @@
             │              Browser / DOM               │
             │  ┌───────────────────────────────────┐  │
             │  │          App.tsx (Root)            │  │
-            │  │   State Orchestrator & UI Shell    │  │
+            │  │   UI Shell & Protocol Orchestrator │  │
             │  └────────────────┬──────────────────┘  │
             │                   │                      │
-            │     ┌─────────────┼─────────────┐       │
-            │     ▼             ▼             ▼        │
-            │  voiceService  soundService  19 Components│
-            │     │                                    │
-            │     ▼ transcript (text)                  │
-            │  commandProcessor.ts                     │
-            │     │                                    │
+            │     ┌─────────────┼─────────────┬──────┐│
+            │     ▼             ▼             ▼      ▼│
+            │  useAssistant   soundService  Weather  News│
+            │  (Custom Hook)                Service Service
+            │     │                                   │
+            │     ▼ transcript (text)                 │
+            │  commandProcessor.ts                    │
+            │     │                                   │
             │     ├── Matched Intent ──► ProcessedCommand
-            │     │                                    │
-            │     └── No Match ──► aiService.ts        │
-            │                          │               │
-            │                    OpenRouter API        │
+            │     │                                   │
+            │     └── No Match ──► aiService.ts       │
+            │                          │              │
+            │                    OpenRouter API       │
             └─────────────────────────────────────────┘
 ```
 
@@ -137,6 +138,24 @@ Synthesizes all UI sounds in real-time using the Web Audio API (no audio files n
 | `playScan()` | Sentry mode scan sweep |
 | `playAlert()` | Security alert |
 | `playMessageSent()` | Message sent action |
+
+---
+
+### `weatherService.ts` — Meteorological Data
+
+Fetches weather forecasting data using the Open-Meteo API.
+
+- **Caching**: Implements internal caching to prevent redundant API calls.
+- **Mapping**: Converts numeric WMO weather codes into human-readable conditions (e.g., "Thunderstorm", "Partly Cloudy").
+
+---
+
+### `newsService.ts` — Global Headlines
+
+Fetches live news headlines using an RSS-to-JSON bridge for BBC News.
+
+- **Filtering**: Automatically slices the top 5 most relevant global stories.
+- **Fallbacks**: Includes mock data patterns for offline/development environments.
 
 ---
 

@@ -11,43 +11,51 @@ export const PermissionModal: React.FC<PermissionModalProps> = ({ isOpen, onClos
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4 animate-in fade-in duration-300">
-      <div className="glass-panel border-l-4 border-l-violet-500 rounded-lg max-w-md w-full p-8 relative overflow-hidden">
-        {/* Background Grid */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(139,92,246,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(139,92,246,0.05)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none"></div>
-        
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-xl p-4 animate-in fade-in duration-500">
+      <div className="glass-panel border-l-2 accent-border accent-violet rounded-2xl max-w-md w-full p-10 relative overflow-hidden shadow-[0_0_100px_rgba(139,92,246,0.2)]">
+
+        {/* Cinematic Overlays */}
+        <div className="scanline opacity-10"></div>
+        <div className="vignette opacity-50"></div>
+
         <div className="relative z-10">
-            <h2 className="text-2xl font-bold text-violet-400 tracking-widest mb-6 flex items-center gap-3 font-mono">
-            <div className="p-2 border border-violet-500/30 rounded bg-violet-500/10">
-                <svg className="w-6 h-6 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
+          <h2 className="text-3xl font-bold accent-text accent-violet tracking-[0.4em] mb-8 flex items-center gap-4 font-mono">
+            <div className="p-3 border border-violet-500/20 rounded-xl bg-violet-500/5 accent-glow accent-violet">
+              <svg className="w-8 h-8 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
             </div>
-            SYSTEM ALERT
-            </h2>
+            SYSTEM_ALERT
+          </h2>
 
-            <div className="space-y-4 text-slate-300 font-sans">
-            <p className="font-mono text-xs text-violet-300 uppercase tracking-wider bg-violet-500/10 px-2 py-1 inline-block rounded">
-                {language === 'hi' 
-                ? "माइक्रोफ़ोन एक्सेस अस्वीकार" 
-                : "MICROPHONE ACCESS DENIED"}
-            </p>
-            
-            <p className="text-sm leading-relaxed text-slate-400">
-                {language === 'hi'
+          <div className="space-y-6">
+            <div className="font-mono text-[10px] accent-text accent-violet uppercase tracking-[0.3em] bg-violet-500/10 px-4 py-2 border border-violet-500/20 rounded-full inline-block">
+              {language === 'hi'
+                ? "माइक्रोफ़ोन एक्सेस अस्वीकार"
+                : "MICROPHONE_LINK_FAILURE"}
+            </div>
+
+            <p className="text-sm leading-relaxed text-slate-400 font-mono tracking-wide uppercase opacity-80">
+              {language === 'hi'
                 ? "SOFIYA को आपकी बात सुनने के लिए ऑडियो अनुमति की आवश्यकता है। कृपया ब्राउज़र सेटिंग्स में माइक्रोफ़ोन चालू करें।"
-                : "SOFIYA requires audio input privileges to assist you. Please update your browser site settings to allow microphone access."}
+                : "SOFIYA_LINK_PROTOCOL: Audio input privileges required for neural integration. Please update browser site settings to allow persistent microphone access."}
             </p>
-            </div>
+          </div>
 
-            <div className="mt-8 flex justify-end">
-            <button 
-                onClick={onClose}
-                className="bg-violet-600 hover:bg-violet-500 text-white px-6 py-2 rounded text-xs tracking-widest transition-all uppercase font-bold font-mono shadow-[0_0_15px_rgba(139,92,246,0.3)] hover:scale-105"
+          <div className="mt-12 flex justify-center">
+            <button
+              onClick={onClose}
+              title="Acknowledge Alert"
+              className="w-full py-4 rounded-xl accent-bg accent-violet text-white text-xs tracking-[0.4em] transition-all hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(139,92,246,0.3)] font-black uppercase font-mono"
             >
-                {language === 'hi' ? "समझ गया" : "ACKNOWLEDGE"}
+              {language === 'hi' ? "समझ गया" : "ACKNOWLEDGE_LINK"}
             </button>
-            </div>
+          </div>
+
+          <div className="mt-6 flex justify-between items-center opacity-20 font-mono text-[8px] tracking-widest uppercase text-slate-500">
+            <span>SYS_ID: SOFIYA_V4</span>
+            <span>AUTH_PENDING</span>
+          </div>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-# 🗣️ SOFIYA — Voice Commands Reference
+# 🗣️ SOFIYA — Voice Commands Reference (v4.3.0)
 
 Complete list of all supported voice commands in English, Hindi, and Hinglish.
 
@@ -7,7 +7,7 @@ Complete list of all supported voice commands in English, Hindi, and Hinglish.
 ## System & Status
 
 | Intent | English | Hindi / Hinglish |
-|---|---|---|
+| :--- | :--- | :--- |
 | Greeting / Status | "Hello Sofiya" | "Namaste Sofiya" / "Kaisi ho?" |
 | System report | "Status report" / "Are you online?" | "System check karo" |
 | Current time | "What time is it?" / "What's the time?" | "Abhi kya samay hai?" / "Kya baje hain?" |
@@ -19,7 +19,7 @@ Complete list of all supported voice commands in English, Hindi, and Hinglish.
 ## Personality Modes
 
 | Mode | English | Hindi / Hinglish |
-|---|---|---|
+| :--- | :--- | :--- |
 | Sass Mode | "Activate sass mode" | "Attitude mode on karo" |
 | Focus Mode | "Switch to focus mode" | "Focus mode chalu karo" |
 | Storyteller | "Storyteller mode" | "Kahani mode on karo" |
@@ -27,10 +27,21 @@ Complete list of all supported voice commands in English, Hindi, and Hinglish.
 
 ---
 
+## 🔄 Smart Routines
+
+Routines are sequences of multiple actions triggered by a single phrase.
+
+| Routine | English | Hindi / Hinglish | Actions |
+| :--- | :--- | :--- | :--- |
+| **Morning Routine** | "Good morning" / "I'm awake" | "Shubh prabhat" | Fetches Weather, opens News feed, displays Tasks. |
+| **Night Routine** | "Good night" / "Bedtime" | "Shubh ratri" | Mutes media, turns off virtual lights, switches to Focus Mode. |
+
+---
+
 ## Media & Music
 
 | Intent | English | Hindi / Hinglish |
-|---|---|---|
+| :--- | :--- | :--- |
 | Play music | "Play lo-fi music" / "Play [song name]" | "Lo-fi bajao" / "[gaana] chalao" |
 | Pause / Stop | "Stop music" / "Pause" | "Music band karo" / "Gaana roko" |
 | Resume | "Resume music" | "Wapas chalao" / "Phir se chala" |
@@ -40,7 +51,7 @@ Complete list of all supported voice commands in English, Hindi, and Hinglish.
 ## Volume Control
 
 | Intent | English | Hindi / Hinglish |
-|---|---|---|
+| :--- | :--- | :--- |
 | Increase | "Increase volume" / "Volume up" | "Awaaz badhao" / "Volume tez karo" |
 | Decrease | "Decrease volume" / "Volume down" | "Awaaz kam karo" / "Volume dheera karo" |
 | Mute | "Mute" / "Silence" | "Chup karo" / "Mute karo" |
@@ -51,7 +62,7 @@ Complete list of all supported voice commands in English, Hindi, and Hinglish.
 ## Smart Home
 
 | Intent | English | Hindi / Hinglish |
-|---|---|---|
+| :--- | :--- | :--- |
 | Lights on | "Turn on the lights" / "Lights on" | "Batti jalao" / "Light chalu karo" |
 | Lights off | "Turn off the lights" | "Batti band karo" / "Light off karo" |
 | Movie night | "Movie night" / "Cinema mode" | "Movie night lagao" |
@@ -61,7 +72,7 @@ Complete list of all supported voice commands in English, Hindi, and Hinglish.
 ## Communication
 
 | Intent | English | Hindi / Hinglish |
-|---|---|---|
+| :--- | :--- | :--- |
 | Send message | "Send message to Mom saying I'll be late" | "Mom ko sandesh bhejo ki main late aaunga" |
 | Call someone | "Call Dad" / "Phone Raj" | "Papa ko call karo" / "Raj ko phone lagao" |
 
@@ -70,7 +81,7 @@ Complete list of all supported voice commands in English, Hindi, and Hinglish.
 ## Weather & News
 
 | Intent | English | Hindi / Hinglish |
-|---|---|---|
+| :--- | :--- | :--- |
 | Weather | "What's the weather?" / "Check weather" | "Mausam kaisa hai?" / "Mausam batao" |
 | News | "Show news" / "Latest headlines" | "Samachar dikhao" / "Khabren batao" |
 
@@ -79,7 +90,7 @@ Complete list of all supported voice commands in English, Hindi, and Hinglish.
 ## Health & Wellness
 
 | Intent | English | Hindi / Hinglish |
-|---|---|---|
+| :--- | :--- | :--- |
 | Health dashboard | "Show my health" / "Heart rate" | "Sehat batao" / "Dil ki dhadkan batao" |
 | Breathe | "Start breathing exercise" / "Meditate" | "Dhyan lagao" / "Saans ka wyayam karo" |
 
@@ -88,7 +99,7 @@ Complete list of all supported voice commands in English, Hindi, and Hinglish.
 ## Tasks & Timers
 
 | Intent | English | Hindi / Hinglish |
-|---|---|---|
+| :--- | :--- | :--- |
 | Add task | "Add task buy groceries" | "Grocery khareedna task jodo" |
 | Show tasks | "Show tasks" | "Task list dikhao" |
 | Set timer | "Set timer for 5 minutes" | "5 minute ka timer lagao" |
@@ -99,7 +110,7 @@ Complete list of all supported voice commands in English, Hindi, and Hinglish.
 ## Utilities
 
 | Intent | English | Hindi / Hinglish |
-|---|---|---|
+| :--- | :--- | :--- |
 | Calculator | "What is 45 * 8?" / "125 + 37" | "45 times 8 kitna hoga?" |
 | Drawing | "Open drawing canvas" / "Let me draw" | "Drawing kholo" / "Canvas banao" |
 | Sentry Mode | "Activate sentry mode" / "Watch the room" | "Suraksha mode on karo" |

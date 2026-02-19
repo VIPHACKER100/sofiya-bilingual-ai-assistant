@@ -8,88 +8,90 @@ interface ArcReactorProps {
   color: string; // Hex color code
 }
 
+const getAccentClass = (hex: string) => {
+  const map: Record<string, string> = {
+    '#8b5cf6': 'accent-violet',
+    '#06b6d4': 'accent-cyan',
+    '#f59e0b': 'accent-amber',
+    '#ef4444': 'accent-red',
+    '#10b981': 'accent-emerald',
+    '#ec4899': 'accent-pink'
+  };
+  return map[hex.toLowerCase()] || 'accent-violet';
+};
+
 export const ArcReactor: React.FC<ArcReactorProps> = ({ isActive, onClick, language, color }) => {
+  const accentClass = getAccentClass(color);
+
   return (
-    <div className="relative flex items-center justify-center group w-80 h-80">
+    <div className={`relative flex items-center justify-center group w-80 h-80 accent-text ${accentClass}`}>
       {/* Dynamic Ambient Glow */}
-      <div 
-        className={`absolute rounded-full transition-all duration-1000 ease-in-out mix-blend-screen ${isActive ? 'w-full h-full opacity-40' : 'w-2/3 h-2/3 opacity-10'}`}
-        style={{ 
-          background: `radial-gradient(circle, ${color} 0%, transparent 70%)`,
-          filter: 'blur(40px)'
-        }} 
+      <div
+        className={`absolute rounded-full transition-all duration-1000 ease-in-out mix-blend-screen accent-bg ${isActive ? 'w-full h-full opacity-20 accent-glow' : 'w-2/3 h-2/3 opacity-5'}`}
+        style={{
+          filter: 'blur(60px)'
+        } as any}
       />
-      
+
       {/* SVG Structure */}
       <div className="relative w-72 h-72 pointer-events-none z-0">
-         <svg viewBox="0 0 200 200" className="w-full h-full">
-            <defs>
-              <filter id="glow">
-                <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-                <feMerge>
-                  <feMergeNode in="coloredBlur"/>
-                  <feMergeNode in="SourceGraphic"/>
-                </feMerge>
-              </filter>
-            </defs>
+        <svg viewBox="0 0 200 200" className="w-full h-full">
+          {/* Static Base Ring */}
+          <circle cx="100" cy="100" r="98" stroke="currentColor" strokeWidth="0.5" fill="none" opacity="0.3" />
+          <circle cx="100" cy="100" r="90" stroke="currentColor" strokeWidth="0.5" fill="none" opacity="0.2" />
 
-            {/* Static Base Ring */}
-            <circle cx="100" cy="100" r="98" stroke={color} strokeWidth="0.5" fill="none" opacity="0.3" />
-            <circle cx="100" cy="100" r="90" stroke={color} strokeWidth="0.5" fill="none" opacity="0.2" />
+          {/* Outer Rotating Segmented Ring */}
+          <g className={`origin-center transition-all duration-1000 ${isActive ? 'animate-[spin_8s_linear_infinite]' : 'animate-[spin_60s_linear_infinite]'}`}>
+            <path d="M100 5 A95 95 0 0 1 195 100" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="4,4" opacity="0.6" />
+            <path d="M100 195 A95 95 0 0 1 5 100" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="4,4" opacity="0.6" />
+          </g>
 
-            {/* Outer Rotating Segmented Ring */}
-            <g className={`origin-center transition-all duration-1000 ${isActive ? 'animate-[spin_8s_linear_infinite]' : 'animate-[spin_60s_linear_infinite]'}`}>
-               <path d="M100 5 A95 95 0 0 1 195 100" fill="none" stroke={color} strokeWidth="1" strokeDasharray="4,4" opacity="0.6" />
-               <path d="M100 195 A95 95 0 0 1 5 100" fill="none" stroke={color} strokeWidth="1" strokeDasharray="4,4" opacity="0.6" />
-            </g>
+          {/* Middle Counter-Rotating Tech Ring */}
+          <g className={`origin-center transition-all duration-1000 ${isActive ? 'animate-[spin_5s_linear_infinite_reverse]' : 'animate-[spin_40s_linear_infinite_reverse]'}`}>
+            <circle cx="100" cy="100" r="75" stroke="currentColor" strokeWidth="15" fill="none" strokeDasharray="2, 48" opacity="0.2" />
+            <circle cx="100" cy="100" r="75" stroke="currentColor" strokeWidth="1" fill="none" strokeDasharray="40, 40" opacity="0.5" />
+          </g>
 
-            {/* Middle Counter-Rotating Tech Ring */}
-            <g className={`origin-center transition-all duration-1000 ${isActive ? 'animate-[spin_5s_linear_infinite_reverse]' : 'animate-[spin_40s_linear_infinite_reverse]'}`}>
-               <circle cx="100" cy="100" r="75" stroke={color} strokeWidth="15" fill="none" strokeDasharray="2, 48" opacity="0.2" />
-               <circle cx="100" cy="100" r="75" stroke={color} strokeWidth="1" fill="none" strokeDasharray="40, 40" opacity="0.5" />
-            </g>
-            
-            {/* Inner Fast Ring */}
-            <g className={`origin-center transition-all duration-500 ${isActive ? 'animate-[spin_3s_linear_infinite]' : 'opacity-0'}`}>
-                <circle cx="100" cy="100" r="60" stroke={color} strokeWidth="0.5" fill="none" strokeDasharray="10, 10" />
-            </g>
+          {/* Inner Fast Ring */}
+          <g className={`origin-center transition-all duration-500 ${isActive ? 'animate-[spin_3s_linear_infinite]' : 'opacity-0'}`}>
+            <circle cx="100" cy="100" r="60" stroke="currentColor" strokeWidth="0.5" fill="none" strokeDasharray="10, 10" />
+          </g>
 
-            {/* Core Triangle */}
-            <g className={`origin-center transition-all duration-1000 ${isActive ? 'scale-100 opacity-100' : 'scale-90 opacity-40'}`}>
-                <path d="M100 40 L152 130 L48 130 Z" fill="none" stroke={color} strokeWidth="1" opacity="0.5" />
-                <path d="M100 160 L152 70 L48 70 Z" fill="none" stroke={color} strokeWidth="1" opacity="0.5" />
-            </g>
-         </svg>
+          {/* Core Triangle */}
+          <g className={`origin-center transition-all duration-1000 ${isActive ? 'scale-100 opacity-100' : 'scale-90 opacity-40'}`}>
+            <path d="M100 40 L152 130 L48 130 Z" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.5" />
+            <path d="M100 160 L152 70 L48 70 Z" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.5" />
+          </g>
+        </svg>
       </div>
 
       {/* Interactive Core Button */}
-      <button 
+      <button
         onClick={onClick}
+        title={isActive ? "Stop Listening" : "Start Listening"}
         className="absolute z-10 w-32 h-32 rounded-full flex flex-col items-center justify-center transition-all duration-300 group-hover:scale-105 active:scale-95 outline-none"
       >
-        <div className={`absolute inset-0 rounded-full border transition-all duration-500 ${isActive ? 'border-2 opacity-100' : 'border opacity-30'}`} style={{ borderColor: color }}></div>
-        
+        <div className={`absolute inset-0 rounded-full border transition-all duration-500 accent-border ${isActive ? 'border-2' : 'opacity-30'}`}></div>
+
         {/* Inner Glass */}
         <div className="absolute inset-2 rounded-full bg-slate-900/50 backdrop-blur-sm border border-white/5 shadow-inner"></div>
 
         {/* Status Text & Indicator */}
         <div className="relative z-20 flex flex-col items-center">
-            <div 
-                className={`w-3 h-3 rounded-full mb-2 transition-all duration-300 ${isActive ? 'shadow-[0_0_15px_currentColor] scale-110' : 'opacity-50'}`}
-                style={{ backgroundColor: isActive ? color : '#475569', color: color }}
-            />
-            <span 
-                className="text-[10px] font-mono font-bold tracking-[0.3em] transition-colors"
-                style={{ color: isActive ? '#fff' : '#64748b', textShadow: isActive ? `0 0 10px ${color}` : 'none' }}
-            >
+          <div
+            className={`w-3 h-3 rounded-full mb-2 transition-all duration-300 ${isActive ? 'accent-bg accent-glow scale-110' : 'bg-slate-600 opacity-50'}`}
+          />
+          <span
+            className={`text-[10px] font-mono font-bold tracking-[0.3em] transition-colors ${isActive ? 'text-white accent-text-glow' : 'text-slate-500'}`}
+          >
             {isActive ? 'ONLINE' : 'STANDBY'}
-            </span>
+          </span>
         </div>
       </button>
-      
+
       {/* Pulse Rings Effect on Click */}
       {isActive && (
-         <div className="absolute inset-0 rounded-full border border-white/20 animate-[ping_2s_linear_infinite]" style={{ borderColor: color }}></div>
+        <div className="absolute inset-0 rounded-full border border-white/20 animate-[ping_2s_linear_infinite] accent-border"></div>
       )}
     </div>
   );

@@ -5,6 +5,23 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [4.3.0] — 2026-02-19
+
+### Added
+
+- **`ROUTINE_MORNING` command**: "Good morning" / "Suprabhat" — Triggers weather, news, and task list briefing.
+- **`ROUTINE_NIGHT` command**: "Good night" / "Shubh ratri" — Automatically mutes media, turns off virtual lights, and engages Focus Mode.
+- **Interactive Command Marquee**: The footer marquee is now interactive; clicking any command executes it instantly.
+- **`useAssistant` Custom Hook**: Centralized all assistant state and logic into a clean, reusable React hook.
+
+### Changed
+
+- **UI Refinement**: Added glassmorphism shimmer effects and refined marquee animations.
+- **Improved Language Detection**: Enhanced scoring for mixed-language "Hinglish" commands.
+- **System Version Update**: Core internal version bumped to 4.3.0.
+
+---
+
 ## [4.2.0] — 2026-02-19
 
 ### Added

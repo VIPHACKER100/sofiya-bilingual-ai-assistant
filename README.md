@@ -4,7 +4,7 @@
 
 > *Your intelligent, voice-powered AI companion that speaks both English and Hindi*
 
-[![Version](https://img.shields.io/badge/version-4.2.0-8b5cf6?style=for-the-badge)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-4.3.0-8b5cf6?style=for-the-badge)](CHANGELOG.md)
 [![React](https://img.shields.io/badge/React-19-61dafb?style=for-the-badge&logo=react)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178c6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org)
 [![Vite](https://img.shields.io/badge/Vite-6-646cff?style=for-the-badge&logo=vite)](https://vitejs.dev)
@@ -29,6 +29,8 @@ Built with React 19, TypeScript, and the Web Speech API, SOFIYA runs entirely in
 |---|---|
 | 🎙️ **Bilingual Voice Recognition** | Real-time speech capture in English & Hindi |
 | 🧠 **Smart Intent Engine** | Weighted language detection + regex-based command routing |
+| 🔄 **Smart Routines** | "Good Morning" & "Good Night" multi-action sequences |
+| 🖱️ **Interactive Marquee** | Click-to-execute voice commands from the scrolling footer |
 | 🤖 **AI Fallback** | OpenRouter API integration (GPT / Llama / any model) |
 | 🎭 **4 Personality Modes** | Default, Focus, Sass, Storyteller |
 | 🏠 **Smart Home Control** | Virtual light, thermostat, lock simulation |
@@ -39,10 +41,7 @@ Built with React 19, TypeScript, and the Web Speech API, SOFIYA runs entirely in
 | 🧘 **Mindfulness Mode** | Guided breathing exercise |
 | 🔒 **Sentry Mode** | Camera-based surveillance with motion detection |
 | ✏️ **Drawing Canvas** | Full in-browser freehand drawing tool |
-| ⏱️ **Timer & Tasks** | Voice-set countdown timers and task manager |
-| 🔢 **Calculator** | Inline math evaluation with voice input |
-| 🛡️ **Security Layer** | XSS sanitization & phishing keyword detection |
-| 🎨 **4 Visual Themes** | Sofiya (violet), Classic (cyan), Focus (red), Zen (emerald) |
+| 🖌️ **Visual Themes** | Sofiya (violet), Classic (cyan), Focus (red), Zen (emerald) |
 
 ---
 

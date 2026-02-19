@@ -18,12 +18,13 @@ npm run dev
 
 ## Project Structure
 
-```
-services/          — Core logic (commandProcessor, voiceService, etc.)
+```text
+services/          — Core logic (commandProcessor, AI, Security, etc.)
+hooks/             — Custom hooks (useAssistant handles app state/actions)
 components/        — React UI components
+App.tsx            — Root component & UI Shell
 types.ts           — Shared TypeScript interfaces & enums
-constants.ts       — App-wide constants
-App.tsx            — Root component & state
+constants.ts       — App-wide constants & command examples
 ```
 
 ---
@@ -38,11 +39,11 @@ App.tsx            — Root component & state
    }
    ```
 
-2. **Handle the action** in `App.tsx` inside `handleCommandResult()`:
+2. **Handle the action** in `hooks/useAssistant.ts` inside `handleCommandResult()`:
 
    ```typescript
    else if (result.actionType === 'YOUR_ACTION_TYPE') {
-     // update state, show widget, etc.
+     // update state, show widget, trigger service, etc.
    }
    ```
 

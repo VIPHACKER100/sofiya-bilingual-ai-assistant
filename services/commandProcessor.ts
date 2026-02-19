@@ -24,7 +24,7 @@ const HINDI_STRONG_WORDS = new Set([
   'kam', 'karein', 'karen', 'dijiye', 'lijiye', 'banao', 'jodo', 'dhundo', 'khojo',
   'kya', 'kyu', 'kyun', 'kab', 'kahan', 'kaise', 'kaun', 'kitna', 'kitne', 'kisne', 'kaunsa',
   'namaste', 'shukriya', 'dhanyavad', 'swagat', 'bajao', 'sunao', 'chala', 'mute', 'chup',
-  'tez', 'dheere', 'zyada', 'kam', 'bolo', 'bata', 'de', 'dikha'
+  'tez', 'dheere', 'zyada', 'kam', 'bolo', 'bata', 'de', 'dikha', 'shubh', 'ratri', 'sawera'
 ]);
 
 // Common Hindi Words (nouns, pronouns, particles)
@@ -39,7 +39,7 @@ const HINDI_COMMON_WORDS = new Set([
   'thoda', 'bas', 'bilkul', 'haan', 'nahi', 'mat', 'theek', 'sahi', 'galat',
   'sandesh', 'gaana', 'sangeet', 'samachar', 'mausam', 'samay', 'tarikh', 'waqt',
   'awaaz', 'bolna', 'lao', 'kuch', 'sab', 'sara', 'bahut', 'bilkul', 'seedha',
-  'khush', 'dukh', 'bata', 'chhod', 'chalo', 'taiyar', 'kaam', 'sona', 'uthna'
+  'khush', 'dukh', 'bata', 'chhod', 'chalo', 'taiyar', 'kaam', 'sona', 'uthna', 'shubh', 'subah'
 ]);
 
 // Strong English Indicators: Function words unique to English grammar
@@ -256,6 +256,26 @@ export const processTranscript = async (
     return createResponse('PERSONALITY_CHANGE', isHindi ? "सोफिया को रीसेट कर रही हूँ।" : "Restoring default settings.", { mode: PersonalityMode.DEFAULT });
   }
 
+  // ── Routines ─────────────────────────────────────────────────────────────
+  if (lowerText.match(/\b(good morning|shubh prabhat|suprabhat|subah ho gayi)\b/)) {
+    return createResponse(
+      'ROUTINE_MORNING',
+      isHindi
+        ? "सुप्रभात! मैं आपके लिए आज का समाचार और मौसम की जानकारी तैयार कर रही हूँ।"
+        : "Good morning! I'm preparing your briefing: weather, news, and today's schedule."
+    );
+  }
+
+  if (lowerText.match(/\b(good night|shubh ratri|so raha hoon|bedtime|goodnight)\b/)) {
+    return createResponse(
+      'ROUTINE_NIGHT',
+      isHindi
+        ? "शुभ रात्रि। मैं लाइट्स बंद कर रही हूँ और फोकस मोड सक्रिय कर रही हूँ। आराम कीजिये।"
+        : "Good night. Turning off lights, stopping media, and engaging focus mode. Sleep well.",
+      { scene: 'sleep' }
+    );
+  }
+
   // ── System Status / Greeting ─────────────────────────────────────────────
   if (
     lowerText.match(/\b(status|report|system|online|alive|how are you|kaisi ho|kaisi hain)\b/) ||
@@ -285,6 +305,7 @@ export const processTranscript = async (
       { time: timeStr, date: dateStr }
     );
   }
+
 
   // ── Volume Control ───────────────────────────────────────────────────────
   if (lowerText.match(/\b(volume|awaaz|sound)\b/)) {
