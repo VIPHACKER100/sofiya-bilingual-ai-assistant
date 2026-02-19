@@ -1,47 +1,10 @@
 {
   "name": "sofiya-bilingual-ai-assistant",
-  "description": "SOFIYA — A futuristic, voice-controlled bilingual AI assistant supporting English & Hindi commands.",
-  "version": "4.3.0",
   "private": true,
-  "type": "module",
-  "author": "VIPHACKER100",
-  "license": "MIT",
-  "homepage": "https://github.com/VIPHACKER100/sofiya-bilingual-ai-assistant",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/VIPHACKER100/sofiya-bilingual-ai-assistant.git"
-  },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc --noEmit && vite build",
-    "preview": "vite preview",
-    "typecheck": "tsc --noEmit",
-    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
-    "format": "prettier --write .",
-    "test": "vitest",
-    "test:ui": "vitest --ui",
-    "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
-  },
-  "dependencies": {
-    "framer-motion": "^12.34.2",
-    "lucide-react": "^0.575.0",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4"
-  },
-  "devDependencies": {
-    "@playwright/test": "^1.45.0",
-    "@types/node": "^22.14.0",
-    "@typescript-eslint/eslint-plugin": "^5.61.0",
-    "@typescript-eslint/parser": "^5.61.0",
-    "@vitejs/plugin-react": "^5.0.0",
-    "eslint": "^8.56.0",
-    "eslint-plugin-react": "^7.22.0",
-    "typescript": "~5.8.2",
-    "vite": "^6.2.0",
-    "vitest": "^4.0.18"
-  },
-  "engines": {
-    "node": ">=18"
+    "test:backend": "node --test tests/*.test.js tests/integration/*.test.js",
+    "test:frontend": "cd frontend && npm test",
+    "test:e2e": "cd frontend && npm run test:e2e",
+    "test:load": "node tests/load/api-load.test.js"
   }
 }

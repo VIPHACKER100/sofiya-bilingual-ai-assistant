@@ -1,0 +1,25 @@
+{
+  "name": "sofiya-voice-engine",
+  "version": "1.0.0",
+  "description": "SOFIYA Voice Processing Engine",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "keywords": ["sofiya", "voice", "nlp", "speech"],
+  "author": "VIPHACKER100",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "@google-cloud/speech": "^6.0.0",
+    "@picovoice/porcupine-node": "^3.0.0",
+    "redis": "^4.6.12",
+    "natural": "^6.10.0",
+    "sentiment": "^5.0.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

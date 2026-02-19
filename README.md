@@ -19,7 +19,7 @@
 
 **SOFIYA** (Smart Omnilingual Framework for Intelligent Yet Approachable AI) is a futuristic, voice-controlled browser assistant that recognises and responds to commands in **English, Hindi, and Hinglish** — with personality, style, and precision.
 
-Built with React 19, TypeScript, and the Web Speech API, SOFIYA runs entirely in the browser with zero backend required. An optional **OpenRouter** integration enables full conversational AI responses via state-of-the-art LLMs.
+Built with React 19, TypeScript, and the Web Speech API, SOFIYA runs in the browser with optional backend services. An **OpenRouter** integration enables full conversational AI responses. The full-stack setup adds voice NLP, smart home, calendar, health integrations, and more.
 
 ---
 
@@ -112,21 +112,41 @@ Built with React 19, TypeScript, and the Web Speech API, SOFIYA runs entirely in
 - A modern Chromium browser (for Web Speech API support)
 - An [OpenRouter](https://openrouter.ai) API key (optional, for AI responses)
 
-### Setup
+### Frontend Only (browser + OpenRouter)
 
 ```bash
-# 1. Install dependencies
+cd frontend
 npm install
-
-# 2. Configure environment
-cp .env.example .env.local
-# Edit .env.local and add your API key
-
-# 3. Start development server
+cp .env.example .env.local   # Add VITE_OPENROUTER_API_KEY
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in Chrome.
+
+### Full Stack (backend + voice-engine + frontend)
+
+```bash
+# 1. Install all dependencies
+cd backend && npm install
+cd ../voice-engine && npm install
+cd ../frontend && npm install
+
+# 2. Configure environment
+cp backend/.env.example backend/.env
+cp voice-engine/.env.example voice-engine/.env
+# Edit .env files with your credentials
+
+# 3. Start services (3 terminals)
+cd backend && npm run dev        # Port 3001
+cd voice-engine && npm run dev   # Voice NLP
+cd frontend && npm run dev       # Port 3000 (proxies /api to backend)
+```
+
+### Docker (recommended for production)
+
+```bash
+docker compose -f deployment/docker-compose.yml up
+```
 
 > ⚠️ The Web Speech API is only supported in Chromium-based browsers (Chrome, Edge). Firefox and Safari have limited or no support.
 
@@ -179,24 +199,24 @@ sofiya-bilingual-ai-assistant/
 └── index.html                    # Entry point with Tailwind CDN
 ```
 
-See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed system design.
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed system design. For the full implementation status (17 phases), see [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
 
 ---
 
 ## 🧪 Testing
 
 ```bash
-# Run unit tests
-npm run test
+# Frontend unit tests
+cd frontend && npm test
 
-# Run unit tests with UI
-npm run test:ui
+# Backend + voice-engine tests (from project root)
+npm run test:backend
 
-# Run E2E tests
+# E2E tests
 npm run test:e2e
 
-# Run E2E tests with UI
-npm run test:e2e:ui
+# Load test (requires backend running on :3001)
+npm run test:load
 ```
 
 ---
@@ -204,14 +224,20 @@ npm run test:e2e:ui
 ## 📦 Build & Deploy
 
 ```bash
-# Production build
-npm run build
+# Frontend production build
+cd frontend && npm run build
 
 # Preview production build locally
-npm run preview
+cd frontend && npm run preview
 ```
 
-Output is in `dist/`. Deploy to Vercel, Netlify, or any static host.
+Output is in `frontend/dist/`. For full-stack deployment, use Docker:
+
+```bash
+./deployment/deploy-staging.sh   # or deploy-production.sh
+```
+
+See [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) for the complete feature list and [deployment/](deployment/) for Docker and Kubernetes configs.
 
 ---
 

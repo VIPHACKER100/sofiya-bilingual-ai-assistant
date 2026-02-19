@@ -1,0 +1,12 @@
+# SOFIYA Backend - Kubernetes Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: sofiya-backend
+spec:
+  selector:
+    app: sofiya-backend
+  ports:
+    - port: 80
+      targetPort: 3001
+  type: LoadBalancer

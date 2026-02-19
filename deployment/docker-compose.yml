@@ -1,0 +1,61 @@
+# SOFIYA - Local development stack
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+    env_file:
+      - ../backend/.env
+    depends_on:
+      - postgres
+      - redis
+
+  voice-engine:
+    build:
+      context: ../voice-engine
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=development
+    env_file:
+      - ../voice-engine/.env
+    depends_on:
+      - redis
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: sofiya
+      POSTGRES_PASSWORD: sofiya
+      POSTGRES_DB: sofiya
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ../database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  postgres_data:
+  redis_data:

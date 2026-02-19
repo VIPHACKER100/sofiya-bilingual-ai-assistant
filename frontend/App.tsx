@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Settings, Shield, Globe, Terminal, Sparkles, MessageSquareWarning,
   Mic, MicOff, Volume2, VolumeX, Sun, Moon, Plus, List, X,
-  Play, Pause, SkipForward, Home, Zap
+  Play, Pause, SkipForward, Home, Zap, HelpCircle
 } from 'lucide-react';
 import { ArcReactor } from './components/ArcReactor';
 import { HistoryLog } from './components/HistoryLog';
@@ -27,6 +27,8 @@ import { CommunicationWidget } from './components/CommunicationWidget';
 import { MediaWidget } from './components/MediaWidget';
 import { StatusBadges } from './components/StatusBadges';
 import { FeedbackModal } from './components/FeedbackModal';
+import { HelpCenter } from './components/HelpCenter';
+import { ReportIssueModal } from './components/ReportIssueModal';
 import { AppMode, Language } from './types';
 import { soundService } from './services/soundService';
 import { TRY_COMMANDS } from './constants';
@@ -243,6 +245,13 @@ const App: React.FC = () => {
               </button>
 
               <button
+                onClick={() => { soundService.playUIClick(); assistant.setShowHelp(true); }}
+                title="Help"
+                className="p-2 rounded-xl bg-white/5 border border-white/10 text-slate-500 hover:text-white hover:bg-white/10 transition-all active:scale-95"
+              >
+                <HelpCircle className="w-5 h-5" />
+              </button>
+              <button
                 onClick={() => { soundService.playUIClick(); assistant.setShowFeedback(true); }}
                 title="Feedback"
                 className="p-2 rounded-xl bg-red-500/5 border border-red-500/20 text-red-500/60 hover:text-red-500 hover:bg-red-500/10 transition-all active:scale-95"
@@ -386,6 +395,8 @@ const App: React.FC = () => {
         {assistant.showComm && assistant.commData && <CommunicationWidget data={assistant.commData} isVisible={assistant.showComm} language={assistant.language === Language.HINDI ? 'hi' : 'en'} onClose={() => assistant.setShowComm(false)} />}
         {assistant.activeTimer && <TimerWidget duration={assistant.activeTimer.duration} label={assistant.activeTimer.label} onComplete={() => assistant.setActiveTimer(null)} onCancel={() => assistant.setActiveTimer(null)} />}
         {assistant.showFeedback && <FeedbackModal isOpen={assistant.showFeedback} onClose={() => assistant.setShowFeedback(false)} language={assistant.language === Language.HINDI ? 'hi' : 'en'} accentColor={currentProtocol.primary} />}
+        {assistant.showHelp && <HelpCenter isOpen={assistant.showHelp} onClose={() => assistant.setShowHelp(false)} language={assistant.language === Language.HINDI ? 'hi' : 'en'} accentColor={currentProtocol.primary} onReportIssue={() => assistant.setShowReportIssue(true)} />}
+        {assistant.showReportIssue && <ReportIssueModal isOpen={assistant.showReportIssue} onClose={() => assistant.setShowReportIssue(false)} language={assistant.language === Language.HINDI ? 'hi' : 'en'} accentColor={currentProtocol.primary} />}
       </AnimatePresence>
 
       {/* Command Flow Marquee */}

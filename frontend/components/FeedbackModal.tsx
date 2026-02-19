@@ -1,8 +1,17 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, CheckCircle2, MessageSquare, AlertCircle, Loader2 } from 'lucide-react';
+import { X, Send, CheckCircle2, MessageSquare, AlertCircle, Loader2, Star, Lightbulb } from 'lucide-react';
 import { soundService } from '../services/soundService';
+
+const FEATURES = [
+  { id: 'voice', labelEn: 'Voice Commands', labelHi: 'वॉयस कमांड' },
+  { id: 'smart_home', labelEn: 'Smart Home', labelHi: 'स्मार्ट होम' },
+  { id: 'reminders', labelEn: 'Reminders', labelHi: 'अनुस्मारक' },
+  { id: 'health', labelEn: 'Health & Wellness', labelHi: 'स्वास्थ्य' },
+  { id: 'news', labelEn: 'News & Info', labelHi: 'समाचार' },
+  { id: 'general', labelEn: 'General Experience', labelHi: 'सामान्य अनुभव' }
+];
 
 interface FeedbackModalProps {
     isOpen: boolean;
@@ -25,6 +34,9 @@ const getAccentClass = (hex: string) => {
 
 export const FeedbackModal = React.memo(({ isOpen, onClose, language, accentColor }: FeedbackModalProps) => {
     const [feedback, setFeedback] = useState('');
+    const [feature, setFeature] = useState('general');
+    const [rating, setRating] = useState<number | null>(null);
+    const [isFeatureRequest, setIsFeatureRequest] = useState(false);
     const [status, setStatus] = useState<'idle' | 'sending' | 'sent'>('idle');
 
     if (!isOpen) return null;
@@ -34,17 +46,44 @@ export const FeedbackModal = React.memo(({ isOpen, onClose, language, accentColo
         soundService.playUIClick();
         setStatus('sending');
 
-        // Simulate network delay
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        const apiBase = import.meta.env.VITE_API_URL || '';
+        const payload = { feature, rating, feedback: feedback.trim(), isFeatureRequest };
+        try {
+            const res = await fetch(`${apiBase}/api/feedback`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (!res.ok) throw new Error('Failed to submit');
+        } catch {
+            // Fallback: still show success for UX
+        }
 
+        await new Promise(resolve => setTimeout(resolve, 800));
         soundService.playUIConfirm();
         setStatus('sent');
 
         setTimeout(() => {
             setStatus('idle');
             setFeedback('');
+            setRating(null);
+            setFeature('general');
+            setIsFeatureRequest(false);
             onClose();
         }, 2500);
+    };
+
+    const handleQuickRate = async (stars: number) => {
+        soundService.playUIClick();
+        setRating(stars);
+        const apiBase = import.meta.env.VITE_API_URL || '';
+        try {
+            await fetch(`${apiBase}/api/feedback/rate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ feature, rating: stars })
+            });
+        } catch { /* ignore */ }
     };
 
     const accentClass = getAccentClass(accentColor);
@@ -114,6 +153,54 @@ export const FeedbackModal = React.memo(({ isOpen, onClose, language, accentColo
 
                             <form onSubmit={handleSubmit} className="space-y-10">
                                 <div className="space-y-4">
+                                    <label className="text-[10px] font-black font-mono text-slate-500 uppercase tracking-[0.3em]">
+                                        {language === 'hi' ? 'फीचर चुनें' : 'FEATURE'}
+                                    </label>
+                                    <select
+                                        value={feature}
+                                        onChange={(e) => setFeature(e.target.value)}
+                                        className="w-full bg-black/60 border border-white/5 rounded-xl p-3 text-white font-mono text-sm focus:outline-none focus:border-white/20"
+                                    >
+                                        {FEATURES.map((f) => (
+                                            <option key={f.id} value={f.id}>{language === 'hi' ? f.labelHi : f.labelEn}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black font-mono text-slate-500 uppercase tracking-[0.3em] flex items-center gap-2">
+                                        <Star className="w-3.5 h-3.5" />
+                                        {language === 'hi' ? 'रेटिंग (1-5)' : 'RATE_THIS_FEATURE'}
+                                    </label>
+                                    <div className="flex gap-2">
+                                        {[1, 2, 3, 4, 5].map((s) => (
+                                            <button
+                                                key={s}
+                                                type="button"
+                                                onClick={() => handleQuickRate(s)}
+                                                className={`p-2 rounded-lg transition-all ${rating === s ? 'opacity-100 scale-110' : 'opacity-40 hover:opacity-70'}`}
+                                                style={{ color: rating === s ? accentColor : undefined }}
+                                            >
+                                                <Star className={`w-6 h-6 ${rating === s ? 'fill-current' : ''}`} />
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <label className="flex items-center gap-3 cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        checked={isFeatureRequest}
+                                        onChange={(e) => setIsFeatureRequest(e.target.checked)}
+                                        className="rounded border-white/20"
+                                    />
+                                    <span className="text-sm flex items-center gap-2">
+                                        <Lightbulb className="w-4 h-4" style={{ color: accentColor }} />
+                                        {language === 'hi' ? 'यह एक फीचर अनुरोध है' : 'This is a feature request'}
+                                    </span>
+                                </label>
+
+                                <div className="space-y-4">
                                     <div className="flex justify-between items-center px-1">
                                         <label className="text-[10px] font-black font-mono text-slate-500 uppercase tracking-[0.3em] flex items-center gap-2">
                                             <AlertCircle className="w-3.5 h-3.5" />
@@ -139,7 +226,7 @@ export const FeedbackModal = React.memo(({ isOpen, onClose, language, accentColo
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
                                     type="submit"
-                                    disabled={status === 'sending' || !feedback.trim()}
+                                    disabled={status === 'sending' || (!feedback.trim() && !rating)}
                                     className={`w-full py-6 accent-bg ${accentClass} text-white font-black uppercase tracking-[0.4em] text-[11px] rounded-[1.5rem] transition-all shadow-[0_20px_40px_rgba(0,0,0,0.4)] flex items-center justify-center gap-4 group disabled:opacity-50 disabled:grayscale`}
                                 >
                                     {status === 'sending' ? (

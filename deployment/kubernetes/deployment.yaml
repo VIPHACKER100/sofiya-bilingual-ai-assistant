@@ -1,0 +1,38 @@
+# SOFIYA Backend - Kubernetes Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sofiya-backend
+  labels:
+    app: sofiya-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sofiya-backend
+  template:
+    metadata:
+      labels:
+        app: sofiya-backend
+    spec:
+      containers:
+        - name: backend
+          image: sofiya-backend:latest
+          ports:
+            - containerPort: 3001
+          envFrom:
+            - secretRef:
+                name: sofiya-secrets
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3001
+            initialDelaySeconds: 30
+            periodSeconds: 10

@@ -53,6 +53,8 @@ export const useAssistant = () => {
     const [showSentryMode, setShowSentryMode] = useState(false);
     const [showMindfulness, setShowMindfulness] = useState(false);
     const [showFeedback, setShowFeedback] = useState(false);
+    const [showHelp, setShowHelp] = useState(false);
+    const [showReportIssue, setShowReportIssue] = useState(false);
 
     const processingRef = useRef(false);
     const isActiveRef = useRef(false);
@@ -330,6 +332,8 @@ export const useAssistant = () => {
         showSentryMode, setShowSentryMode,
         showMindfulness, setShowMindfulness,
         showFeedback, setShowFeedback,
+        showHelp, setShowHelp,
+        showReportIssue, setShowReportIssue,
         toggleActivation, executeCommand,
         addToHistory,
         fetchWeather, fetchNews
