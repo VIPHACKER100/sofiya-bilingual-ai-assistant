@@ -1,5 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { MessageSquare, Phone, X, Send, PhoneOff, ShieldCheck, User } from 'lucide-react';
 import { CommunicationData } from '../types';
 import { soundService } from '../services/soundService';
 
@@ -10,7 +12,7 @@ interface CommunicationWidgetProps {
   onClose: () => void;
 }
 
-export const CommunicationWidget: React.FC<CommunicationWidgetProps> = ({ data, isVisible, language, onClose }) => {
+export const CommunicationWidget = React.memo(({ data, isVisible, language, onClose }: CommunicationWidgetProps) => {
   const [status, setStatus] = useState(data.status);
   const [typedContent, setTypedContent] = useState('');
 
@@ -23,7 +25,7 @@ export const CommunicationWidget: React.FC<CommunicationWidgetProps> = ({ data, 
       const interval = setInterval(() => {
         if (idx < (content.length || 0)) {
           setTypedContent(prev => prev + (content[idx] || ''));
-          soundService.playTextType();
+          soundService.playUIClick(); // Using UIClick for tactile feedback
           idx++;
         } else {
           clearInterval(interval);
@@ -51,100 +53,152 @@ export const CommunicationWidget: React.FC<CommunicationWidgetProps> = ({ data, 
     setTimeout(onClose, 1000);
   };
 
+  const getAccentClass = (s: string) => {
+    return s === 'calling' || s === 'ended' ? 'accent-emerald' : 'accent-cyan';
+  };
+
   if (!isVisible) return null;
 
+  const accentClass = getAccentClass(status);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md animate-in fade-in duration-500">
-      <div className={`glass-panel w-full max-w-md rounded-2xl overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)] border-2 transition-colors duration-500 relative ${status === 'calling' ? 'accent-border accent-emerald' : 'accent-border accent-cyan'}`}>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+        className="absolute inset-0 bg-black/90 backdrop-blur-xl"
+      />
 
-        {/* Cinematic Overlays */}
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.9, opacity: 0, y: 20 }}
+        className={`relative w-full max-w-lg glass-panel rounded-[2rem] overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.8)] border-b-2 accent-border ${accentClass} z-10`}
+      >
         <div className="scanline opacity-10"></div>
-        <div className="vignette"></div>
 
-        {/* Header */}
-        <div className="bg-white/5 p-5 flex justify-between items-center relative z-10">
-          <div className="flex items-center gap-4">
-            <div className="relative">
-              <div className="w-14 h-14 rounded-full bg-slate-900 flex items-center justify-center text-white font-bold border border-white/10 shadow-inner group overflow-hidden">
-                <div className={`absolute inset-0 accent-bg opacity-20 ${status === 'calling' ? 'accent-emerald animate-pulse' : 'accent-cyan'}`}></div>
-                <span className="relative z-10 text-xl font-mono">{data.contact.charAt(0).toUpperCase()}</span>
+        {/* Header Section */}
+        <div className="p-8 pb-4 flex items-center justify-between relative z-10">
+          <div className="flex items-center gap-5">
+            <div className="relative group">
+              <div className={`w-16 h-16 rounded-3xl bg-slate-900/50 flex items-center justify-center border border-white/10 shadow-inner overflow-hidden relative transition-all duration-500 group-hover:scale-105 group-hover:rotate-3`}>
+                <div className={`absolute inset-0 accent-bg opacity-10 ${accentClass} ${status === 'calling' ? 'animate-pulse' : ''}`}></div>
+                <User className="w-8 h-8 text-white/50 relative z-10" />
               </div>
-              {status === 'calling' && <div className="absolute -bottom-1 -right-1 w-4 h-4 accent-bg accent-emerald rounded-full border-2 border-black animate-bounce"></div>}
+              {status === 'calling' && (
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                  className="absolute -top-1 -right-1 w-4 h-4 accent-bg accent-emerald rounded-full border-2 border-black"
+                ></motion.div>
+              )}
             </div>
             <div>
-              <div className="text-white font-bold tracking-widest text-lg uppercase font-mono">{data.contact}</div>
-              <div className={`text-[10px] uppercase tracking-[0.3em] font-mono flex items-center gap-2 ${status === 'calling' ? 'accent-text accent-emerald' : 'accent-text accent-cyan'}`}>
-                <span className={`w-1.5 h-1.5 rounded-full accent-bg ${status === 'calling' || status === 'sending' ? 'animate-ping' : 'opacity-40'}`}></span>
-                {data.type === 'message' ? (language === 'hi' ? 'एनक्रिप्टेड संदेश' : 'ENCRYPTED_MSG') : (language === 'hi' ? 'वॉयस लिंक' : 'VOICE_UPLINK')}
+              <h2 className="text-white text-2xl font-black tracking-tight uppercase leading-none mb-1">{data.contact}</h2>
+              <div className={`flex items-center gap-2 text-[9px] font-mono font-bold tracking-[0.3em] uppercase opacity-60 ${accentClass === 'accent-emerald' ? 'text-emerald-400' : 'text-cyan-400'}`}>
+                <ShieldCheck className="w-3 h-3" />
+                {data.type === 'message' ? (language === 'hi' ? 'एनक्रिप्टेड डेटा' : 'SECURE_DRAFT') : (language === 'hi' ? 'वॉयस स्ट्रीम' : 'ENCRYPTED_VOICE')}
               </div>
             </div>
           </div>
+          <button onClick={onClose} className="p-2 text-slate-500 hover:text-white transition-all hover:bg-white/5 rounded-full" title="Close Panel">
+            <X className="w-6 h-6" />
+          </button>
         </div>
 
         {/* Content Body */}
-        <div className="p-10 min-h-[220px] flex flex-col justify-center relative bg-black/40 border-y border-white/5">
-          {/* Grid bg */}
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+        <div className="p-10 min-h-[300px] flex flex-col justify-center relative bg-black/40 border-y border-white/5 mx-6 rounded-[2rem] my-4 overflow-hidden shadow-inner">
+          <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
 
-          {data.type === 'message' ? (
-            <div className="relative z-10">
-              <div className="text-cyan-100 font-mono text-xl leading-relaxed border-l-4 accent-border accent-cyan pl-6 py-4 bg-gradient-to-r from-cyan-950/20 to-transparent italic">
-                "{typedContent}<span className="animate-pulse w-2 h-6 inline-block accent-bg accent-cyan align-middle ml-1"></span>"
-              </div>
-            </div>
-          ) : (
-            <div className="relative z-10 flex flex-col items-center gap-8">
-              {/* Sound wave visualizer for call */}
-              <div className="flex items-center gap-1.5 h-16">
-                {[...Array(15)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="w-1.5 accent-bg accent-emerald opacity-80 rounded-full transition-all duration-300"
-                    style={{
-                      height: status === 'calling' ? `${20 + Math.random() * 80}%` : '15%'
-                    }}
-                  ></div>
-                ))}
-              </div>
-              <div className="accent-text accent-emerald text-[10px] animate-pulse tracking-[0.5em] font-mono uppercase">
-                {status === 'calling' ? (language === 'hi' ? 'कनेक्ट हो रहा है...' : 'ESTABLISHING_LINK...') : (language === 'hi' ? 'लिंक सक्रिय' : 'LINK_SECURED')}
-              </div>
-            </div>
-          )}
+          <AnimatePresence mode="wait">
+            {data.type === 'message' ? (
+              <motion.div
+                key="message"
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                className="relative z-10"
+              >
+                <div className={`text-white font-mono text-xl leading-relaxed pl-8 py-6 border-l-4 accent-border ${accentClass} bg-gradient-to-r from-cyan-950/20 to-transparent italic rounded-r-2xl`}>
+                  <span className="opacity-40">{"// "}</span>
+                  {typedContent}
+                  <motion.span
+                    animate={{ opacity: [0, 1, 0] }}
+                    transition={{ duration: 0.8, repeat: Infinity }}
+                    className={`inline-block w-2.5 h-6 accent-bg ${accentClass} align-middle ml-2 shadow-[0_0_10px_rgba(255,255,255,0.5)]`}
+                  ></motion.span>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="call"
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                className="relative z-10 flex flex-col items-center gap-10"
+              >
+                <div className="flex items-center gap-2 h-24">
+                  {[...Array(20)].map((_, i) => (
+                    <motion.div
+                      key={i}
+                      animate={{
+                        height: status === 'calling' ? `${20 + Math.random() * 80}%` : '4px',
+                        opacity: status === 'calling' ? 1 : 0.2
+                      }}
+                      transition={{ duration: 0.3 }}
+                      className={`w-1 accent-bg ${accentClass} rounded-full shadow-[0_0_15px_rgba(16,185,129,0.3)]`}
+                    ></motion.div>
+                  ))}
+                </div>
+                <div className={`text-[10px] font-mono font-black tracking-[0.5em] uppercase text-center ${status === 'calling' ? 'text-emerald-400 animate-pulse' : 'text-slate-500'}`}>
+                  {status === 'calling' ? (language === 'hi' ? 'कनेक्ट हो रहा है...' : 'SECURE_LINK_PENDING...') : (language === 'hi' ? 'लिंक समाप्त' : 'UPLINK_TERMINATED')}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Footer Actions */}
-        <div className="p-6 flex gap-4 relative z-10 bg-black/20">
+        <div className="p-8 flex gap-5 relative z-10 bg-black/20">
           <button
             onClick={onClose}
-            title="Abort Session"
-            className="flex-1 py-3 rounded-xl hover:bg-white/5 text-slate-500 hover:text-white transition-all uppercase font-mono text-[10px] tracking-[0.3em] border border-white/5"
+            title="Abort Operation"
+            className="flex-1 py-4 rounded-2xl bg-white/5 hover:bg-red-500/10 text-slate-500 hover:text-red-500 transition-all font-black text-[11px] tracking-[0.3em] uppercase border border-white/5 active:scale-95 flex items-center justify-center gap-2"
           >
-            {language === 'hi' ? 'रद्द करें' : 'ABORT'}
+            <X className="w-4 h-4" />
+            {language === 'hi' ? 'रद्द' : 'ABORT'}
           </button>
 
-          {data.type === 'message' && status === 'draft' && (
-            <button
-              onClick={handleSend}
-              title="Transmit Message"
-              className="flex-1 py-3 rounded-xl accent-bg accent-cyan text-black font-extrabold uppercase font-mono text-[10px] tracking-[0.3em] shadow-[0_0_30px_rgba(6,182,212,0.3)] transition-all hover:scale-105 active:scale-95"
-            >
-              {language === 'hi' ? 'भेजें' : 'TRANSMIT'}
-            </button>
-          )}
+          <AnimatePresence>
+            {data.type === 'message' && status === 'draft' && (
+              <motion.button
+                key="send"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                onClick={handleSend}
+                title="Ship Data"
+                className={`flex-[2] py-4 rounded-2xl accent-bg ${accentClass} text-black font-black text-[11px] tracking-[0.3em] uppercase shadow-[0_0_40px_rgba(6,182,212,0.3)] hover:scale-[1.03] active:scale-95 transition-all flex items-center justify-center gap-2`}
+              >
+                <Send className="w-4 h-4" />
+                {language === 'hi' ? 'ट्रांसमिट' : 'TRANSMIT'}
+              </motion.button>
+            )}
 
-          {data.type === 'call' && status !== 'ended' && (
-            <button
-              onClick={handleCallEnd}
-              title="Terminate Call"
-              className="flex-1 py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white font-extrabold uppercase font-mono text-[10px] tracking-[0.3em] shadow-[0_0_30px_rgba(239,68,68,0.3)] transition-all hover:scale-105 active:scale-95"
-            >
-              {language === 'hi' ? 'काटें' : 'TERMINATE'}
-            </button>
-          )}
+            {data.type === 'call' && status !== 'ended' && (
+              <motion.button
+                key="call-off"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                onClick={handleCallEnd}
+                title="Cut Uplink"
+                className="flex-[2] py-4 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-black text-[11px] tracking-[0.3em] uppercase shadow-[0_0_40px_rgba(239,68,68,0.3)] hover:scale-[1.03] active:scale-95 transition-all flex items-center justify-center gap-2"
+              >
+                <PhoneOff className="w-4 h-4" />
+                {language === 'hi' ? 'डिस्कनेक्ट' : 'TERMINATE'}
+              </motion.button>
+            )}
+          </AnimatePresence>
         </div>
-
-      </div>
+      </motion.div>
     </div>
   );
-};
+});

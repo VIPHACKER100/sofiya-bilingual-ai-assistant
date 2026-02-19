@@ -173,6 +173,67 @@ body {
     background: rgba(255, 255, 255, 0.2);
 }
 
+
 .custom-scrollbar::-webkit-scrollbar {
     width: 3px;
+}
+
+/* Advanced Atmospheric Effects */
+@keyframes grid-drift {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: 40px 40px;
+    }
+}
+
+.animate-grid-drift {
+    animation: grid-drift 4s linear infinite;
+}
+
+.text-gradient {
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    background-image: linear-gradient(to right, white, rgba(255, 255, 255, 0.4));
+}
+
+.cyber-border {
+    position: relative;
+}
+
+.cyber-border::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    border-right: 2px solid var(--widget-accent);
+    border-bottom: 2px solid var(--widget-accent);
+    opacity: 0.5;
+}
+
+.grid-hud {
+    background-image: linear-gradient(rgba(255, 255, 255, .05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .05) 1px, transparent 1px);
+    background-size: 100px 100px;
+}
+
+.radial-dots {
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 30px 30px;
+}
+
+.cyber-border::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    border-left: 2px solid var(--widget-accent);
+    border-top: 2px solid var(--widget-accent);
+    opacity: 0.5;
 }

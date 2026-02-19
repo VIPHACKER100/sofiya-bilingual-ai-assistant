@@ -1,118 +1,100 @@
 
-import React, { useState, useEffect, useRef } from 'react';
-import { soundService } from '../services/soundService';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-interface BootSequenceProps {
-  onComplete: () => void;
-  language: 'en' | 'hi';
-}
+export const BootSequence: React.FC<{ onComplete: () => void; language: 'en' | 'hi' }> = ({ onComplete, language }) => {
+  const [progress, setProgress] = useState(0);
+  const [step, setStep] = useState(0);
 
-export const BootSequence: React.FC<BootSequenceProps> = ({ onComplete, language }) => {
-  const [lines, setLines] = useState<string[]>([]);
-  const bottomRef = useRef<HTMLDivElement>(null);
-
-  const sequenceEn = [
-    "INITIALIZING SOFIYA_v4.3_LIFESTYLE_OS...",
-    "ESTABLISHING NEURAL_LINK...",
-    "SYNCING BIOMETRICS...",
-    "LOADING USER_PREFERENCES...",
-    "CONNECTING TO SMART_HOME_GRID...",
-    "CALIBRATING NLP_ENGINE_v4...",
-    "ENCRYPTING SECURE_CHANNEL...",
-    "BUFFERING GLOBAL_DATA_STREAMS...",
-    "OPTIMIZING EMOTIONAL_SYNAPSES...",
-    "SYSTEM_CHECK: 100%_OPERATIONAL",
-    "HELLO ADMINISTRATOR. I AM READY."
-  ];
-
-  const sequenceHi = [
-    "सोफिया_v4.3_ओएस शुरू हो रहा है...",
+  const steps = language === 'hi' ? [
+    "बायोमेट्रिक स्कैनिंग सक्रिय...",
     "न्यूरल लिंक स्थापित किया जा रहा है...",
-    "बायोमेट्रिक्स सिंक हो रहे हैं...",
-    "उपयोगकर्ता प्राथमिकताएँ लोड हो रही हैं...",
-    "स्मार्ट होम ग्रिड से कनेक्ट किया जा रहा है...",
-    "प्राकृतिक भाषा इंजन कैलिब्रेशन...",
-    "सुरक्षित कनेक्शन एन्क्रिप्टेड...",
-    "डेटा स्ट्रीम डाउनलोड हो रही है...",
-    "सिस्टम जाँच: 100% सक्रिय",
-    "नमस्ते एडमिन। मैं तैयार हूँ।"
+    "भाषा मॉड्यूल लोड हो रहा है (HI-IN)...",
+    "सिस्टम कोर सुरक्षा जाँच...",
+    "सोफिया ऑनलाइन होने के लिए तैयार है।"
+  ] : [
+    "INITIALIZING_BIOMETRIC_SCAN...",
+    "ESTABLISHING_NEURAL_LINK...",
+    "LOADING_LANGUAGE_MODULES (EN-US)...",
+    "VERIFYING_CORE_PROTOCOL_SAFETY...",
+    "SOFIYA_SYSTEM_READY_FOR_UPLINK."
   ];
 
   useEffect(() => {
-    const sequence = language === 'hi' ? sequenceHi : sequenceEn;
-    let currentIndex = 0;
+    const timer = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(timer);
+          setTimeout(onComplete, 1000);
+          return 100;
+        }
+        return prev + 1;
+      });
+    }, 40);
 
-    const startTimeout = setTimeout(() => {
-      soundService.playStartup();
-    }, 100);
+    return () => clearInterval(timer);
+  }, [onComplete]);
 
-    const interval = setInterval(() => {
-      if (currentIndex >= sequence.length) {
-        clearInterval(interval);
-        setTimeout(onComplete, 1200);
-        return;
-      }
-
-      setLines(prev => [...prev, sequence[currentIndex]]);
-      soundService.playTextType();
-      currentIndex++;
-
-      if (bottomRef.current) {
-        bottomRef.current.scrollIntoView({ behavior: 'smooth' });
-      }
-
-    }, 250 + Math.random() * 200);
-
-    return () => {
-      clearTimeout(startTimeout);
-      clearInterval(interval);
-    };
-  }, [language, onComplete]);
+  useEffect(() => {
+    setStep(Math.min(Math.floor(progress / 20), steps.length - 1));
+  }, [progress, steps.length]);
 
   return (
-    <div className="fixed inset-0 z-[100] bg-black font-mono text-sm p-10 flex flex-col justify-end overflow-hidden">
-      {/* Cinematic Overlays */}
-      <div className="scanline opacity-20"></div>
-      <div className="vignette opacity-80"></div>
-
-      {/* Background Matrix Effect (Subtle) */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(139,92,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(139,92,246,0.03)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
-
-      {/* Text Container */}
-      <div className="relative z-10 space-y-3 max-w-4xl animate-in fade-in duration-1000">
-        {lines.map((line, idx) => (
-          <div key={idx} className="flex items-center gap-4 animate-in slide-in-from-left-4 duration-300">
-            <span className="text-violet-900 font-bold shrink-0">{`[${idx.toString().padStart(2, '0')}]`}</span>
-            <span className={idx === lines.length - 1
-              ? "text-white font-black tracking-widest accent-text-glow accent-violet"
-              : "text-violet-500/60 uppercase tracking-tighter"
-            }>
-              {line}
-            </span>
-          </div>
+    <div className="fixed inset-0 bg-black z-[200] flex items-center justify-center font-mono overflow-hidden">
+      {/* Matrix-like Background */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none select-none overflow-hidden text-[8px] text-emerald-500 leading-none flex flex-wrap gap-1">
+        {Array.from({ length: 1000 }).map((_, i) => (
+          <motion.span
+            key={i}
+            animate={{ opacity: [0.1, 1, 0.1] }}
+            transition={{ duration: Math.random() * 3 + 1, repeat: Infinity, delay: Math.random() * 2 }}
+          >
+            {Math.random() > 0.5 ? '1' : '0'}
+          </motion.span>
         ))}
-        <div ref={bottomRef} className="h-4" />
       </div>
 
-      {/* Cinematic Loading Progress */}
-      <div className="absolute bottom-12 left-10 right-10 max-w-5xl h-[1px] bg-white/5 overflow-hidden">
-        <div
-          className="h-full bg-violet-500 accent-glow accent-violet transition-all duration-500 ease-out"
-          style={{ width: `${(lines.length / (language === 'hi' ? sequenceHi.length : sequenceEn.length)) * 100}%` }}
-        ></div>
+      <div className="relative z-10 w-full max-w-sm px-8">
+        <div className="flex flex-col gap-6">
+          <div className="flex items-center justify-between text-[10px] text-emerald-500 tracking-[0.3em] font-black uppercase">
+            <span>System_Boot</span>
+            <span>{progress}%</span>
+          </div>
+
+          {/* Progress Bar with Motion */}
+          <div className="h-1.5 w-full bg-slate-900 rounded-full border border-white/5 p-[1px] overflow-hidden">
+            <motion.div
+              className="h-full bg-emerald-500 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]"
+              animate={{ width: `${progress}%` }}
+              transition={{ ease: "linear", duration: 0.1 }}
+            ></motion.div>
+          </div>
+
+          <div className="h-12 flex flex-col justify-center">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={step}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="text-[10px] text-slate-400 uppercase tracking-widest leading-relaxed text-center"
+              >
+                {steps[step]}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          <div className="flex justify-center gap-1 opacity-20">
+            {[0, 1, 2, 3, 4].map(i => (
+              <div key={i} className={`w-1 h-3 ${i <= step ? 'bg-emerald-500' : 'bg-white/10'}`}></div>
+            ))}
+          </div>
+        </div>
       </div>
 
-      {/* System Brand */}
-      <div className="absolute top-12 left-10 flex items-center gap-3 opacity-30 select-none">
-        <div className="w-1.5 h-1.5 bg-violet-600 rounded-full animate-pulse"></div>
-        <span className="text-[10px] text-violet-400 tracking-[0.5em] uppercase font-bold">SOFIYA_SYSCORP_INIT</span>
-      </div>
-
-      {/* Decorative Brackets */}
-      <div className="absolute top-10 left-10 w-6 h-6 border-t-2 border-l-2 border-violet-900/30"></div>
-      <div className="absolute top-10 right-10 w-6 h-6 border-t-2 border-r-2 border-violet-900/30"></div>
-      <div className="absolute bottom-10 left-10 w-6 h-6 border-b-2 border-l-2 border-violet-900/30"></div>
-      <div className="absolute bottom-10 right-10 w-6 h-6 border-b-2 border-r-2 border-violet-900/30"></div>
+      {/* Cinematic Vignette */}
+      <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_150px_rgba(0,0,0,1)]"></div>
+      <div className="scanline"></div>
     </div>
   );
 };

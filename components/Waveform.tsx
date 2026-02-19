@@ -19,7 +19,7 @@ const getAccentClass = (hex: string) => {
   return map[hex.toLowerCase()] || 'accent-violet';
 };
 
-export const Waveform: React.FC<WaveformProps> = ({ mode, color = '#8b5cf6' }) => {
+export const Waveform = React.memo(({ mode, color = '#8b5cf6' }: WaveformProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const accentClass = getAccentClass(color);
 
@@ -84,4 +84,4 @@ export const Waveform: React.FC<WaveformProps> = ({ mode, color = '#8b5cf6' }) =
       </div>
     </div>
   );
-};
+});

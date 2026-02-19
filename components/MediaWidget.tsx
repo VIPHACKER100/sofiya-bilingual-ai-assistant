@@ -1,5 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Music, SkipBack, SkipForward, Play, Pause, X } from 'lucide-react';
 import { MediaTrack } from '../types';
 
 interface MediaWidgetProps {
@@ -22,7 +24,7 @@ const getAccentClass = (hex: string) => {
   return map[hex.toLowerCase()] || 'accent-violet';
 };
 
-export const MediaWidget: React.FC<MediaWidgetProps> = ({ track, isVisible, language, onClose, onTogglePlay }) => {
+export const MediaWidget: React.FC<MediaWidgetProps> = React.memo(({ track, isVisible, language, onClose, onTogglePlay }) => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -40,76 +42,94 @@ export const MediaWidget: React.FC<MediaWidgetProps> = ({ track, isVisible, lang
   const accentClass = getAccentClass(track.coverColor || '#8b5cf6');
 
   return (
-    <div className={`glass-panel absolute bottom-24 left-4 lg:left-8 w-80 h-36 rounded-2xl overflow-hidden animate-in slide-in-from-left duration-500 z-30 group border-b-2 accent-border ${accentClass}`}>
-      {/* Background Ambience */}
+    <motion.div
+      initial={{ x: -100, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      exit={{ x: -100, opacity: 0 }}
+      className={`glass-panel absolute bottom-24 left-4 lg:left-8 w-80 h-40 rounded-3xl overflow-hidden z-30 group border-b-2 accent-border ${accentClass} shadow-[0_20px_50px_rgba(0,0,0,0.5)]`}
+    >
+      {/* Background Ambience Bloom */}
       <div
-        className="absolute inset-0 opacity-10 transition-colors duration-1000 accent-bg"
-        style={{ '--widget-accent': track.coverColor } as any}
+        className={`absolute inset-0 opacity-5 transition-colors duration-1000 accent-bg ${accentClass}`}
       />
 
-      <div className="relative z-10 p-4 flex gap-4 h-full items-center">
+      <div className="relative z-10 p-5 flex gap-5 h-full items-center">
         {/* Album Art with Spin */}
-        <div
-          className="w-20 h-20 rounded-full shadow-[0_0_20px_rgba(0,0,0,0.5)] flex-shrink-0 flex items-center justify-center relative overflow-hidden border border-white/10 bg-black"
-        >
-          <div
-            className={`absolute inset-0 opacity-40 accent-bg ${accentClass} ${track.isPlaying ? 'animate-[spin_4s_linear_infinite]' : ''}`}
-          ></div>
-          <div className="absolute inset-1 bg-slate-900 rounded-full flex items-center justify-center">
-            <svg className="w-8 h-8 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-            </svg>
-          </div>
+        <div className="relative flex-shrink-0">
+          <motion.div
+            animate={{ rotate: track.isPlaying ? 360 : 0 }}
+            transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+            className={`w-24 h-24 rounded-full shadow-2xl flex items-center justify-center relative overflow-hidden border-2 border-white/5 bg-slate-900 group-hover:scale-110 transition-transform duration-500`}
+          >
+            <div className={`absolute inset-0 opacity-20 accent-bg ${accentClass}`}></div>
+            <div className="absolute inset-2 bg-black rounded-full flex items-center justify-center border border-white/10">
+              <Music className={`w-10 h-10 text-white/20 ${track.isPlaying ? 'animate-pulse' : ''}`} />
+            </div>
+            {/* Center hole */}
+            <div className="absolute w-4 h-4 bg-slate-800 rounded-full border border-white/20 z-20"></div>
+          </motion.div>
+
+          {/* Status Indicator */}
+          {track.isPlaying && (
+            <div className="absolute -bottom-1 -right-1 flex gap-0.5 h-4 items-end bg-black/60 p-1.5 rounded-full backdrop-blur-md border border-white/10">
+              {[1, 2, 3].map(i => (
+                <motion.div
+                  key={i}
+                  animate={{ height: [4, 10, 4] }}
+                  transition={{ duration: 0.5, repeat: Infinity, delay: i * 0.15 }}
+                  className={`w-0.5 accent-bg ${accentClass} rounded-full`}
+                ></motion.div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Info & Controls */}
         <div className="flex-1 flex flex-col justify-center min-w-0">
-          <div className="mb-2">
-            <div className="flex items-center gap-2">
-              {track.isPlaying && (
-                <div className="flex gap-0.5 h-3 items-end">
-                  {[1, 2, 3].map(i => <div key={i} className={`w-0.5 accent-bg ${accentClass} animate-[bounce_1s_infinite]`} style={{ animationDelay: `${i * 0.1}s` }}></div>)}
-                </div>
-              )}
-              <h3 className="text-white font-bold truncate text-xs tracking-wider uppercase">{track.title}</h3>
-            </div>
-            <p className="text-slate-500 text-[10px] truncate font-mono uppercase opacity-70">{track.artist}</p>
+          <div className="mb-3">
+            <h3 className="text-white font-black truncate text-[13px] tracking-tight uppercase leading-none">{track.title}</h3>
+            <p className="text-slate-500 text-[10px] truncate font-mono uppercase mt-1 opacity-60 tracking-widest">{track.artist}</p>
           </div>
 
           {/* Progress Bar */}
-          <div className="w-full h-1 bg-white/5 rounded-full mb-3 overflow-hidden">
-            <div
-              className={`h-full transition-all duration-100 ease-linear accent-bg accent-glow ${accentClass}`}
-              style={{ width: `${progress}%` }}
-            ></div>
+          <div className="w-full h-1 bg-white/5 rounded-full mb-5 overflow-hidden p-[0.5px]">
+            <motion.div
+              className={`h-full rounded-full accent-bg accent-glow ${accentClass}`}
+              animate={{ width: `${progress}%` }}
+              transition={{ ease: "linear", duration: 0.05 }}
+            ></motion.div>
           </div>
 
           {/* Controls */}
-          <div className="flex items-center gap-5">
-            <button title="Previous Track" className="text-slate-500 hover:text-white transition-colors">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" /></svg>
+          <div className="flex items-center justify-between px-2">
+            <button title="Previous Track" className="text-slate-500 hover:text-white transition-all transform active:scale-75">
+              <SkipBack className="w-4 h-4 fill-current" />
             </button>
-            <button
+
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
               onClick={onTogglePlay}
               title={track.isPlaying ? "Pause" : "Play"}
-              className="w-9 h-9 rounded-full bg-white text-black flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-[0_0_15px_rgba(255,255,255,0.3)]"
+              className={`w-11 h-11 rounded-full bg-white text-black flex items-center justify-center shadow-[0_0_20px_rgba(255,255,255,0.4)] transition-all`}
             >
               {track.isPlaying ? (
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" /></svg>
+                <Pause className="w-5 h-5 fill-current" />
               ) : (
-                <svg className="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+                <Play className="w-5 h-5 fill-current ml-0.5" />
               )}
-            </button>
-            <button title="Next Track" className="text-slate-500 hover:text-white transition-colors">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" /></svg>
+            </motion.button>
+
+            <button title="Next Track" className="text-slate-500 hover:text-white transition-all transform active:scale-75">
+              <SkipForward className="w-4 h-4 fill-current" />
             </button>
           </div>
         </div>
       </div>
 
-      <button onClick={onClose} title="Close Player" className="absolute top-3 right-3 text-slate-600 hover:text-white transition-colors">
-        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+      <button onClick={onClose} title="Close Player" className="absolute top-4 right-4 text-slate-600 hover:text-white transition-all hover:rotate-90">
+        <X className="w-4 h-4" />
       </button>
-    </div>
+    </motion.div>
   );
-};
+});

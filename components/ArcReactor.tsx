@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { motion } from 'framer-motion';
 
 interface ArcReactorProps {
   isActive: boolean;
@@ -20,17 +21,19 @@ const getAccentClass = (hex: string) => {
   return map[hex.toLowerCase()] || 'accent-violet';
 };
 
-export const ArcReactor: React.FC<ArcReactorProps> = ({ isActive, onClick, language, color }) => {
+export const ArcReactor = React.memo(({ isActive, onClick, language, color }: ArcReactorProps) => {
   const accentClass = getAccentClass(color);
 
   return (
     <div className={`relative flex items-center justify-center group w-80 h-80 accent-text ${accentClass}`}>
       {/* Dynamic Ambient Glow */}
-      <div
-        className={`absolute rounded-full transition-all duration-1000 ease-in-out mix-blend-screen accent-bg ${isActive ? 'w-full h-full opacity-20 accent-glow' : 'w-2/3 h-2/3 opacity-5'}`}
-        style={{
-          filter: 'blur(60px)'
-        } as any}
+      <motion.div
+        animate={{
+          scale: isActive ? [1, 1.2, 1] : 1,
+          opacity: isActive ? 0.2 : 0.05
+        }}
+        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        className={`absolute rounded-full mix-blend-screen accent-bg ${accentClass} blur-[60px] w-full h-full`}
       />
 
       {/* SVG Structure */}
@@ -66,33 +69,42 @@ export const ArcReactor: React.FC<ArcReactorProps> = ({ isActive, onClick, langu
       </div>
 
       {/* Interactive Core Button */}
-      <button
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
         onClick={onClick}
-        title={isActive ? "Stop Listening" : "Start Listening"}
-        className="absolute z-10 w-32 h-32 rounded-full flex flex-col items-center justify-center transition-all duration-300 group-hover:scale-105 active:scale-95 outline-none"
+        title={isActive ? (language === 'hi' ? 'सुनना बंद करें' : 'Stop Listening') : (language === 'hi' ? 'सुनना शुरू करें' : 'Start Listening')}
+        className="absolute z-10 w-32 h-32 rounded-full flex flex-col items-center justify-center outline-none"
       >
-        <div className={`absolute inset-0 rounded-full border transition-all duration-500 accent-border ${isActive ? 'border-2' : 'opacity-30'}`}></div>
+        <div className={`absolute inset-0 rounded-full border transition-all duration-500 accent-border ${isActive ? 'border-2 scale-110' : 'opacity-30'}`}></div>
 
         {/* Inner Glass */}
-        <div className="absolute inset-2 rounded-full bg-slate-900/50 backdrop-blur-sm border border-white/5 shadow-inner"></div>
+        <div className="absolute inset-2 rounded-full bg-slate-900/50 backdrop-blur-md border border-white/5 shadow-inner"></div>
 
         {/* Status Text & Indicator */}
         <div className="relative z-20 flex flex-col items-center">
-          <div
-            className={`w-3 h-3 rounded-full mb-2 transition-all duration-300 ${isActive ? 'accent-bg accent-glow scale-110' : 'bg-slate-600 opacity-50'}`}
+          <motion.div
+            animate={isActive ? { scale: [1, 1.3, 1], opacity: [0.7, 1, 0.7] } : {}}
+            transition={{ duration: 1, repeat: Infinity }}
+            className={`w-3 h-3 rounded-full mb-2 transition-all duration-300 ${isActive ? 'accent-bg accent-glow' : 'bg-slate-600 opacity-50'}`}
           />
           <span
-            className={`text-[10px] font-mono font-bold tracking-[0.3em] transition-colors ${isActive ? 'text-white accent-text-glow' : 'text-slate-500'}`}
+            className={`text-[10px] font-mono font-black tracking-[0.3em] transition-colors ${isActive ? 'text-white accent-text-glow' : 'text-slate-500'}`}
           >
             {isActive ? 'ONLINE' : 'STANDBY'}
           </span>
         </div>
-      </button>
+      </motion.button>
 
       {/* Pulse Rings Effect on Click */}
       {isActive && (
-        <div className="absolute inset-0 rounded-full border border-white/20 animate-[ping_2s_linear_infinite] accent-border"></div>
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0.5 }}
+          animate={{ scale: 1.5, opacity: 0 }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
+          className="absolute inset-0 rounded-full border border-white/20 accent-border"
+        ></motion.div>
       )}
     </div>
   );
-};
+});

@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { motion } from 'framer-motion';
 
 interface VolumeControlProps {
   level: number;
@@ -16,18 +17,23 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({ level }) => {
 
       <div className="flex flex-col gap-2">
         <div className="flex gap-1 h-14 items-end px-2 border-b border-white/5 pb-1">
-          {segments.map((threshold) => (
-            <div
-              key={threshold}
-              className={`w-1.5 rounded-sm transition-all duration-500 ease-out ${level > threshold
-                  ? 'accent-bg accent-cyan accent-glow scale-y-100'
-                  : 'bg-slate-800 scale-y-20 opacity-20'
-                }`}
-              style={{
-                height: `${25 + (threshold * 0.75)}%`
-              }}
-            />
-          ))}
+          {segments.map((threshold) => {
+            const isActive = level > threshold;
+            const targetHeight = `${25 + (threshold * 0.75)}%`;
+            return (
+              <motion.div
+                key={threshold}
+                initial={{ height: "20%" }}
+                animate={{
+                  height: isActive ? targetHeight : "20%",
+                  opacity: isActive ? 1 : 0.2,
+                  scaleY: isActive ? 1 : 0.5
+                }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                className={`w-1.5 rounded-sm origin-bottom ${isActive ? 'accent-bg accent-cyan accent-glow' : 'bg-slate-800'}`}
+              />
+            );
+          })}
         </div>
         <div className="flex justify-between w-full text-[10px] font-mono text-slate-600 px-1">
           <span className="opacity-40">MIN</span>

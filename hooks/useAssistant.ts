@@ -50,6 +50,7 @@ export const useAssistant = () => {
     const [showDrawingCanvas, setShowDrawingCanvas] = useState(false);
     const [showSentryMode, setShowSentryMode] = useState(false);
     const [showMindfulness, setShowMindfulness] = useState(false);
+    const [showFeedback, setShowFeedback] = useState(false);
 
     const processingRef = useRef(false);
     const isActiveRef = useRef(false);
@@ -290,6 +291,7 @@ export const useAssistant = () => {
         showDrawingCanvas, setShowDrawingCanvas,
         showSentryMode, setShowSentryMode,
         showMindfulness, setShowMindfulness,
+        showFeedback, setShowFeedback,
         toggleActivation, executeCommand,
         addToHistory
     };

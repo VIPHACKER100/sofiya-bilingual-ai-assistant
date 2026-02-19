@@ -1,5 +1,7 @@
 
 import React from 'react';
+import { motion } from 'framer-motion';
+import { Activity, Heart, Moon, Zap } from 'lucide-react';
 import { HealthData } from '../types';
 
 interface HealthWidgetProps {
@@ -8,68 +10,149 @@ interface HealthWidgetProps {
    language: 'en' | 'hi';
 }
 
-export const HealthWidget: React.FC<HealthWidgetProps> = ({ data, isVisible, language }) => {
+export const HealthWidget = React.memo(({ data, isVisible, language }: HealthWidgetProps) => {
    if (!isVisible) return null;
 
+   const stepPercentage = Math.min(100, (data.steps / 10000) * 100);
+
+   // Animation variants
+   const containerVariants = {
+      hidden: { x: 50, opacity: 0 },
+      visible: { x: 0, opacity: 1, transition: { duration: 0.5, ease: "easeOut" } },
+      exit: { x: 50, opacity: 0 }
+   };
+
    return (
-      <div className="glass-panel absolute top-24 right-4 lg:right-96 w-64 p-5 rounded-xl animate-in slide-in-from-right duration-500 border-r-2 accent-border accent-emerald shadow-[0_0_40px_rgba(16,185,129,0.1)]">
-         <div className="flex justify-between items-center mb-5 border-b border-white/5 pb-2">
-            <span className="text-[10px] font-mono accent-text accent-emerald tracking-[0.2em] uppercase flex items-center gap-2">
-               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-               {language === 'hi' ? 'स्वास्थ्य बायो' : 'BIO_METRICS'}
+      <motion.div
+         variants={containerVariants}
+         initial="hidden"
+         animate="visible"
+         exit="exit"
+         className="glass-panel absolute top-24 right-4 lg:right-96 w-72 p-6 rounded-3xl border-r-2 accent-border accent-emerald shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-40"
+      >
+         <div className="flex justify-between items-center mb-6 border-b border-white/5 pb-3">
+            <span className="text-[11px] font-black accent-text accent-emerald tracking-[0.2em] uppercase flex items-center gap-2">
+               <Activity className="w-4 h-4" />
+               {language === 'hi' ? 'स्वास्थ्य बायो' : 'HEALTH_BIOMETRICS'}
             </span>
-            <div className="w-2 h-2 accent-bg accent-emerald rounded-full animate-ping"></div>
+            <div className="flex gap-1">
+               {[1, 2, 3].map(i => (
+                  <motion.div
+                     key={i}
+                     animate={{ opacity: [0.2, 1, 0.2] }}
+                     transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
+                     className="w-1.5 h-1.5 accent-bg accent-emerald rounded-full"
+                  />
+               ))}
+            </div>
          </div>
 
-         <div className="space-y-6">
-            {/* Heart Rate ECG */}
+         <div className="space-y-7">
+            {/* Heart Rate Section */}
             <div className="relative">
-               <div className="flex justify-between text-[9px] text-slate-500 mb-1 font-mono uppercase tracking-widest">
-                  <span>HEART_RATE</span>
-                  <span className="text-white font-bold">{data.heartRate} BPM</span>
+               <div className="flex justify-between items-center text-[10px] text-slate-500 mb-2 font-mono uppercase tracking-widest">
+                  <div className="flex items-center gap-1.5">
+                     <Heart className="w-3 h-3 text-red-500" />
+                     <span>RHYTHM_ENGINE</span>
+                  </div>
+                  <motion.span
+                     animate={{ scale: [1, 1.1, 1] }}
+                     transition={{ duration: 0.6, repeat: Infinity }}
+                     className="text-white font-black text-xs"
+                  >
+                     {data.heartRate} <span className="text-[8px] opacity-50">BPM</span>
+                  </motion.span>
                </div>
-               {/* Simulated ECG Line */}
-               <div className="h-12 w-full bg-black/40 border border-emerald-900/30 rounded-lg overflow-hidden relative">
+
+               {/* ECG Visualizer */}
+               <div className="h-16 w-full bg-black/60 border border-white/5 rounded-2xl overflow-hidden relative shadow-inner">
                   <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
-                     <path d="M0,24 L20,24 L30,5 L40,40 L50,24 L80,24 L90,12 L100,35 L110,24 L150,24 L160,5 L170,40 L180,24 L250,24"
-                        fill="none" stroke="#10b981" strokeWidth="1.5" className="animate-[dash_2s_linear_infinite]"
-                        strokeDasharray="300" strokeDashoffset="300">
-                        <animate attributeName="stroke-dashoffset" from="300" to="0" dur="2s" repeatCount="indefinite" />
-                     </path>
+                     <defs>
+                        <linearGradient id="ecg-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                           <stop offset="0%" stopColor="#10b981" stopOpacity="0" />
+                           <stop offset="50%" stopColor="#10b981" stopOpacity="1" />
+                           <stop offset="100%" stopColor="#10b981" stopOpacity="0" />
+                        </linearGradient>
+                     </defs>
+                     <motion.path
+                        d="M0,32 L20,32 L30,5 L40,55 L50,32 L80,32 L90,12 L100,50 L110,32 L150,32 L160,5 L170,55 L180,32 L200,32"
+                        fill="none"
+                        stroke="url(#ecg-grad)"
+                        strokeWidth="2"
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        animate={{ pathLength: 1, opacity: 1, x: [0, 200] }}
+                        transition={{
+                           pathLength: { duration: 1.5, repeat: Infinity, ease: "linear" },
+                           x: { duration: 2, repeat: Infinity, ease: "linear" }
+                        }}
+                     />
                   </svg>
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-black/80"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black"></div>
                </div>
             </div>
 
             {/* Steps Progress */}
             <div>
-               <div className="flex justify-between text-[9px] text-slate-500 mb-1.5 font-mono uppercase tracking-widest">
-                  <span>DAILY_STEPS</span>
-                  <span className="text-white font-bold">{data.steps} / 10K</span>
+               <div className="flex justify-between items-center text-[10px] text-slate-500 mb-2 font-mono uppercase tracking-widest">
+                  <div className="flex items-center gap-1.5">
+                     <Zap className="w-3 h-3 text-amber-500" />
+                     <span>KINETIC_FLOW</span>
+                  </div>
+                  <span className="text-white font-black text-xs">{data.steps.toLocaleString()} <span className="text-[8px] opacity-50">UNIT</span></span>
                </div>
-               <div className="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden border border-white/5">
-                  <div
-                     className="h-full bg-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.4)] accent-glow accent-cyan transition-all duration-1000"
-                     style={{ width: `${Math.min(100, (data.steps / 10000) * 100)}%` }}
-                  ></div>
+               <div className="w-full h-2 bg-slate-900/50 rounded-full overflow-hidden border border-white/5 p-[1px] shadow-inner">
+                  <motion.div
+                     initial={{ width: 0 }}
+                     animate={{ width: `${stepPercentage}%` }}
+                     transition={{ duration: 1, ease: "easeOut" }}
+                     className="h-full bg-emerald-500 rounded-full accent-glow accent-emerald relative"
+                  >
+                     <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent"></div>
+                  </motion.div>
+               </div>
+               <div className="mt-1.5 flex justify-between text-[8px] font-mono text-slate-600 uppercase tracking-tighter">
+                  <span>Goal: 10,000</span>
+                  <span>{stepPercentage.toFixed(0)}% Complete</span>
                </div>
             </div>
 
-            {/* Sleep Ring */}
-            <div className="flex items-center justify-between bg-white/5 p-3 rounded-xl border border-white/5">
-               <div className="text-[9px] text-slate-500 font-mono uppercase tracking-widest">
-                  <div>SLEEP_SCORE</div>
-                  <div className="text-2xl accent-text accent-violet font-bold mt-1 tracking-wider accent-text-glow">{data.sleepScore}<span className="text-[10px]">%</span></div>
+            {/* Sleep Summary */}
+            <div className="flex items-center justify-between bg-white/5 p-4 rounded-2xl border border-white/5 relative overflow-hidden group">
+               <div className="absolute top-0 right-0 w-16 h-16 bg-violet-500/10 blur-2xl rounded-full"></div>
+               <div className="relative z-10">
+                  <div className="flex items-center gap-1.5 text-[9px] text-slate-500 font-mono uppercase tracking-widest mb-1">
+                     <Moon className="w-3 h-3 text-violet-400" />
+                     <span>REST_PHASE</span>
+                  </div>
+                  <div className="text-2xl accent-text accent-violet font-black tracking-tighter accent-text-glow leading-none">
+                     {data.sleepScore}<span className="text-[10px] font-mono opacity-50 ml-1">PT</span>
+                  </div>
                </div>
-               <div className="w-14 h-14 relative flex items-center justify-center">
+               <div className="w-16 h-16 relative flex items-center justify-center">
                   <svg className="w-full h-full -rotate-90">
-                     <circle cx="50%" cy="50%" r="22" fill="none" className="stroke-slate-800" strokeWidth="3" />
-                     <circle cx="50%" cy="50%" r="22" fill="none" className="stroke-violet-500" strokeWidth="3" strokeDasharray="138" strokeDashoffset={138 - (138 * data.sleepScore / 100)} strokeLinecap="round" />
+                     <circle cx="50%" cy="50%" r="26" fill="none" className="stroke-white/5" strokeWidth="4" />
+                     <motion.circle
+                        cx="50%" cy="50%" r="26" fill="none"
+                        className="stroke-violet-500" strokeWidth="4"
+                        strokeDasharray="163"
+                        initial={{ strokeDashoffset: 163 }}
+                        animate={{ strokeDashoffset: 163 - (163 * data.sleepScore / 100) }}
+                        transition={{ duration: 1.5, ease: "easeOut" }}
+                        strokeLinecap="round"
+                        style={{ filter: "drop-shadow(0 0 5px rgba(139, 92, 246, 0.5))" }}
+                     />
                   </svg>
-                  <div className="absolute text-[8px] font-mono text-slate-500 uppercase">RECOVERY</div>
+                  <div className="absolute text-[7px] font-mono text-slate-500 tracking-tighter text-center uppercase leading-none">
+                     RECOV
+                  </div>
                </div>
             </div>
          </div>
-      </div>
+
+         <div className="mt-6 flex justify-between items-center opacity-20 text-[8px] font-mono tracking-widest uppercase">
+            <span>Sec_Stream: ON</span>
+            <span>V_4.3.0</span>
+         </div>
+      </motion.div>
    );
-};
+});

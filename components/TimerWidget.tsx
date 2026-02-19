@@ -1,5 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Play, Pause, Square, Timer } from 'lucide-react';
 
 interface TimerWidgetProps {
   duration: number; // in ms
@@ -8,7 +10,7 @@ interface TimerWidgetProps {
   onCancel: () => void;
 }
 
-export const TimerWidget: React.FC<TimerWidgetProps> = ({ duration, label, onComplete, onCancel }) => {
+export const TimerWidget = React.memo(({ duration, label, onComplete, onCancel }: TimerWidgetProps) => {
   const [timeLeft, setTimeLeft] = useState(duration);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -37,52 +39,81 @@ export const TimerWidget: React.FC<TimerWidgetProps> = ({ duration, label, onCom
   };
 
   const progress = (timeLeft / duration) * 100;
+  const radius = 45;
+  const circumference = 2 * Math.PI * radius;
 
   return (
-    <div className="glass-panel absolute top-24 left-1/2 transform -translate-x-1/2 md:translate-x-0 md:left-auto md:right-80 md:top-24 w-48 p-4 rounded-full aspect-square flex flex-col items-center justify-center animate-in zoom-in duration-500 z-30 border-2 accent-border accent-cyan">
-      {/* Background Ambience */}
-      <div className="absolute inset-0 rounded-full bg-cyan-500/5 pulse-active pointer-events-none"></div>
+    <motion.div
+      initial={{ scale: 0.8, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      exit={{ scale: 0.8, opacity: 0 }}
+      className="glass-panel absolute top-24 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:right-80 w-52 h-52 p-6 rounded-full flex flex-col items-center justify-center z-30 border-2 accent-border accent-cyan shadow-[0_0_50px_rgba(6,182,212,0.2)]"
+    >
+      <div className="absolute inset-0 rounded-full bg-cyan-500/5 animate-pulse pointer-events-none"></div>
 
-      {/* Progress Ring SVG */}
-      <svg className="absolute inset-0 w-full h-full -rotate-90 p-2">
+      {/* Progress Ring */}
+      <svg className="absolute inset-0 w-full h-full -rotate-90 p-3">
         <circle
-          cx="50%" cy="50%" r="45%"
+          cx="50%" cy="50%" r={`${radius}%`}
           fill="transparent"
-          className="stroke-slate-800"
-          strokeWidth="2"
-          strokeOpacity="0.5"
+          stroke="rgba(255,255,255,0.05)"
+          strokeWidth="4"
         />
-        <circle
-          cx="50%" cy="50%" r="45%"
+        <motion.circle
+          cx="50%" cy="50%" r={`${radius}%`}
           fill="transparent"
-          className="stroke-cyan-500 transition-all duration-1000 ease-linear accent-glow accent-cyan"
-          strokeWidth="3"
+          stroke="currentColor"
+          className="text-cyan-500 accent-glow accent-cyan transition-all duration-1000 ease-linear"
+          strokeWidth="4"
           strokeDasharray="283"
-          strokeDashoffset={283 - (283 * progress) / 100}
+          animate={{ strokeDashoffset: 283 - (283 * progress) / 100 }}
           strokeLinecap="round"
         />
       </svg>
 
-      <div className="relative z-10 flex flex-col items-center">
-        <span className="text-[10px] accent-text accent-cyan font-mono tracking-[0.3em] uppercase mb-1">PROTO.TIMER</span>
-        <span className="text-3xl font-bold text-white font-mono accent-text-glow accent-cyan">{formatTime(timeLeft)}</span>
-        <div className="flex gap-2 mt-4 font-mono">
-          <button
+      <div className="relative z-10 flex flex-col items-center gap-1">
+        <div className="flex items-center gap-1.5 opacity-40 text-[9px] font-black accent-text accent-cyan tracking-[0.2em] uppercase">
+          <Timer className="w-3 h-3" />
+          CHRONO_CORE
+        </div>
+
+        <AnimatePresence mode="wait">
+          <motion.span
+            key={timeLeft}
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-4xl font-black text-white font-mono accent-text-glow accent-cyan drop-shadow-[0_0_10px_rgba(6,182,212,0.5)]"
+          >
+            {formatTime(timeLeft)}
+          </motion.span>
+        </AnimatePresence>
+
+        <div className="text-[8px] font-mono text-slate-500 uppercase tracking-widest mt-1 opacity-60">
+          SEC_COUNTDOWN
+        </div>
+
+        <div className="flex gap-4 mt-6">
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
             onClick={() => setIsPaused(!isPaused)}
-            title={isPaused ? "Resume Timer" : "Pause Timer"}
-            className="text-[9px] px-2 py-0.5 rounded-full border border-white/10 hover:bg-white/10 text-slate-300 uppercase tracking-widest transition-all"
+            title={isPaused ? "Resume" : "Pause"}
+            className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-all shadow-lg"
           >
-            {isPaused ? 'RESUME' : 'PAUSE'}
-          </button>
-          <button
+            {isPaused ? <Play className="w-4 h-4 fill-current" /> : <Pause className="w-4 h-4 fill-current" />}
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
             onClick={onCancel}
-            title="Stop Timer"
-            className="text-[9px] px-2 py-0.5 rounded-full border border-red-500/20 hover:bg-red-500/10 text-red-400 uppercase tracking-widest transition-all"
+            title="Terminate"
+            className="w-10 h-10 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-500 hover:bg-red-500/20 transition-all shadow-lg shadow-red-500/5"
           >
-            STOP
-          </button>
+            <Square className="w-4 h-4 fill-current" />
+          </motion.button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
-};
+});
