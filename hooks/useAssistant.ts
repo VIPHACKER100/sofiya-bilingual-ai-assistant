@@ -331,6 +331,7 @@ export const useAssistant = () => {
         showMindfulness, setShowMindfulness,
         showFeedback, setShowFeedback,
         toggleActivation, executeCommand,
-        addToHistory
+        addToHistory,
+        fetchWeather, fetchNews
     };
 };

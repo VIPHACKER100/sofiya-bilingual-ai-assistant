@@ -1,7 +1,11 @@
 
-import React from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Settings, Shield, Globe, Terminal, Sparkles, MessageSquareWarning } from 'lucide-react';
+import { 
+  Settings, Shield, Globe, Terminal, Sparkles, MessageSquareWarning,
+  Mic, MicOff, Volume2, VolumeX, Sun, Moon, Plus, List, X,
+  Play, Pause, SkipForward, Home, Zap
+} from 'lucide-react';
 import { ArcReactor } from './components/ArcReactor';
 import { HistoryLog } from './components/HistoryLog';
 import { VolumeControl } from './components/VolumeControl';
@@ -27,6 +31,7 @@ import { AppMode, Language } from './types';
 import { soundService } from './services/soundService';
 import { TRY_COMMANDS } from './constants';
 import { useAssistant } from './hooks/useAssistant';
+import { useKeyPress } from './hooks/useCommon';
 
 const PROTOCOLS = {
   sofiya: { name: 'SOFIYA.OS', subtitle: 'NEURAL_LINK_V4', primary: '#8b5cf6', textClass: 'text-violet-400', bgGradient: 'from-violet-900/40 via-black to-black' },
@@ -34,6 +39,52 @@ const PROTOCOLS = {
   focus: { name: 'FOCUS.PRO', subtitle: 'MINIMAL_LATENCY', primary: '#ef4444', textClass: 'text-red-400', bgGradient: 'from-red-900/40 via-black to-black' },
   zen: { name: 'ZEN.STATE', subtitle: 'ALPHA_LEVEL_SYNC', primary: '#10b981', textClass: 'text-emerald-400', bgGradient: 'from-emerald-900/40 via-black to-black' },
 };
+
+const QuickActionButton = ({ 
+  icon: Icon, 
+  label, 
+  onClick, 
+  isActive,
+  color 
+}: { 
+  icon: any; 
+  label: string; 
+  onClick: () => void; 
+  isActive?: boolean;
+  color?: string;
+}) => (
+  <motion.button
+    whileHover={{ scale: 1.05, y: -2 }}
+    whileTap={{ scale: 0.95 }}
+    onClick={onClick}
+    title={label}
+    className={`
+      relative p-3 rounded-2xl transition-all duration-200 group
+      ${isActive 
+        ? 'bg-white/10 border border-white/20' 
+        : 'bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10'
+      }
+    `}
+    style={{ color: color ? `${color}` : undefined }}
+  >
+    <Icon className="w-5 h-5" />
+    <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] font-mono opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap text-slate-400">
+      {label}
+    </span>
+  </motion.button>
+);
+
+const KeyboardHint = ({ keys, label }: { keys: string[]; label: string }) => (
+  <div className="flex items-center gap-1 text-[8px] text-slate-600 font-mono">
+    {keys.map((key, i) => (
+      <React.Fragment key={key}>
+        <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-[8px]">{key}</kbd>
+        {i < keys.length - 1 && <span>+</span>}
+      </React.Fragment>
+    ))}
+    <span className="ml-1 opacity-50">{label}</span>
+  </div>
+);
 
 const App: React.FC = () => {
   const assistant = useAssistant();
@@ -61,6 +112,23 @@ const App: React.FC = () => {
     }));
   };
 
+  // Keyboard shortcuts
+  useKeyPress('m', () => assistant.toggleActivation());
+  useKeyPress(' ', () => { if (!assistant.isBooting) assistant.toggleActivation(); });
+  useKeyPress('l', () => assistant.setLanguage(l => l === Language.ENGLISH ? Language.HINDI : Language.ENGLISH));
+  useKeyPress('w', () => assistant.setShowTasks(p => !p));
+  useKeyPress('n', () => { assistant.setShowNews(p => !p); if (!assistant.showNews) assistant.fetchNews(); });
+  useKeyPress('h', () => assistant.setShowHealth(p => !p));
+  useKeyPress('s', () => assistant.setShowSmartHome(p => !p));
+  useKeyPress('d', () => assistant.setShowDrawingCanvas(p => !p));
+  useKeyPress('Escape', () => {
+    if (assistant.showNews) assistant.setShowNews(false);
+    if (assistant.showTasks) assistant.setShowTasks(false);
+    if (assistant.showHealth) assistant.setShowHealth(false);
+    if (assistant.showSmartHome) assistant.setShowSmartHome(false);
+    if (assistant.showCalc) assistant.setShowCalc(false);
+  });
+
   if (assistant.isBooting) return <BootSequence onComplete={handleBootComplete} language={assistant.language === Language.HINDI ? 'hi' : 'en'} />;
 
   return (
@@ -76,7 +144,6 @@ const App: React.FC = () => {
         className={`absolute inset-0 bg-gradient-to-br ${currentProtocol.bgGradient} transition-all duration-1000`}
       />
 
-
       {/* Advanced HUD Grid */}
       <div
         className="absolute inset-0 pointer-events-none opacity-20 animate-grid-drift"
@@ -89,7 +156,7 @@ const App: React.FC = () => {
       <StatusBadges accentColor={currentProtocol.primary} />
 
       {/* Main UI Container */}
-      <div className="relative z-10 w-full h-screen flex flex-col p-6 lg:p-12">
+      <div className="relative z-10 w-full h-screen flex flex-col p-4 lg:p-8">
 
         {/* Superior Header */}
         <header className="flex justify-between items-start z-50">
@@ -108,7 +175,7 @@ const App: React.FC = () => {
                 />
               </div>
               <div className="flex flex-col">
-                <h1 className="text-5xl font-black tracking-[0.15em] font-mono leading-none flex items-baseline gap-2 text-gradient">
+                <h1 className="text-4xl lg:text-5xl font-black tracking-[0.15em] font-mono leading-none flex items-baseline gap-2 text-gradient">
                   {currentProtocol.name.split('.')[0]}
                   <span className="text-xl opacity-20 font-light">.{currentProtocol.name.split('.')[1]}</span>
                 </h1>
@@ -119,16 +186,53 @@ const App: React.FC = () => {
             </div>
           </motion.div>
 
+          {/* Quick Actions - New Addition */}
           <motion.div
             initial={{ x: 50, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            className="flex flex-col items-end gap-6"
+            className="flex flex-col items-end gap-4"
           >
-            {/* Global Actions */}
+            {/* Quick Action Buttons */}
+            <div className="flex items-center gap-2 p-2 bg-black/40 rounded-2xl border border-white/5 backdrop-blur-md">
+              <QuickActionButton 
+                icon={assistant.mode === AppMode.LISTENING ? MicOff : Mic} 
+                label={assistant.mode === AppMode.LISTENING ? 'Stop (M)' : 'Voice (M)'} 
+                onClick={() => assistant.toggleActivation()}
+                isActive={assistant.mode === AppMode.LISTENING}
+                color={currentProtocol.primary}
+              />
+              <QuickActionButton 
+                icon={List} 
+                label="Tasks (W)" 
+                onClick={() => assistant.setShowTasks(p => !p)}
+                isActive={assistant.showTasks}
+              />
+              <QuickActionButton 
+                icon={Sun} 
+                label="News (N)" 
+                onClick={() => { assistant.setShowNews(p => !p); if (!assistant.showNews) assistant.fetchNews(); }}
+                isActive={assistant.showNews}
+              />
+              <QuickActionButton 
+                icon={Zap} 
+                label="Smart (S)" 
+                onClick={() => assistant.setShowSmartHome(p => !p)}
+                isActive={assistant.showSmartHome}
+              />
+              <QuickActionButton 
+                icon={Home} 
+                label="Health (H)" 
+                onClick={() => assistant.setShowHealth(p => !p)}
+                isActive={assistant.showHealth}
+              />
+            </div>
+
+            {/* Language & Theme Controls */}
             <div className="flex items-center gap-4">
               <button
                 onClick={() => { soundService.playUIClick(); assistant.setLanguage(l => l === Language.ENGLISH ? Language.HINDI : Language.ENGLISH) }}
-                className="group relative px-6 py-2 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-4 transition-all hover:bg-white/10 active:scale-95"
+                className="group relative px-4 py-2 rounded-xl bg-white/5 border border-white/10 flex items-center gap-3 transition-all hover:bg-white/10 active:scale-95"
+                title="Toggle Language (L)"
               >
                 <Globe className="w-3.5 h-3.5 text-slate-500 group-hover:text-cyan-400 transition-colors" />
                 <div className="flex gap-2 text-[10px] font-black tracking-widest font-mono">
@@ -140,37 +244,54 @@ const App: React.FC = () => {
 
               <button
                 onClick={() => { soundService.playUIClick(); assistant.setShowFeedback(true); }}
-                title="Feedback Loop"
-                className="p-2.5 rounded-2xl bg-red-500/5 border border-red-500/20 text-red-500/60 hover:text-red-500 hover:bg-red-500/10 transition-all active:scale-95"
+                title="Feedback"
+                className="p-2 rounded-xl bg-red-500/5 border border-red-500/20 text-red-500/60 hover:text-red-500 hover:bg-red-500/10 transition-all active:scale-95"
               >
                 <MessageSquareWarning className="w-5 h-5" />
               </button>
-            </div>
 
-            {/* Tactical Theme Selector */}
-            <div className="flex gap-4 p-2 bg-black/40 rounded-full border border-white/5 backdrop-blur-md">
-              {Object.entries(PROTOCOLS).map(([key, proto]) => (
-                <button
-                  key={key}
-                  onClick={() => { soundService.playUIClick(); assistant.setTheme(key as any); }}
-                  className={`w-4 h-4 rounded-full transition-all duration-500 relative ${assistant.theme === key ? 'scale-125' : 'opacity-20 hover:opacity-100'}`}
-                  style={{ backgroundColor: proto.primary }}
-                >
-                  {assistant.theme === key && (
-                    <motion.div
-                      layoutId="theme-active"
-                      className="absolute -inset-1.5 border border-white/20 rounded-full"
-                    />
-                  )}
-                </button>
-              ))}
+              {/* Tactical Theme Selector */}
+              <div className="flex gap-2 p-2 bg-black/40 rounded-full border border-white/5 backdrop-blur-md">
+                {Object.entries(PROTOCOLS).map(([key, proto]) => (
+                  <button
+                    key={key}
+                    onClick={() => { soundService.playUIClick(); assistant.setTheme(key as any); }}
+                    className={`w-4 h-4 rounded-full transition-all duration-500 relative ${assistant.theme === key ? 'scale-125' : 'opacity-20 hover:opacity-100'}`}
+                    style={{ backgroundColor: proto.primary }}
+                    title={`${key.charAt(0).toUpperCase() + key.slice(1)} Theme`}
+                  >
+                    {assistant.theme === key && (
+                      <motion.div
+                        layoutId="theme-active"
+                        className="absolute -inset-1.5 border border-white/20 rounded-full"
+                      />
+                    )}
+                  </button>
+                ))}
+              </div>
             </div>
           </motion.div>
         </header>
 
+        {/* Keyboard Hints Bar */}
+        <motion.div 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="flex items-center gap-6 py-2 px-4 bg-white/5 rounded-lg border border-white/5 w-fit mt-2"
+        >
+          <KeyboardHint keys={['Space']} label="Voice" />
+          <KeyboardHint keys={['L']} label="Lang" />
+          <KeyboardHint keys={['W']} label="Tasks" />
+          <KeyboardHint keys={['N']} label="News" />
+          <KeyboardHint keys={['H']} label="Health" />
+          <KeyboardHint keys={['S']} label="Smart" />
+          <KeyboardHint keys={['ESC']} label="Close" />
+        </motion.div>
+
         {/* Neural CORE Stage */}
         <main className="flex-1 flex flex-col items-center justify-center relative">
-          <div className="relative flex flex-col items-center gap-12 z-20">
+          <div className="relative flex flex-col items-center gap-8 z-20">
             <div className="relative">
               <AnimatePresence>
                 {assistant.transcript && (
@@ -178,14 +299,13 @@ const App: React.FC = () => {
                     initial={{ y: 20, opacity: 0, scale: 0.9 }}
                     animate={{ y: 0, opacity: 1, scale: 1 }}
                     exit={{ y: -20, opacity: 0, scale: 0.9 }}
-                    className="absolute -top-32 left-1/2 -track-x-1/2 w-[24rem] text-center pointer-events-none"
-                    style={{ left: '50%', transform: 'translateX(-50%)' }}
+                    className="absolute -top-28 left-1/2 -translate-x-1/2 w-[20rem] lg:w-[24rem] text-center pointer-events-none"
                   >
-                    <div className="glass-panel px-8 py-4 rounded-[2rem] border-t border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.5)]">
-                      <p className="text-xl font-medium text-white/90 italic leading-relaxed">
+                    <div className="glass-panel px-6 py-3 rounded-[2rem] border-t border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.5)]">
+                      <p className="text-lg lg:text-xl font-medium text-white/90 italic leading-relaxed line-clamp-2">
                         "{assistant.transcript}"
                       </p>
-                      <div className="mt-3 flex justify-center gap-1">
+                      <div className="mt-2 flex justify-center gap-1">
                         {[1, 2, 3].map(i => <motion.div key={i} animate={{ opacity: [0.2, 1, 0.2] }} transition={{ repeat: Infinity, duration: 1, delay: i * 0.2 }} className="w-1 h-1 bg-cyan-500 rounded-full" />)}
                       </div>
                     </div>
@@ -225,14 +345,14 @@ const App: React.FC = () => {
         </main>
 
         {/* Master Console Footer */}
-        <div className="h-1/3 flex flex-col justify-end gap-8 z-20">
-          <div className="flex flex-col lg:flex-row gap-12 items-end justify-between border-t border-white/5 pt-10">
+        <div className="h-1/3 flex flex-col justify-end gap-6 z-20">
+          <div className="flex flex-col lg:flex-row gap-8 items-end justify-between border-t border-white/5 pt-6">
             <HistoryLog history={assistant.history} />
 
-            <div className="flex flex-col gap-8 items-end w-full lg:w-auto">
+            <div className="flex flex-col gap-6 items-end w-full lg:w-auto">
               <VolumeControl level={assistant.volume} />
 
-              <div className="flex gap-10 text-[9px] font-mono tracking-[0.2em] text-slate-500 uppercase">
+              <div className="flex gap-8 text-[9px] font-mono tracking-[0.2em] text-slate-500 uppercase">
                 <div className="flex flex-col gap-1 items-end">
                   <span className="opacity-40">Uplink_Node:</span>
                   <span className="text-emerald-500 font-black">STABLE.IN_NORTH</span>
@@ -270,7 +390,7 @@ const App: React.FC = () => {
 
       {/* Command Flow Marquee */}
       <footer className="absolute bottom-0 w-full bg-black/80 border-t border-white/5 py-2 z-[60] backdrop-blur-xl flex items-center">
-        <div className="px-6 border-r border-white/10 flex items-center gap-3">
+        <div className="px-4 lg:px-6 border-r border-white/10 flex items-center gap-3">
           <Terminal className="w-3.5 h-3.5 text-cyan-500" />
           <span className="text-[10px] font-black font-mono tracking-widest text-slate-500">TRY:</span>
         </div>
@@ -284,7 +404,7 @@ const App: React.FC = () => {
               <button
                 key={i}
                 onClick={() => { assistant.executeCommand(cmd); soundService.playUIClick(); }}
-                className="mx-8 hover:text-cyan-400 transition-colors cursor-pointer"
+                className="mx-6 hover:text-cyan-400 transition-colors cursor-pointer"
               >
                 {cmd}
               </button>
