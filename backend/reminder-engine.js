@@ -7,7 +7,8 @@
  */
 
 import 'dotenv/config';
-import { createClient } from 'pg';
+import pkg from 'pg';
+const { Pool } = pkg;
 import { createClient as createRedisClient } from 'redis';
 
 export class ReminderEngine {

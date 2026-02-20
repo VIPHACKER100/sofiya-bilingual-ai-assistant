@@ -17,7 +17,7 @@ export class GoogleHomeConnector {
         this.redirectUri = options.redirectUri || process.env.GOOGLE_REDIRECT_URI;
         this.accessToken = options.accessToken || null;
         this.refreshToken = options.refreshToken || null;
-        
+
         this.oauth2Client = null;
         this.devices = new Map();
     }
@@ -46,7 +46,7 @@ export class GoogleHomeConnector {
      * Gets OAuth authorization URL
      * @returns {string} Authorization URL
      */
-    getAuthUrl() {
+    async getAuthUrl() {
         if (!this.oauth2Client) {
             await this.initialize();
         }
@@ -70,12 +70,12 @@ export class GoogleHomeConnector {
      */
     async exchangeCode(code) {
         const { tokens } = await this.oauth2Client.getToken(code);
-        
+
         this.accessToken = tokens.access_token;
         this.refreshToken = tokens.refresh_token;
-        
+
         this.oauth2Client.setCredentials(tokens);
-        
+
         return tokens;
     }
 

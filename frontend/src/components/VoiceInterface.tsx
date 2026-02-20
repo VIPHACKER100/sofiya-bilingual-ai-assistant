@@ -10,7 +10,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Mic, MicOff } from 'lucide-react';
 import { ArcReactor } from '../../components/ArcReactor';
 import { Waveform } from '../../components/Waveform';
-import { AppMode } from '../types';
+import { AppMode } from '../../types';
 
 interface HistoryEntry {
   transcript: string;

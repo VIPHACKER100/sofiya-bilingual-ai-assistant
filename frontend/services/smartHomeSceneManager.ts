@@ -13,7 +13,7 @@ export interface SmartHomeScene {
 export interface SceneDeviceAction {
   deviceType: 'light' | 'thermostat' | 'lock' | 'fan';
   property: string;
-  value: any;
+  value: string | number | boolean;
   transitionDuration?: number;
 }
 
@@ -154,10 +154,8 @@ class SmartHomeSceneManager {
 
         switch (action.property) {
           case 'brightness':
-          case 'brightness':
             device.status = action.value;
             break;
-          case 'temperature':
           case 'temperature':
             device.status = `${action.value}°C`;
             break;

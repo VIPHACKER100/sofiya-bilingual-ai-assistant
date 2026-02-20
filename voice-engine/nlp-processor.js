@@ -7,7 +7,8 @@
  */
 
 import 'dotenv/config';
-import { WordTokenizer, SentenceTokenizer } from 'natural';
+import natural from 'natural';
+const { WordTokenizer, SentenceTokenizer } = natural;
 
 export class NLPProcessor {
     constructor(options = {}) {
@@ -18,31 +19,31 @@ export class NLPProcessor {
             { name: 'control_device', pattern: /\b(turn\s+(?:on|off)|switch|toggle|dim|brighten)\s+(?:the\s+)?(?:lights?|light|fan|ac|thermostat|tv|television)/i, priority: 9 },
             { name: 'schedule', pattern: /\b(schedule|meeting|appointment|calendar|book|set\s+up)\b/i, priority: 8 },
             { name: 'smart_home_scene', pattern: /\b(movie\s+night|good\s+morning|bedtime|focus\s+mode|party\s+mode|relax\s+mode)/i, priority: 9 },
-            
+
             // Medium priority - information requests
             { name: 'weather', pattern: /\b(weather|temperature|forecast|mausam|how\s+hot|how\s+cold)/i, priority: 7 },
             { name: 'news', pattern: /\b(news|headlines|latest|samachar|khabar)/i, priority: 7 },
             { name: 'search', pattern: /\b(search|find|lookup|who\s+is|what\s+is|where\s+is|google|youtube)/i, priority: 6 },
             { name: 'time_date', pattern: /\b(what\s+time|what\s+date|kya\s+baje|kya\s+tarikh|current\s+time)/i, priority: 7 },
-            
+
             // Wellness and health
             { name: 'wellness', pattern: /\b(breathe|meditate|relax|stress|breathing\s+exercise|mindfulness)/i, priority: 7 },
             { name: 'health', pattern: /\b(health|steps|heart\s+rate|sleep|calories|sehat)/i, priority: 6 },
-            
+
             // Media control
             { name: 'media_play', pattern: /\b(play|start|begin)\s+(?:music|song|track|video|lo-fi|music)/i, priority: 8 },
             { name: 'media_pause', pattern: /\b(pause|stop|halt)\s+(?:music|song|track|video|playback)/i, priority: 8 },
             { name: 'media_resume', pattern: /\b(resume|continue|play\s+again|unpause)/i, priority: 8 },
-            
+
             // Tasks and reminders
             { name: 'task_add', pattern: /\b(add|create|new)\s+task\s+(.+)/i, priority: 8 },
             { name: 'reminder', pattern: /\b(remind|reminder|alert|notify)\s+(?:me\s+)?(?:about|to|at|in)/i, priority: 8 },
-            
+
             // Volume control
             { name: 'volume_up', pattern: /\b(increase|turn\s+up|raise|louder|badhao|tez)\s+volume/i, priority: 7 },
             { name: 'volume_down', pattern: /\b(decrease|turn\s+down|lower|quieter|kam|dheera)\s+volume/i, priority: 7 },
             { name: 'volume_mute', pattern: /\b(mute|silence|chup|quiet)/i, priority: 7 },
-            
+
             // System commands
             { name: 'system_status', pattern: /\b(status|how\s+are\s+you|hello|hi|namaste|kaisi\s+ho)/i, priority: 5 },
             { name: 'personality_change', pattern: /\b(switch\s+to|activate|enable|change\s+to)\s+(?:sass|focus|storyteller|professional)\s+mode/i, priority: 6 }
@@ -53,7 +54,7 @@ export class NLPProcessor {
 
         this.tokenizer = new WordTokenizer();
         this.sentenceTokenizer = new SentenceTokenizer();
-        
+
         // Entity extraction patterns
         this.entityPatterns = {
             date: [
@@ -109,7 +110,7 @@ export class NLPProcessor {
 
         // Check for multi-part requests
         const multiIntents = this.detectMultiIntents(text);
-        
+
         if (multiIntents.length > 1) {
             console.log(`[NLP] Detected ${multiIntents.length} intents in request`);
             return {
@@ -176,7 +177,7 @@ export class NLPProcessor {
      */
     detectMultiIntents(text) {
         const intents = [];
-        
+
         // Split by common separators
         const parts = text.split(new RegExp(this.multiIntentSeparators.join('|'), 'i'))
             .map(part => part.trim())
