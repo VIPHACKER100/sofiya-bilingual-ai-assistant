@@ -356,3 +356,14 @@ await controller.controlDevice('light3', 'turn_on');
 - `ifttt-connector.js` - IFTTT webhook integration
 - `scene-manager.js` - Scene orchestration
 - `device-controller.js` - Unified device control
+
+---
+
+## 🚀 Standalone Demo Features (`sofiya-assistant.html`)
+
+The standalone demo simulates smart home states locally within the UI:
+
+- **Mock Lights**: "Turn on lights" / "बत्ती जलाओ"
+- **Mock Scenes**: "Movie night" / "मूवी" (Dims lights + sets UI theme)
+- **Visual Feedback**: The command log and spoken response confirm the state change.
+- **Prototypes**: Demonstrates intent mapping without needing physical hardware.

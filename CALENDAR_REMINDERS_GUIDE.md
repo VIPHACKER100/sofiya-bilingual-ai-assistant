@@ -426,3 +426,16 @@ CREATE TABLE user_preferences (
 - `delegation-service.js` - Delegation feature
 - `habits-engine.js` - Habits and predictions
 - `ml/habit-detector.js` - ML-based habit detection
+
+---
+
+## 🚀 Standalone Demo Features (`sofiya-assistant.html`)
+
+The standalone demo provides local time-management and task tracking:
+
+- **Bilingual Timer**: "Set timer for 5 minutes" / "5 मिनट का टाइमर लगाओ" (Live MM:SS display).
+- **Persistent Tasks**: "Add task Buy groceries" / "कार्य जोड़ो: दूध" (Saved in `localStorage`).
+- **Routine Simulation**:
+  - **Morning**: "Good morning" (Spoken daily greeting + time briefing).
+  - **Night**: "Good night" (Farewell + mock smart home shutdown).
+- **Self-Contained**: No external API keys or accounts needed for basic scheduling prototypes.

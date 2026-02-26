@@ -147,16 +147,19 @@ const status = await coordinator.getRSVPStatus('event_123');
 ## 🗣️ Voice Commands
 
 ### Social Secretary
+
 - "When is Sarah's birthday?" → `getUpcomingBirthdays()`
 - "Remind me about upcoming birthdays" → `setBirthdayReminders()`
 - "Suggest a gift for Sarah" → `suggestGiftIdeas()`
 - "Generate a birthday message for Mom" → `generateMessage()`
 
 ### Meeting Briefing
+
 - "Brief me on my meetings today" → `getMeetingBriefings()`
 - "What should I talk about with John?" → Briefing talking points
 
 ### Group Coordination
+
 - "Find a time for team meeting with Sarah and Mike" → `findOptimalSlots()`
 - "Send meeting invites to the team" → `sendInvites()`
 - "Who has RSVP'd to the meeting?" → `getRSVPStatus()`
@@ -217,3 +220,15 @@ CREATE TABLE event_rsvps (
 - `social-secretary.js` - Contact and relationship management
 - `meeting-briefing.js` - Meeting preparation
 - `group-coordinator.js` - Group scheduling
+
+---
+
+## 🚀 Standalone Demo Features (`sofiya-assistant.html`)
+
+The standalone demo provides simplified communication tools:
+
+- **Bilingual Identity**: "Who are you?" / "तुम कौन हो?" (Assumes the assistant persona in both languages).
+- **Deep Linking**:
+  - **WhatsApp Messaging**: "WhatsApp Mom hello" / "मम्मी को व्हाट्सएप करो" (Opens `wa.me` in a new tab).
+  - **Voice Calls**: "Call Mom" / "मम्मी को कॉल करो" (Triggers device dialer via `tel:` link).
+- **Privacy**: No contact data is sent to a server; communication remains between you and your browser.

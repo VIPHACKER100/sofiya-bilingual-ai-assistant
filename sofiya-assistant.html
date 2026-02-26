@@ -911,14 +911,29 @@
         </div>
       </div>
 
+      <!-- Timer -->
+      <div class="glass" style="flex:1">
+        <h3>◈ TIMER / टाइमर</h3>
+        <div id="timerDisplay"
+          style="font-family:'Share Tech Mono',monospace;font-size:1.4rem;color:var(--glow-en);text-align:center;letter-spacing:.1em">
+          --:--</div>
+      </div>
+
+      <!-- Tasks -->
+      <div class="glass" style="flex:1.5">
+        <h3>◈ TASKS / कार्य</h3>
+        <div id="taskList"><span style="color:var(--text-dim);font-size:.7rem">No tasks yet</span></div>
+      </div>
+
       <!-- Quick commands -->
-      <div class="glass" style="flex:2">
-        <h3>◈ TRY COMMANDS / कमांड आज़माएं</h3>
-        <div style="font-size:.7rem;color:var(--text-dim);line-height:1.8">
-          "Open YouTube" &nbsp;·&nbsp; "गूगल खोलो"<br />
-          "What time is it?" &nbsp;·&nbsp; "कितने बजे हैं?"<br />
-          "Play Bollywood songs on YouTube"<br />
-          "आवाज़ बढ़ाओ" &nbsp;·&nbsp; "Hello" &nbsp;·&nbsp; "नमस्ते"
+      <div class="glass" style="flex:1.5">
+        <h3>◈ TRY COMMANDS / कमांड</h3>
+        <div style="font-size:.65rem;color:var(--text-dim);line-height:1.7">
+          "Help" · "मदद" · "Tell me a joke"<br />
+          "Weather" · "Good morning" · "25+17"<br />
+          "Play music" · "Set timer 5 min"<br />
+          "Add task Buy milk" · "Turn on lights"<br />
+          "Sass mode" · "Focus mode"
         </div>
       </div>
 
@@ -974,13 +989,43 @@
       'अमित': '9876500006',
     };
 
+    /* ── JOKES & FACTS BANK ── */
+    const JOKES_EN = [
+      "Why don't scientists trust atoms? Because they make up everything!",
+      "I told my computer I needed a break. Now it won't stop sending me Kit-Kat ads.",
+      "Why do programmers prefer dark mode? Because light attracts bugs!",
+      "What do you call a fish with no eyes? A fsh.",
+      "I asked Siri to tell me a joke. She said, 'Sorry, I can't help with that.'"
+    ];
+    const JOKES_HI = [
+      "शिक्षक: एक वाक्य में 'कोशिश' शब्द का उपयोग करो। छात्र: मैं कोशिश करूँगा!",
+      "पत्नी: तुम फिर से सो गए? पति: नहीं, मैं बस आँखें बंद करके सोच रहा था।",
+      "डॉक्टर: आप कितना पानी पीते हैं? मैं: बहुत कम। डॉक्टर: चाय? मैं: दिन में छः कप।"
+    ];
+    const FACTS_EN = [
+      "Honey never spoils. Archaeologists have found 3000-year-old honey in Egyptian tombs.",
+      "Octopuses have three hearts and blue blood.",
+      "A day on Venus is longer than a year on Venus.",
+      "Bananas are berries, but strawberries are not.",
+      "The Eiffel Tower can grow by up to 15 cm in summer due to thermal expansion."
+    ];
+    const FACTS_HI = [
+      "मानव दिमाग में लगभग 86 अरब न्यूरॉन्स होते हैं।",
+      "ऑक्टोपस के तीन दिल होते हैं और उनका खून नीला होता है।",
+      "शहद कभी खराब नहीं होता — मिस्र की 3000 साल पुरानी कब्रों में शहद मिला है।"
+    ];
+
     /* ── MARQUEE COMMANDS ── */
     const MARQUEE_CMDS = [
       '"Open Google"', '"YouTube खोलो"', '"What time is it?"', '"कितने बजे हैं?"',
       '"Play Bollywood on YouTube"', '"गूगल खोलो"', '"आवाज़ बढ़ाओ"',
       '"Send message to mom saying hello"', '"Hello"', '"नमस्ते"',
-      '"Who are you?"', '"तुम कौन हो?"', '"आज कौन सी तारीख है?"',
-      '"Increase volume"', '"वॉल्यूम कम करो"', '"Thank you"', '"धन्यवाद"',
+      '"Tell me a joke"', '"मजाक सुनाओ"', '"Interesting fact"', '"रोचक तथ्य"',
+      '"Good morning"', '"शुभ रात्रि"', '"Sass mode"', '"Focus mode"',
+      '"Set timer for 5 minutes"', '"Add task Buy groceries"',
+      '"Turn on lights"', '"बत्ती जलाओ"', '"Play chill music"',
+      '"Weather"', '"समाचार"', '"Help"', '"मदद"', '"Breathe"',
+      '"25 + 17"', '"Call mom"', '"Movie night"',
     ];
 
     /* ── STATE ── */
@@ -990,6 +1035,13 @@
     let recognition = null;
     let isSpeaking = false;
     let shouldRestart = false;
+    let personality = 'default'; // 'default' | 'focus' | 'sass' | 'storyteller'
+    let lightsOn = false;
+    let mediaPlaying = false;
+    let mediaTitle = '';
+    let timerInterval = null;
+    let timerRemaining = 0;
+    let tasks = JSON.parse(localStorage.getItem('sofiya_tasks') || '[]');
 
     /* ── DOM REFS ── */
     const $ = id => document.getElementById(id);
@@ -1075,6 +1127,49 @@
       volLabel.textContent = volume + '%';
     }
     setVolume(50);
+
+    /* ── PERSONALITY WRAPPER ── */
+    function wrapResponse(base, lang) {
+      if (personality === 'sass') return base + (lang === 'hi' ? ' और कुछ? या मैं आराम करूँ?' : ' Anything else, or can I go back to saving the world?');
+      if (personality === 'storyteller') return (lang === 'hi' ? 'सुनिए, ' : 'Gather round. ') + base;
+      if (personality === 'focus') return base.replace(/Please |I have |Here is /g, '').trim();
+      return base;
+    }
+
+    /* ── TIMER HELPERS ── */
+    function startTimer(seconds) {
+      if (timerInterval) clearInterval(timerInterval);
+      timerRemaining = seconds;
+      updateTimerDisplay();
+      timerInterval = setInterval(() => {
+        timerRemaining--;
+        updateTimerDisplay();
+        if (timerRemaining <= 0) {
+          clearInterval(timerInterval); timerInterval = null;
+          const msg = currentLang === 'hi' ? 'टाइमर पूरा हुआ!' : 'Timer complete!';
+          showResponse('TIMER', msg);
+          speak(msg, currentLang);
+          addLog('Timer', msg, currentLang);
+        }
+      }, 1000);
+    }
+    function updateTimerDisplay() {
+      const m = Math.floor(timerRemaining / 60), s = timerRemaining % 60;
+      const el = $('timerDisplay');
+      if (el) el.textContent = timerRemaining > 0 ? `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}` : '--:--';
+    }
+
+    /* ── TASK HELPERS ── */
+    function saveTasks() { localStorage.setItem('sofiya_tasks', JSON.stringify(tasks)); renderTasks(); }
+    function renderTasks() {
+      const el = $('taskList');
+      if (!el) return;
+      if (tasks.length === 0) { el.innerHTML = '<span style="color:var(--text-dim);font-size:.7rem">No tasks yet</span>'; return; }
+      el.innerHTML = tasks.slice(0, 5).map((t, i) =>
+        `<div style="display:flex;justify-content:space-between;align-items:center;font-size:.7rem;padding:2px 0;border-bottom:1px solid rgba(0,212,255,.06)"><span style="color:var(--text)">${t}</span><span style="cursor:pointer;color:var(--success);font-size:.6rem" onclick="completeTask(${i})">✓</span></div>`
+      ).join('');
+    }
+    function completeTask(i) { tasks.splice(i, 1); saveTasks(); }
 
     /* ── WEB SITE MAPPING ── */
     const SITE_MAP = {
@@ -1286,14 +1381,252 @@
         return;
       }
 
-      // ── UNKNOWN ──
-      const unknown = lang === 'hi'
-        ? 'माफ़ करें, मैं यह नहीं समझ पाया। कृपया दोबारा कहें।'
-        : "Sorry, I didn't understand that. Please try again.";
-      showResponse(lang === 'hi' ? 'अज्ञात' : 'UNKNOWN', unknown);
-      speak(unknown, lang);
-      addLog(raw, unknown, lang);
-      setStatus('Ready', 'तैयार', false);
+      // ── G. PERSONALITY SWITCHING ──
+      if (/sass|attitude|एटिट्यूड/i.test(low)) {
+        personality = 'sass';
+        const resp = lang === 'hi' ? 'सैस मोड सक्रिय। 😎' : 'Sass Mode activated. 😎';
+        showResponse('MODE', resp); speak(resp, lang); addLog(raw, resp, lang);
+        setStatus('Done', '', false); return;
+      }
+      if (/focus mode|फोकस मोड/i.test(low)) {
+        personality = 'focus';
+        const resp = lang === 'hi' ? 'फोकस मोड सक्रिय।' : 'Focus Mode engaged.';
+        showResponse('MODE', resp); speak(resp, lang); addLog(raw, resp, lang);
+        setStatus('Done', '', false); return;
+      }
+      if (/story|narrator|कहानी/i.test(low)) {
+        personality = 'storyteller';
+        const resp = lang === 'hi' ? 'कहानी मोड सक्रिय।' : 'Storyteller Mode activated.';
+        showResponse('MODE', resp); speak(resp, lang); addLog(raw, resp, lang);
+        setStatus('Done', '', false); return;
+      }
+      if (/reset|default|normal|सामान्य/i.test(low)) {
+        personality = 'default';
+        const resp = lang === 'hi' ? 'सामान्य मोड सक्रिय।' : 'Default mode restored.';
+        showResponse('MODE', resp); speak(resp, lang); addLog(raw, resp, lang);
+        setStatus('Done', '', false); return;
+      }
+
+      // ── H. MORNING / NIGHT ROUTINES ──
+      if (/good morning|शुभ प्रभात|सुप्रभात|subah ho gayi/i.test(low)) {
+        const t = new Date().toLocaleTimeString(lang === 'hi' ? 'hi-IN' : 'en-US', { hour: '2-digit', minute: '2-digit' });
+        const resp = lang === 'hi'
+          ? `सुप्रभात! अभी ${t} बजे हैं। आज का दिन शानदार होगा।`
+          : `Good morning! It's ${t}. Have a wonderful day ahead.`;
+        showResponse(lang === 'hi' ? 'दिनचर्या' : 'ROUTINE', wrapResponse(resp, lang));
+        speak(wrapResponse(resp, lang), lang); addLog(raw, resp, lang);
+        setStatus('Done', '', false); return;
+      }
+      if (/good night|शुभ रात्रि|so raha|bedtime|goodnight/i.test(low)) {
+        const resp = lang === 'hi'
+          ? 'शुभ रात्रि। आराम कीजिये। मैं निगरानी में हूँ।'
+          : 'Good night. Rest well. I\'ll keep watch.';
+        showResponse(lang === 'hi' ? 'दिनचर्या' : 'ROUTINE', wrapResponse(resp, lang));
+        speak(wrapResponse(resp, lang), lang); addLog(raw, resp, lang);
+        setStatus('Done', '', false); return;
+      }
+
+      // ── I. JOKES ──
+      if (/joke|mazak|chutkula|funny|hasao|हँसाओ|मजाक/i.test(low)) {
+        const jokes = lang === 'hi' ? JOKES_HI : JOKES_EN;
+        const joke = jokes[Math.floor(Math.random() * jokes.length)];
+        showResponse(lang === 'hi' ? 'मजाक' : 'JOKE', wrapResponse(joke, lang));
+        speak(wrapResponse(joke, lang), lang); addLog(raw, joke, lang);
+        setStatus('Done', '', false); return;
+      }
+
+      // ── J. FACTS ──
+      if (/fact|interesting|rochak|रोचक|ज्ञान|gyaan|gyan|did you know/i.test(low)) {
+        const facts = lang === 'hi' ? FACTS_HI : FACTS_EN;
+        const fact = facts[Math.floor(Math.random() * facts.length)];
+        const resp = lang === 'hi' ? `रोचक तथ्य: ${fact}` : `Interesting fact: ${fact}`;
+        showResponse(lang === 'hi' ? 'तथ्य' : 'FACT', wrapResponse(resp, lang));
+        speak(wrapResponse(resp, lang), lang); addLog(raw, resp, lang);
+        setStatus('Done', '', false); return;
+      }
+
+      // ── K. SMART HOME – LIGHTS ──
+      if (/light|lights|बत्ती|bulb|lamp|लाइट/i.test(low)) {
+        const turnOn = /on|chalu|jalao|जलाओ|चालू/i.test(low);
+        lightsOn = turnOn;
+        const resp = turnOn
+          ? (lang === 'hi' ? 'लाइट्स चालू कर दिया। 💡' : 'Lights turned on. 💡')
+          : (lang === 'hi' ? 'लाइट्स बंद कर दिया।' : 'Lights turned off.');
+        showResponse(lang === 'hi' ? 'स्मार्ट होम' : 'SMART HOME', wrapResponse(resp, lang));
+        speak(wrapResponse(resp, lang), lang); addLog(raw, resp, lang);
+        setStatus('Done', '', false); return;
+      }
+
+      // ── K2. SMART HOME – MOVIE NIGHT ──
+      if (/movie|cinema|film|movie night|मूवी/i.test(low)) {
+        lightsOn = false;
+        const resp = lang === 'hi'
+          ? 'मूवी नाइट सीन सक्रिय! लाइट्स डिम, मूड सेट। 🎬'
+          : 'Movie Night activated! Dimming lights, setting the mood. 🎬';
+        showResponse(lang === 'hi' ? 'स्मार्ट होम' : 'SMART HOME', wrapResponse(resp, lang));
+        speak(wrapResponse(resp, lang), lang); addLog(raw, resp, lang);
+        setStatus('Done', '', false); return;
+      }
+
+      // ── L. MEDIA PLAY/PAUSE ──
+      if (/\b(play|music|song|gaana|गाना|bajao|बजाओ|chalao|चलाओ|suno|सुनो)\b/i.test(low)) {
+        if (!/stop|pause|रोको|band/i.test(low)) {
+          let song = raw.replace(/play|music|song|gaana|bajao|chalao|please|suno|sunao/gi, '').trim();
+          mediaTitle = song.length > 1 ? song : 'Chill Lo-Fi Beats';
+          mediaPlaying = true;
+          const resp = lang === 'hi' ? `${mediaTitle} बजा रही हूँ। 🎵` : `Playing ${mediaTitle}. 🎵`;
+          showResponse(lang === 'hi' ? 'मीडिया' : 'MEDIA', wrapResponse(resp, lang));
+          speak(wrapResponse(resp, lang), lang); addLog(raw, resp, lang);
+          setStatus('Done', '', false); return;
+        }
+      }
+      if (/\b(stop|pause|रोको)\b/i.test(low) && /music|song|gaana|media|audio|गाना/i.test(low)) {
+        mediaPlaying = false;
+        const resp = lang === 'hi' ? 'संगीत रोका गया।' : 'Playback paused.';
+        showResponse(lang === 'hi' ? 'मीडिया' : 'MEDIA', wrapResponse(resp, lang));
+        speak(wrapResponse(resp, lang), lang); addLog(raw, resp, lang);
+        setStatus('Done', '', false); return;
+      }
+
+      // ── M. COMMUNICATION – CALL ──
+      if (/\b(call|phone|ring|कॉल|फोन)\b/i.test(low) && !/volume|control/i.test(low)) {
+        let contact = raw.replace(/call|phone|ring|karo|lagao|ko|to|please|can|you|कॉल|करो|को|फोन/gi, '').trim();
+        if (!contact) contact = 'Unknown';
+        const num = CONTACTS[contact] || CONTACTS[contact.toLowerCase()];
+        if (num) {
+          window.open(`tel:${num}`, '_blank');
+          const resp = lang === 'hi' ? `${contact} को कॉल कर रही हूँ।` : `Calling ${contact}.`;
+          showResponse(lang === 'hi' ? 'संचार' : 'CALL', resp);
+          speak(resp, lang); addLog(raw, resp, lang);
+        } else {
+          const resp = lang === 'hi' ? `${contact} को कॉल शुरू कर रही हूँ।` : `Initiating call to ${contact}.`;
+          showResponse(lang === 'hi' ? 'संचार' : 'CALL', resp);
+          speak(resp, lang); addLog(raw, resp, lang);
+        }
+        setStatus('Done', '', false); return;
+      }
+
+      // ── N. WEATHER (simulated) ──
+      if (/weather|mausam|मौसम|temperature|temp|बारिश|rain|forecast/i.test(low)) {
+        const temps = [22, 25, 28, 30, 32, 18, 20];
+        const t = temps[Math.floor(Math.random() * temps.length)];
+        const conds = lang === 'hi'
+          ? ['साफ आसमान', 'हल्की बादल', 'धूप', 'ठंडा और सुहावना']
+          : ['Clear skies', 'Partly cloudy', 'Sunny', 'Cool and pleasant'];
+        const c = conds[Math.floor(Math.random() * conds.length)];
+        const resp = lang === 'hi'
+          ? `अभी का मौसम: ${t}°C, ${c}। 🌤️`
+          : `Current weather: ${t}°C, ${c}. 🌤️`;
+        showResponse(lang === 'hi' ? 'मौसम' : 'WEATHER', wrapResponse(resp, lang));
+        speak(wrapResponse(resp, lang), lang); addLog(raw, resp, lang);
+        setStatus('Done', '', false); return;
+      }
+
+      // ── O. NEWS (simulated) ──
+      if (/news|samachar|समाचार|headlines|khabar|खबर/i.test(low)) {
+        const headlines = lang === 'hi'
+          ? ['AI तकनीक में नई प्रगति', 'भारत ने अंतरिक्ष मिशन लॉन्च किया', 'शेयर बाज़ार में तेज़ी']
+          : ['AI technology reaches new milestone', 'India launches space mission', 'Stock markets surge on tech gains'];
+        const h = headlines[Math.floor(Math.random() * headlines.length)];
+        const resp = lang === 'hi' ? `आज की प्रमुख खबर: ${h}। 📰` : `Top headline: ${h}. 📰`;
+        showResponse(lang === 'hi' ? 'समाचार' : 'NEWS', wrapResponse(resp, lang));
+        speak(wrapResponse(resp, lang), lang); addLog(raw, resp, lang);
+        setStatus('Done', '', false); return;
+      }
+
+      // ── P. TASKS ──
+      if (/\b(task|todo|remind|कार्य|काम|याद)\b/i.test(low)) {
+        if (/add|new|create|जोड़ो|बनाओ/i.test(low)) {
+          let task = raw.replace(/add|new|create|task|todo|remind|jodo|banao|kaam|कार्य|जोड़ो|बनाओ/gi, '').trim();
+          if (task) {
+            tasks.push(task); saveTasks();
+            const resp = lang === 'hi' ? `कार्य जोड़ा गया: "${task}"` : `Task added: "${task}"`;
+            showResponse(lang === 'hi' ? 'कार्य' : 'TASK', resp);
+            speak(resp, lang); addLog(raw, resp, lang);
+          }
+          setStatus('Done', '', false); return;
+        }
+        const resp = lang === 'hi'
+          ? (tasks.length ? `आपके ${tasks.length} कार्य हैं: ${tasks.slice(0, 3).join(', ')}` : 'कोई कार्य नहीं है।')
+          : (tasks.length ? `You have ${tasks.length} task(s): ${tasks.slice(0, 3).join(', ')}` : 'No tasks yet.');
+        showResponse(lang === 'hi' ? 'कार्य' : 'TASK', resp);
+        speak(resp, lang); addLog(raw, resp, lang);
+        setStatus('Done', '', false); return;
+      }
+
+      // ── Q. TIMER ──
+      if (/timer|countdown|alarm|टाइमर|अलार्म/i.test(low)) {
+        const hrM = low.match(/(\d+)\s*(?:hour|hr|ghanta|घंटा)/i);
+        const minM = low.match(/(\d+)\s*(?:minute|min|मिनट)/i);
+        const secM = low.match(/(\d+)\s*(?:second|sec|सेकंड)/i);
+        const dur = (hrM ? parseInt(hrM[1]) * 3600 : 0) + (minM ? parseInt(minM[1]) * 60 : 0) + (secM ? parseInt(secM[1]) : 0);
+        if (dur > 0) {
+          startTimer(dur);
+          const label = dur >= 60 ? `${Math.ceil(dur / 60)} min` : `${dur} sec`;
+          const resp = lang === 'hi' ? `${label} का टाइमर सेट किया गया। ⏱️` : `Timer set for ${label}. ⏱️`;
+          showResponse(lang === 'hi' ? 'टाइमर' : 'TIMER', resp);
+          speak(resp, lang); addLog(raw, resp, lang);
+          setStatus('Done', '', false); return;
+        }
+      }
+
+      // ── R. MATH / CALCULATOR ──
+      const mathMatch = low.match(/(\d+(?:\.\d+)?)\s*([-+*/])\s*(\d+(?:\.\d+)?)/);
+      if (mathMatch) {
+        try {
+          const a = parseFloat(mathMatch[1]), op = mathMatch[2], b = parseFloat(mathMatch[3]);
+          let res = op === '+' ? a + b : op === '-' ? a - b : op === '*' ? a * b : a / b;
+          res = parseFloat(res.toFixed(4));
+          const resp = lang === 'hi' ? `${mathMatch[0]} का उत्तर है ${res}` : `${mathMatch[0]} = ${res}`;
+          showResponse(lang === 'hi' ? 'गणना' : 'CALC', resp);
+          speak(resp, lang); addLog(raw, resp, lang);
+          setStatus('Done', '', false); return;
+        } catch (_) { }
+      }
+
+      // ── S. MINDFULNESS / BREATHING ──
+      if (/breathe|breathing|meditate|meditation|ध्यान|dhyan|relax|calm|शांत|सांस/i.test(low)) {
+        const resp = lang === 'hi'
+          ? 'ध्यान व्यायाम: 4 सेकंड साँस अंदर लें… 7 सेकंड रोकें… 8 सेकंड में छोड़ें। 🧘'
+          : 'Breathing exercise: Inhale 4 seconds… Hold 7 seconds… Exhale 8 seconds. Repeat 4 times. 🧘';
+        showResponse(lang === 'hi' ? 'ध्यान' : 'MINDFULNESS', wrapResponse(resp, lang));
+        speak(wrapResponse(resp, lang), lang); addLog(raw, resp, lang);
+        setStatus('Done', '', false); return;
+      }
+
+      // ── T. SENTRY / SECURITY MODE ──
+      if (/sentry|security|suraksha|surveillance|सुरक्षा|निगरानी/i.test(low)) {
+        const resp = lang === 'hi' ? 'निगरानी मोड सक्रिय। 🛡️' : 'Sentry Mode activated. 🛡️';
+        showResponse(lang === 'hi' ? 'सुरक्षा' : 'SENTRY', wrapResponse(resp, lang));
+        speak(wrapResponse(resp, lang), lang); addLog(raw, resp, lang);
+        setStatus('Done', '', false); return;
+      }
+
+      // ── U. HELP ──
+      if (/help|madad|मदद|what can|kya kar|capabilities/i.test(low)) {
+        const resp = lang === 'hi'
+          ? 'मैं इनमें मदद कर सकती हूँ: वेब नेविगेशन, YouTube, WhatsApp, समय, मौसम, समाचार, कार्य, टाइमर, गणना, मजाक, तथ्य, स्मार्ट होम, ध्यान, और बहुत कुछ!'
+          : 'I can help with: Web Navigation, YouTube, WhatsApp, Time/Date, Weather, News, Tasks, Timer, Calculator, Jokes, Facts, Smart Home, Mindfulness, Media, and more!';
+        showResponse(lang === 'hi' ? 'सहायता' : 'HELP', resp);
+        speak(resp, lang); addLog(raw, resp, lang);
+        setStatus('Done', '', false); return;
+      }
+
+      // ── FALLBACK: WEB SEARCH ──
+      const query = raw.replace(/search|find|google|look up|dhundo|khojo|please/gi, '').trim();
+      if (/^(hello|hi|hey|namaste|नमस्ते)$/i.test(query)) {
+        const resp = lang === 'hi' ? 'नमस्ते! मैं आपकी क्या सहायता कर सकती हूँ?' : 'Hello! How can I help you today?';
+        showResponse('GREET', resp); speak(resp, lang); addLog(raw, resp, lang);
+        setStatus('Done', '', false); return;
+      }
+      const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query || raw)}`;
+      window.open(searchUrl, '_blank');
+      const resp = lang === 'hi'
+        ? `"${query}" खोज रही हूँ…`
+        : `Searching the web for "${query}"…`;
+      showResponse(lang === 'hi' ? 'खोज' : 'SEARCH', resp);
+      speak(resp, lang); addLog(raw, resp, lang);
+      setStatus('Done', '', false);
     }
 
     /* ── SPEECH RECOGNITION ── */
@@ -1416,6 +1749,7 @@
     }
 
     /* ── INIT ── */
+    renderTasks();
     setStatus('Ready — Click Reactor or press Space', 'तैयार — रिएक्टर क्लिक करें', false);
   </script>
 </body>

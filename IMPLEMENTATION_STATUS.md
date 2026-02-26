@@ -5,6 +5,7 @@ This document tracks the implementation progress of the SOFIYA comprehensive imp
 ## ✅ Completed Phases
 
 ### Phase 0: Project Setup & Architecture
+
 - ✅ **0.1** Technology Stack documented (`TECH_STACK.md`)
 - ✅ **0.2** Project structure created (backend/, frontend/, voice-engine/, etc.)
 - ✅ **0.3** Project documentation created:
@@ -16,6 +17,7 @@ This document tracks the implementation progress of the SOFIYA comprehensive imp
 - ✅ **0.4** CI/CD pipeline configured (`.github/workflows/ci.yml`)
 
 ### Phase 1: Voice Engine & Natural Language Processing
+
 - ✅ **1.1** Voice Input Module (`voice-engine/voice-input.js`)
   - Google Cloud Speech-to-Text integration
   - Support for multiple languages (English, Hindi)
@@ -49,11 +51,13 @@ This document tracks the implementation progress of the SOFIYA comprehensive imp
   - Response suggestions based on detected emotion
 
 ## 📦 Package Configuration
+
 - ✅ Backend `package.json` created with required dependencies
 - ✅ Voice Engine `package.json` created with required dependencies
 - ✅ Environment variable templates created (`.env.example` files)
 
 ### Phase 2: Core Command Processing Engine
+
 - ✅ **2.1** Command Router (`backend/command-router.js`)
   - Complete intent-to-handler mapping
   - Multi-intent request support
@@ -78,6 +82,7 @@ This document tracks the implementation progress of the SOFIYA comprehensive imp
   - Greeting and farewell messages per mode
 
 ### Phase 3: WhatsApp Integration
+
 - ✅ **3.1** WhatsApp Business API Setup
   - Configuration documented in `.env.example`
   - Twilio integration setup instructions
@@ -106,6 +111,7 @@ This document tracks the implementation progress of the SOFIYA comprehensive imp
   - Health check endpoint
 
 ### Phase 17: Machine Learning & Personalization Engine
+
 - ✅ **17.1** Behavior Predictor (`backend/ml/behavior-predictor.js`)
   - Markov chain-based action prediction
   - Context-aware predictions (hour, day, location)
@@ -137,6 +143,7 @@ This document tracks the implementation progress of the SOFIYA comprehensive imp
   - Personality-based response selection
 
 ### Phase 20: Proactive Notifications & Context-Aware Alerts
+
 - ✅ **20.1** Notification Engine (`backend/notification-engine.js`)
   - Intelligent filtering and prioritization
   - Deduplication and batching
@@ -145,6 +152,7 @@ This document tracks the implementation progress of the SOFIYA comprehensive imp
   - User preference management
 
 ### Phase 24: Performance Optimization & Scaling
+
 - ✅ **24.1** Cache Strategy (`backend/cache-strategy.js`)
   - Multi-layer caching (Redis + in-memory fallback)
   - TTL-based expiration per data type
@@ -177,6 +185,7 @@ This document tracks the implementation progress of the SOFIYA comprehensive imp
   - Target latency: <1 second (p95)
 
 ### Phase 27: Monitoring, Alerting & Observability
+
 - ✅ **27.1** Metrics Collector (`backend/metrics-collector.js`)
   - Comprehensive metrics collection (counters, gauges, histograms)
   - API request metrics (latency, status codes)
@@ -216,6 +225,7 @@ This document tracks the implementation progress of the SOFIYA comprehensive imp
   - Compliance status tracking
 
 ### Phase 18: Advanced Voice Features
+
 - ✅ **18.1** Language Manager (`voice-engine/language-manager.js`)
   - Automatic language detection from text
   - Support for 7 languages (English, Hindi, Spanish, French, German, Mandarin, Japanese)
@@ -256,6 +266,7 @@ This document tracks the implementation progress of the SOFIYA comprehensive imp
   - Context management across turns
 
 ### Phase 19: Computer Vision & AR Integration
+
 - ✅ **19.1** Vision Service (`integrations/vision-service.js`)
   - Camera-based item recognition (YOLO object detection)
   - Item location tracking (keys, wallet, phone, etc.)
@@ -292,6 +303,7 @@ This document tracks the implementation progress of the SOFIYA comprehensive imp
   - Structured note parsing (bullets, lists, headings)
 
 ### Phase 4: Smart Home Integration
+
 - ✅ **4.1** Smart Home API Connections
   - Google Home Connector (`integrations/google-home-connector.js`)
     - OAuth2 authentication
@@ -326,6 +338,7 @@ This document tracks the implementation progress of the SOFIYA comprehensive imp
   - Device search by type
 
 ### Phase 5: Calendar, Reminders & Task Management
+
 - ✅ **5.1** Calendar Integration (`integrations/calendar-service.js`)
   - Google Calendar OAuth2 authentication
   - Event creation, updating, deletion
@@ -364,6 +377,7 @@ This document tracks the implementation progress of the SOFIYA comprehensive imp
   - Context-aware predictions
 
 ### Phase 6: Health & Wellness Features
+
 - ✅ **6.1** Wearable Data Integration
   - Fitbit Connector (`integrations/fitbit-connector.js`)
     - OAuth2 authentication
@@ -406,6 +420,7 @@ This document tracks the implementation progress of the SOFIYA comprehensive imp
   - Recipe database with nutritional info
 
 ### Phase 7: Information, Learning & Knowledge
+
 - ✅ **7.1** News Curation Engine (`integrations/news-service.js`)
   - Personalized news based on user interests
   - Multi-source news fetching (NewsAPI)
@@ -434,6 +449,7 @@ This document tracks the implementation progress of the SOFIYA comprehensive imp
   - Performance-based path adjustment
 
 ### Phase 8: Social & Relationship Management
+
 - ✅ **8.1** Social Secretary (`backend/social-secretary.js`)
   - Contact management with birthdays, anniversaries
   - Birthday reminders (14, 7, 1 days before)
@@ -460,6 +476,7 @@ This document tracks the implementation progress of the SOFIYA comprehensive imp
   - RSVP tracking and status
 
 ### Phase 9: Advanced Features
+
 - ✅ **9.1** Travel Assistant (`integrations/travel-assistant.js`)
   - Real-time translation (Google Translate API)
   - Local customs tips (greeting, dining, tipping, etiquette)
@@ -496,6 +513,7 @@ This document tracks the implementation progress of the SOFIYA comprehensive imp
   - Preference learning from feedback
 
 ### Phase 10: Privacy & Security
+
 - ✅ **10.1** Privacy Controller (`backend/privacy-controller.js`)
   - Sensitive data identification (financial, health, location, etc.)
   - User privacy settings per service
@@ -523,6 +541,7 @@ This document tracks the implementation progress of the SOFIYA comprehensive imp
   - Settings persistence
 
 ### Phase 11: Frontend & User Interface
+
 - ✅ **11.1** Dashboard (`frontend/src/pages/Dashboard.tsx`)
   - Today's schedule overview
   - Reminders list
@@ -543,6 +562,7 @@ This document tracks the implementation progress of the SOFIYA comprehensive imp
   - Privacy (embedded PrivacyDashboard)
 
 ### Phase 12: Backend API & Database Design
+
 - ✅ **12.1** Database Schema (`database/schema.sql`)
   - users, contacts, social_contacts
   - reminders, location_reminders
@@ -582,6 +602,7 @@ This document tracks the implementation progress of the SOFIYA comprehensive imp
   - WebSocket attached to HTTP server
 
 ### Phase 13: Testing
+
 - ✅ **13.1** Unit Tests
   - NLP Processor (`tests/nlp-processor.test.js`) - intent classification, entity extraction, edge cases
   - Command Router (`tests/command-router.test.js`) - routing for send_message, control_device, weather, system_status
@@ -598,12 +619,14 @@ This document tracks the implementation progress of the SOFIYA comprehensive imp
 - ✅ Test scripts: `npm run test:backend`, `npm run test:frontend`, `npm run test:e2e` (root package.json)
 
 ### Phase 14: Deployment & Infrastructure
+
 - ✅ **14.1** Dockerfiles - backend, voice-engine, frontend (Node 20 Alpine, nginx)
 - ✅ **14.2** Docker Compose - full stack with Postgres, Redis
 - ✅ **14.3** Deployment scripts - deploy-staging, deploy-production, rollback
 - ✅ **14.4** Kubernetes - deployment.yaml, service.yaml
 
 ### Phase 15: Monitoring, Logging & Analytics
+
 - ✅ **15.1** Structured logging - Winston (`backend/logger.js`), log levels, API/voice/integration logs
 - ✅ **15.2** Monitoring - covered by Phase 27 (metrics-collector, alerting-rules, sla-monitor)
 - ✅ **15.3** Analytics service - voice commands by intent, WhatsApp volume, scenes, feature adoption
@@ -611,6 +634,7 @@ This document tracks the implementation progress of the SOFIYA comprehensive imp
 - ✅ **15.4** Error tracking - Sentry integration (`backend/error-tracker.js`), optional SENTRY_DSN
 
 ### Phase 16: Post-Launch & Continuous Improvement
+
 - ✅ **16.1** Feature feedback - FeedbackModal with 1-5 stars, feature selector, feature request checkbox
 - ✅ **16.1** Feedback API - `POST /api/feedback`, `POST /api/feedback/rate`
 - ✅ **16.2** A/B testing - `backend/ab-testing.js` (getVariant, trackEvent, getExperimentStats)
@@ -639,6 +663,7 @@ All 17 phases (0–16) from the implementation plan are complete.
 ## 🚀 Quick Start
 
 1. Install dependencies:
+
    ```bash
    cd backend && npm install
    cd ../voice-engine && npm install
@@ -646,6 +671,7 @@ All 17 phases (0–16) from the implementation plan are complete.
    ```
 
 2. Configure environment:
+
    ```bash
    cp backend/.env.example backend/.env
    cp voice-engine/.env.example voice-engine/.env
@@ -653,6 +679,7 @@ All 17 phases (0–16) from the implementation plan are complete.
    ```
 
 3. Start services:
+
    ```bash
    # Terminal 1: Backend (port 3001)
    cd backend && npm run dev
@@ -665,6 +692,38 @@ All 17 phases (0–16) from the implementation plan are complete.
    ```
 
 4. Or use Docker Compose:
+
    ```bash
    docker compose -f deployment/docker-compose.yml up
    ```
+
+---
+
+### Phase 18: Standalone HTML Demo (`sofiya-assistant.html`) — v5.1.0
+
+Single-file, zero-build HTML application with full bilingual voice command support.
+
+- ✅ **18.1** Web Navigation (EN + HI) — "Open YouTube" / "गूगल खोलो"
+- ✅ **18.2** YouTube Search (EN + HI) — "Play Bollywood on YouTube"
+- ✅ **18.3** WhatsApp Messaging — bilingual contact map + `wa.me` deep-link
+- ✅ **18.4** Time & Date — spoken in detected language
+- ✅ **18.5** Volume Control — visual bar + spoken feedback
+- ✅ **18.6** Greetings & Identity — Hello / नमस्ते / तुम कौन हो?
+- ✅ **18.7** Personality Modes — Default / Focus / Sass / Storyteller
+- ✅ **18.8** Morning & Night Routines — "Good morning" / "शुभ रात्रि"
+- ✅ **18.9** Jokes (5 EN + 3 HI) — "Tell me a joke" / "मजाक सुनाओ"
+- ✅ **18.10** Facts (5 EN + 3 HI) — "Interesting fact" / "रोचक तथ्य"
+- ✅ **18.11** Smart Home – Lights — "Turn on lights" / "बत्ती जलाओ"
+- ✅ **18.12** Smart Home – Movie Night — "Movie night" / "मूवी"
+- ✅ **18.13** Media Play/Pause — "Play chill music" / "Stop music"
+- ✅ **18.14** Communication – Call — "Call Mom" / "मम्मी को कॉल करो"
+- ✅ **18.15** Weather (simulated) — "Weather" / "मौसम"
+- ✅ **18.16** News (simulated) — "News" / "समाचार"
+- ✅ **18.17** Tasks (localStorage) — "Add task Buy milk" + visual panel
+- ✅ **18.18** Timer/Countdown — "Set timer for 5 minutes" + live display
+- ✅ **18.19** Math/Calculator — "25 + 17" → inline evaluation
+- ✅ **18.20** Mindfulness — "Breathe" / "ध्यान" — 4-7-8 breathing guide
+- ✅ **18.21** Sentry Mode — "Sentry" / "सुरक्षा"
+- ✅ **18.22** Help command — "Help" / "मदद"
+- ✅ **18.23** Web Search Fallback — unrecognized commands → Google
+- ✅ **18.24** UI Widgets — Timer display, Task list panel, Updated marquee (30+ commands)

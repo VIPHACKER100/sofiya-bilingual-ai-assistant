@@ -60,3 +60,16 @@ This document outlines the complete technology stack for the SOFIYA Bilingual AI
 - **Authentication**: JWT (JSON Web Tokens) + OAuth 2.0
 - **Encryption**: AES-256 (at rest), TLS 1.3 (in transit)
 - **Secure Storage**: HashiCorp Vault or AWS Secrets Manager
+
+---
+
+## 🚀 Standalone Demo Tech Stack (`sofiya-assistant.html`)
+
+For zero-dependency deployment and quick testing:
+
+- **Core**: Vanilla HTML5, CSS3, ES6+ JavaScript
+- **Voice STT**: Web Speech API (`webkitSpeechRecognition`)
+- **Voice TTS**: Web Speech Synthesis API (`speechSynthesis`)
+- **Persistence**: Browser `localStorage` (for tasks and settings)
+- **External links**: Deep links for `wa.me`, `tel:`, and Google Search.
+- **Portability**: Single self-contained HTML file (approx. 50KB).

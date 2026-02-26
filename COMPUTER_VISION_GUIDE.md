@@ -33,6 +33,7 @@ vision.startMonitoring((detection) => {
 ### Trackable Items
 
 Default items tracked:
+
 - keys, wallet, phone, remote, glasses, watch
 - backpack, laptop, book, pen, umbrella, bag
 
@@ -282,21 +283,25 @@ const total = expenses.reduce((sum, e) => sum + e.amount, 0);
 ## 🎯 Use Cases
 
 ### Spatial Awareness
+
 - "Where are my keys?" → Camera scans room, finds keys
 - "What's in the fridge?" → Scans fridge, lists items
 - "Is my laptop on my desk?" → Scans workspace, confirms
 
 ### Expense Tracking
+
 - Take photo of receipt → Auto-creates expense record
 - Scan invoice → Extracts vendor, amount, due date
 - Monthly summary → "You spent $X this month"
 
 ### Multi-User Household
+
 - Face detected → Auto-switch to that user's profile
 - Privacy enforced → Each user only sees their data
 - Guest mode → Limited access for visitors
 
 ### AR Assistance
+
 - Travel → Overlay translations on signs
 - Navigation → Arrows on floor pointing to destination
 - Smart Home → Device controls visible in room
@@ -307,18 +312,21 @@ const total = expenses.reduce((sum, e) => sum + e.amount, 0);
 ## 🔒 Privacy & Security
 
 ### Vision Service
+
 - ✅ Images processed locally when possible
 - ✅ Only item locations stored, not images
 - ✅ User can disable item tracking
 - ✅ Location data encrypted
 
 ### Facial Recognition
+
 - ✅ Opt-in only
 - ✅ Only embeddings stored, not images
 - ✅ User can delete embeddings anytime
 - ✅ No sharing between users
 
 ### Document Scanning
+
 - ✅ Receipts: Full data stored (for expense tracking)
 - ✅ IDs: Only contact info extracted (optional)
 - ✅ User can delete scanned documents
@@ -332,3 +340,14 @@ const total = expenses.reduce((sum, e) => sum + e.amount, 0);
 - `document-scanner.js` - Document scanning and OCR
 - `facial-recognition.js` - Face recognition
 - `frontend/ar/ARInterface.jsx` - AR overlay component
+
+---
+
+## 🚀 Standalone Demo Features (`sofiya-assistant.html`)
+
+While complex vision processing is reserved for the full React app, the standalone demo features **Security Simulation**:
+
+- **Sentry Mode**: "Sentry" / "सुरक्षा" / "निगरानी" (Activates a simulated high-alert state).
+- **Cinematic Feedback**: The Arc Reactor UI pulses with a faster, defensive rhythm.
+- **Auditory Alert**: SOFIYA confirms security protocols are active in the detected language.
+- **Prototyping**: Demonstrates how vision-triggered events could be handled in a real-world scenario.

@@ -389,3 +389,14 @@ CREATE TABLE shopping_lists (
 - `health-analytics.js` - Health data analysis
 - `wellness-guide.js` - Wellness content
 - `nutrition-service.js` - Meal planning and nutrition
+
+---
+
+## 🚀 Standalone Demo Features (`sofiya-assistant.html`)
+
+While the full guide covers complex wearable integrations, the standalone demo provides immediate access to:
+
+- **Bilingual Mindfulness**: "Guide me through breathing" / "सांस लेने में मदद करो"
+- **4-7-8 Technique**: Hardcoded sequence for 4s inhale, 7s hold, 8s exhale.
+- **Visual Cues**: Real-time text instructions in the response panel.
+- **Portability**: No app or account required to start a meditation session.

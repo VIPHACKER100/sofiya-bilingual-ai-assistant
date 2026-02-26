@@ -5,11 +5,54 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [5.1.0] — 2026-02-26
+
+### Added — Standalone HTML (`sofiya-assistant.html`)
+
+#### New Voice Commands (18)
+
+- **Personality Modes**: "Sass mode" / "Focus mode" / "Storyteller" / "Reset" — dynamically wraps all responses
+- **Morning Routine**: "Good morning" / "सुप्रभात" — time-aware spoken briefing
+- **Night Routine**: "Good night" / "शुभ रात्रि" — farewell with simulated light-off
+- **Jokes** (bilingual bank): "Tell me a joke" / "मजाक सुनाओ" — 5 EN + 3 HI random jokes
+- **Facts** (bilingual bank): "Interesting fact" / "रोचक तथ्य" — 5 EN + 3 HI random facts
+- **Smart Home – Lights**: "Turn on lights" / "बत्ती जलाओ" — state-tracked toggle
+- **Smart Home – Movie Night**: "Movie night" / "मूवी" — scene simulation
+- **Media Play/Pause/Resume**: "Play chill music" / "गाना बजाओ" / "Stop music"
+- **Communication – Call**: "Call Mom" / "मम्मी को कॉल करो" — `tel:` deep link
+- **Weather** (simulated): "Weather" / "मौसम" — random temp + condition
+- **News** (simulated): "News" / "समाचार" — bilingual random headline
+- **Tasks** (localStorage): "Add task Buy milk" / "कार्य जोड़ो" — persists across refresh
+- **Timer/Countdown**: "Set timer for 5 minutes" — live MM:SS display + spoken alert
+- **Math/Calculator**: "25 + 17" — inline arithmetic evaluation (safe, no `eval`)
+- **Mindfulness**: "Breathe" / "ध्यान" — 4-7-8 breathing exercise guide
+- **Sentry Mode**: "Sentry" / "सुरक्षा" — simulated activation
+- **Help**: "Help" / "मदद" — lists all capabilities in detected language
+- **Web Search Fallback**: Unrecognized commands now open Google search
+
+#### New UI Widgets
+
+- **Timer Panel**: Live countdown display in right panel
+- **Task List Panel**: Shows up to 5 tasks with ✓ to complete
+- **Updated Quick Commands**: Shows all new feature examples
+- **Expanded Marquee**: 30+ clickable example commands
+
+### Changed
+
+- **`sofiya-assistant.html`**: Expanded from 1423 to 1563 lines with all new features
+- **`README.md`**: Updated Standalone Demo section with full feature table (24 rows)
+- **`CHANGELOG.md`**: Added v5.1.0 entry
+- **`USER_GUIDE.md`**: Updated with new features documentation
+- **`IMPLEMENTATION_STATUS.md`**: Added Standalone HTML features phase
+
+---
+
 ## [5.0.0] — 2026-02-19
 
 ### Added
 
 #### New Services (10)
+
 - **`themeService.ts`**: 4 switchable themes (sofiya/classic/focus/zen) with localStorage persistence
 - **`i18nService.ts`**: Multi-language support for EN, HI, ES, FR, DE, JA with translation system
 - **`analyticsService.ts`**: Event tracking, session management, auto-flush queue
@@ -22,13 +65,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **`loggerService.ts`**: Debug logging with levels and export
 
 #### New Hooks
+
 - **`useUndoRedo.ts`**: Undo/Redo state management for tasks
 - **`useCommon.ts`**: 15+ utility hooks (debounce, throttle, localStorage, mediaQuery, etc.)
 
 #### Accessibility
+
 - **`accessibilityService.ts`**: ARIA labels, screen reader announcements, keyboard navigation, focus trap
 
 #### Testing
+
 - **`tests/commandProcessor.test.ts`**: 45+ unit tests for command processor
 - **`tests/privacy.test.ts`**: Privacy service tests
 - **`tests/e2e.spec.ts`**: Playwright E2E tests

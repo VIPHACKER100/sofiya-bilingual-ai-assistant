@@ -432,3 +432,41 @@ const audio = await voiceCustom.synthesizeSpeech(
 - `voice-customization.js` - Voice cloning and customization
 - `ambient-listener.js` - Privacy-respecting ambient listening
 - `conversation-skills/` - Conversation skill library
+
+---
+
+## 🚀 Standalone HTML Voice Features (`sofiya-assistant.html`)
+
+The standalone version provides a subset of full features using client-side JavaScript and the Web Speech API.
+
+### Core Commands
+
+| Feature | Commands (EN / HI) |
+|---|---|
+| **Navigation** | "Open YouTube" / "गूगल खोलो" |
+| **Search** | "Search for recipes" / "सर्च करो रेसिपी" |
+| **Communication** | "WhatsApp Mom hello" / "मम्मी को व्हाट्सएप करो" |
+| **Calls** | "Call Dad" / "पापा को कॉल करो" |
+| **Time/Date** | "What time is it?" / "कितने बजे हैं?" |
+| **Volume** | "Volume up" / "आवाज़ बढ़ाओ" |
+
+### New Interactive Features (v5.1.0)
+
+- **Personality Prototypes**:
+  - `Sass`: "Toggle sass mode"
+  - `Focus`: "Focus mode on"
+  - `Storyteller`: "Narrator mode"
+- **Daily Routines**:
+  - `Morning`: "Good morning" (Spoken time + greeting)
+  - `Night`: "Good night" (Farewell + light simulation)
+- **Utilities**:
+  - `Timer`: "Set timer 5 minutes" (MM:SS display)
+  - `Tasks`: "Add task Buy milk" (LocalStorage persistence)
+  - `Calc`: "25 plus 17" (Inline evaluation)
+- **Entertainment**:
+  - `Jokes`: "Tell me a joke" (Bilingual bank)
+  - `Facts`: "Interesting fact" (Random trivia)
+- **Self-Care**:
+  - `Mindfulness`: "Breathe" (4-7-8 breathing exercise)
+- **System fallback**:
+  - `Search`: Unrecognized commands redirect to Google Search automatically.

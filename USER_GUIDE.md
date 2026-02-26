@@ -1,6 +1,6 @@
 # 📖 SOFIYA — User Guide
 
-Welcome to **SOFIYA**. This guide will help you master your bilingual AI assistant and get the most out of its features.
+Welcome to **SOFIYA**. This guide covers every feature available in both the **standalone HTML demo** and the **full React app**.
 
 ---
 
@@ -10,59 +10,194 @@ Welcome to **SOFIYA**. This guide will help you master your bilingual AI assista
 2. **Activate**: Click the central orb once to put SOFIYA in **LISTENING** mode. The rings will glow and rotate faster.
 3. **Speak**: Say a command in English or Hindi. You don't need to specify the language; SOFIYA detects it automatically.
 
----
-
-## 🎭 Personalizing Your Experience
-
-SOFIYA has four **Protocols** (Themes & Personalities). You can switch them by voice or by setting the default in the code:
-
-- **"Activate Sass Mode"**: Switch to the **Sass** personality (Red/Focus theme). She'll be a bit more "direct" with you.
-- **"Storyteller Mode"**: Switch to the **Narrator** personality (Violet/Zen theme). Great for a more poetic interaction.
-- **"Normal Mode"**: Restores the default **SOFIYA** personality and violet theme.
+**Keyboard shortcuts:** `Space` — activate/deactivate · `L` — toggle EN/HI · `↑↓` — volume
 
 ---
 
-## 🔄 Using Smart Routines
+## 🗣️ Full Voice Commands Reference
 
-Routines are designed to handle your daily transition periods:
+### 🌐 Web Navigation
 
-- **Morning**: Say *"Good morning"* or *"Suprabhat"*. SOFIYA will automatically fetch your local weather, open the news panel, and show your task list.
-- **Night**: Say *"Good night"* or *"Shubh ratri"*. SOFIYA will stop any media playing, turn off the smart home lights, and switch to **Focus Mode** so you can rest.
+| English | Hindi |
+|---|---|
+| "Open YouTube" | "यूट्यूब खोलो" |
+| "Go to Google" | "गूगल खोलो" |
+| "Open Instagram" | "इंस्टाग्राम खोलो" |
+
+### 🎬 YouTube Search
+
+| English | Hindi |
+|---|---|
+| "Play Bollywood on YouTube" | "यूट्यूब पर बॉलीवुड चलाओ" |
+| "Search YouTube for recipes" | "YouTube पर रेसिपी सर्च करो" |
+
+### 💬 WhatsApp Messaging
+
+| English | Hindi |
+|---|---|
+| "Send message to Mom saying hello" | "मम्मी को मैसेज भेजो hello" |
+| "WhatsApp Dad saying I'm home" | "पापा को कहो मैं घर आ गया" |
+
+### 📞 Call
+
+| English | Hindi |
+|---|---|
+| "Call Mom" | "मम्मी को कॉल करो" |
+| "Phone Dad" | "पापा को फोन करो" |
+
+### 🕐 Time & Date
+
+| English | Hindi |
+|---|---|
+| "What time is it?" | "कितने बजे हैं?" |
+| "What's the date today?" | "आज कौन सी तारीख है?" |
+
+### 🔊 Volume Control
+
+| English | Hindi |
+|---|---|
+| "Increase volume" / "Volume up" | "आवाज़ बढ़ाओ" |
+| "Decrease volume" | "वॉल्यूम कम करो" |
+| "Mute" | "म्यूट करो" |
+
+### 🎭 Personality Modes
+
+| Command | Effect |
+|---|---|
+| "Sass mode" / "Attitude" | Witty, sarcastic responses |
+| "Focus mode" | Minimal, direct responses |
+| "Storyteller" / "Narrator" | Narrative, dramatic responses |
+| "Reset" / "Normal" / "Default" | Restores default personality |
+
+### 🔄 Smart Routines
+
+| English | Hindi |
+|---|---|
+| "Good morning" | "सुप्रभात" / "शुभ प्रभात" |
+| "Good night" | "शुभ रात्रि" |
+
+- **Morning**: SOFIYA gives you the time and a motivational greeting.
+- **Night**: SOFIYA wishes you goodnight and offers to stand watch.
+
+### 😂 Jokes & Facts
+
+| English | Hindi |
+|---|---|
+| "Tell me a joke" | "मजाक सुनाओ" |
+| "Interesting fact" | "रोचक तथ्य" |
+
+Banks: 5 English + 3 Hindi jokes · 5 English + 3 Hindi facts — randomly selected.
+
+### 🏠 Smart Home
+
+| English | Hindi |
+|---|---|
+| "Turn on lights" | "बत्ती जलाओ" / "लाइट ऑन" |
+| "Turn off lights" | "बत्ती बंद करो" |
+| "Movie night" | "मूवी" |
+
+### 🎵 Media Player
+
+| English | Hindi |
+|---|---|
+| "Play chill music" | "गाना बजाओ" / "संगीत चलाओ" |
+| "Stop music" | "गाना रोको" |
+
+### 🌤️ Weather
+
+| English | Hindi |
+|---|---|
+| "Weather" / "Forecast" | "मौसम" / "तापमान" |
+
+> Note: Standalone HTML uses simulated data. Full React app uses Open-Meteo API.
+
+### 📰 News
+
+| English | Hindi |
+|---|---|
+| "News" / "Headlines" | "समाचार" / "खबर" |
+
+> Note: Standalone HTML uses simulated headlines. Full React app fetches live feeds.
+
+### ✅ Tasks
+
+| English | Hindi |
+|---|---|
+| "Add task Buy groceries" | "कार्य जोड़ो दूध खरीदो" |
+| "Show tasks" / "Task list" | "कार्य दिखाओ" |
+
+Tasks are saved in `localStorage` and persist across page refreshes. Click ✓ to mark complete.
+
+### ⏱️ Timer / Countdown
+
+| English | Hindi |
+|---|---|
+| "Set timer for 5 minutes" | "5 मिनट का टाइमर लगाओ" |
+| "Set timer for 30 seconds" | "30 सेकंड का टाइमर" |
+
+- Supports hours, minutes, and seconds (combinable).
+- Live MM:SS countdown in the right panel.
+- Spoken alert on completion.
+
+### 🧮 Calculator
+
+Just say any math expression:
+
+- "25 + 17" → "25 + 17 = 42"
+- "100 / 4" → "100 / 4 = 25"
+- "15 *3" → "15* 3 = 45"
+
+### 🧘 Mindfulness
+
+| English | Hindi |
+|---|---|
+| "Breathe" / "Meditate" | "ध्यान" / "सांस" / "शांत" |
+
+SOFIYA guides you through a 4-7-8 breathing exercise.
+
+### 🛡️ Sentry Mode
+
+| English | Hindi |
+|---|---|
+| "Sentry" / "Security" | "सुरक्षा" / "निगरानी" |
+
+### ❓ Help
+
+| English | Hindi |
+|---|---|
+| "Help" / "What can you do?" | "मदद" / "क्या कर सकती हो?" |
+
+Lists all available capabilities in the detected language.
+
+### 🔍 Web Search Fallback
+
+Any command that SOFIYA doesn't recognize is automatically searched on Google.
 
 ---
 
-## 📱 Interactive Marquee
+## 🎨 Interactive Marquee
 
-At the bottom of the screen, you'll see a scrolling list of commands. These are not just suggestions!
-
-- **Click any command**: SOFIYA will process it as if you had spoken it. This is a great way to learn what she can do without speaking.
-
----
-
-## 🏠 Controlling Your Smart Home
-
-SOFIYA simulates a smart home environment:
-
-- **"Lights On" / "Batti jalao"**: Turns on the virtual room lights.
-- **"Movie Night"**: Dims the lights and switches the UI to Focus mode.
-- **"Check Thermostat"**: Displays the current indoor temperature.
+At the bottom of the screen, you'll see a scrolling list of 30+ commands. **Click any command** to execute it instantly — great for discovering features.
 
 ---
 
 ## 🔒 Security Features
 
-SOFIYA is designed with your privacy in mind:
-
-- **No Background Listening**: SOFIYA only listens when you click the orb to activate her.
-- **Sensitive Data Blocking**: If she hears words like "Password", "OTP", or "Credit Card", the security layer will instantly block the command and show an alert.
+- **No Background Listening**: SOFIYA only listens when you click the reactor to activate.
+- **Sensitive Data Blocking** (React app): Commands containing "Password", "OTP", or "Credit Card" are blocked.
 
 ---
 
 ## ❓ Troubleshooting
 
-- **Not Listening**: Ensure you are using Chrome or Edge (Web Speech API works best there). Check if another tab is using your microphone.
-- **Weather Error**: Make sure you allowed Location permissions when prompted.
-- **AI Not Responding**: Ensure you have added a valid `VITE_OPENROUTER_API_KEY` to your `.env.local` file for AI features.
+| Problem | Solution |
+|---|---|
+| Not Listening | Use Chrome or Edge. Check if another tab is using your microphone. |
+| Hindi not detected | Speak naturally. SOFIYA uses Devanagari Unicode detection. |
+| Timer not visible | Check the right panel — the MM:SS countdown is below the volume bar. |
+| Tasks disappeared | Tasks are saved in `localStorage`. Clearing browser data will remove them. |
+| AI Not Responding | (React app only) Add a valid `VITE_OPENROUTER_API_KEY` to `.env.local`. |
 
 ---
-*For technical details, see [ARCHITECTURE.md](ARCHITECTURE.md).*
+
+*For technical details, see [ARCHITECTURE.md](docs/ARCHITECTURE.md). For configuration, see [CONFIGURATION.md](CONFIGURATION.md).*

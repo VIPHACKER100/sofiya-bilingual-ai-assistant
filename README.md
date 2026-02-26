@@ -33,9 +33,24 @@ sofiya-bilingual-ai-assistant/
 | 🌐 Web Navigation | "Open YouTube" / "गूगल खोलो" |
 | 🎬 YouTube Search | "Play Bollywood on YouTube" / "यूट्यूब पर गाना चलाओ" |
 | 💬 WhatsApp | Bilingual contact map + `wa.me` deep-link |
+| 📞 Call | "Call Mom" / "मम्मी को कॉल करो" |
 | 🕐 Time & Date | Spoken in the detected language |
 | 🔊 Volume Simulation | Visual bar + spoken feedback |
 | 👋 Greetings | Hello / नमस्ते / धन्यवाद / तुम कौन हो? |
+| 🎭 4 Personality Modes | Default / Focus / Sass / Storyteller — switch by voice |
+| 🔄 Morning & Night Routines | "Good morning" / "शुभ रात्रि" — time-aware briefing |
+| 😂 Jokes & Facts | 5 EN + 3 HI jokes, 5 EN + 3 HI facts — random pick |
+| 🏠 Smart Home | "Turn on lights" / "बत्ती जलाओ" / "Movie night" |
+| 🎵 Media Player | "Play chill music" / "गाना बजाओ" / "Stop music" |
+| 🌤️ Weather (simulated) | "Weather" / "मौसम" — random temp + condition |
+| 📰 News (simulated) | "News" / "समाचार" — bilingual headline |
+| ✅ Tasks (localStorage) | "Add task Buy milk" — persists across refresh |
+| ⏱️ Timer/Countdown | "Set timer for 5 minutes" — live MM:SS display |
+| 🧮 Calculator | "25 + 17" — inline math evaluation |
+| 🧘 Mindfulness | "Breathe" / "ध्यान" — 4-7-8 breathing guide |
+| 🛡️ Sentry Mode | "Sentry" / "सुरक्षा" — simulated activation |
+| ❓ Help | "Help" / "मदद" — lists all capabilities |
+| 🔍 Web Search Fallback | Unrecognized commands → Google search |
 | 🎨 Futuristic UI | Arc-reactor button, scanlines, glassmorphism, Devanagari fonts |
 
 **Keyboard shortcuts:** `Space` — activate/deactivate · `L` — toggle EN/HI · `↑↓` — volume

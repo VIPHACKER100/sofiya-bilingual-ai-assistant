@@ -304,3 +304,14 @@ CREATE TABLE learning_progress (
 - `news-service.js` - News curation and personalization
 - `knowledge-integrator.js` - Knowledge linking and discovery
 - `learning-engine.js` - Adaptive learning pathways
+
+---
+
+## 🚀 Standalone Demo Features (`sofiya-assistant.html`)
+
+The standalone demo provides local "Knowledge & Information" simulation:
+
+- **Bilingual Facts**: "Interesting fact" / "रोचक तथ्य" (Random bank of 5 EN + 3 HI facts)
+- **Simulated News**: "News" / "समाचार" (Random bilingual headlines for demonstration)
+- **Web Fallback**: Unrecognized knowledge queries automatically redirect to **Google Search**.
+- **Interactive Training**: Marquee commands allow users to learn the assistant's capabilities visually.

@@ -1,37 +1,35 @@
-# 📋 Project Summary — SOFIYA v4.3.0
+# 📋 Project Summary — SOFIYA v5.1.0
 
 ## 🌌 Vision
 
-**SOFIYA** is designed to be the ultimate bilingual browser companion. It bridges the gap between high-tech "Iron Man" style interfaces and practical, everyday utility by providing a voice-first experience that speaks the user's language—literally.
+**SOFIYA** is the ultimate bilingual AI companion. It bridges the gap between high-tech "Iron Man" interfaces and practical utility, providing a voice-first experience in English and Hindi.
 
 ## 🏗️ Technical Foundation
 
-- **Frontend**: React 19 (Functional Components + Hooks)
-- **Styling**: Tailwind CSS + Custom Vanilla CSS Glassmorphism
-- **Logic**: TypeScript 5.8 (Strict Mode)
-- **Voice**: Web Speech API (Recognition & Synthesis)
-- **Audio**: Procedural Web Audio API for UI feedback
-- **AI**: OpenRouter API (Conversational Fallback)
+- **Frontend**: React 19 + Standalone Vanilla HTML5/CSS3/JS
+- **Logic**: Optimized Regex NLP + Web Speech API (no cloud costs)
+- **Persistence**: `localStorage` for zero-backend data safety
+- **AI**: Fallback logic via Google Search + OpenRouter (React only)
 
-## 🚀 Key Achievements in v4.3.0
+## 🚀 Key Achievements in v5.1.0
 
-1. **Modular Logic**: Successfully decoupled the assistant's massive state machine into a standalone `useAssistant` hook, improving scalability.
-2. **Interactive UI**: Transformed the passive command marquee into an interactive tool, significantly reducing the friction for new users.
-3. **Advanced Intelligence**: Implemented Smart Routines (`ROUTINE_MORNING`, `ROUTINE_NIGHT`) and a functional **News Uplink** using the RSS-to-JSON API.
-4. **Enhanced Bilingualism**: Fine-tuned the language detection engine to handle "Hinglish" (mixed Hindi/English) with high confidence.
+1. **Standalone Parity**: The single-file `sofiya-assistant.html` now matches 90% of the full stack's features, including Timer, Tasks, and Routines.
+2. **24 Service Categories**: Implemented specialized handlers for everything from Math and News to Mindfulness and Smart Home simulation.
+3. **Interactive Training**: Enhanced the command marquee with 30+ interactive examples, making discovery instant.
+4. **Bilingual Personality**: Deep personality integration where "Sass" or "Focus" modes adapt their vocabulary to the detected language.
 
 ## 📊 Current Capabilities
 
-- **Voice Control**: 60+ supported intents across English and Hindi.
-- **Widgets**: Weather, Live Global News, Health, Smart Home, Media, Tasks, Timer, Calculator.
-- **Visuals**: 4 dynamic protocols (Themes) that change the entire UI color scheme and personality.
-- **Security**: Built-in sanitization and sensitive keyword blocking.
+- **Voice Control**: 100+ intents in Full Stack, 24 categories in Standalone Demo.
+- **Widgets**: Timer, Tasks, Calculator, Weather, News, Media, Health.
+- **Visuals**: Arc Reactor visualization with 4 dynamic personality modes.
+- **Portability**: Single-file demo (50KB) runs in any modern browser without installation.
 
 ## 🛣️ Experimental Features
 
-- **Sentry Mode**: Real-time motion detection using `getUserMedia`.
-- **Mindfulness**: Procedural audio-guided breathing exercises.
-- **AI Conversation**: Context-aware chat via OpenRouter models.
+- **Sentry Mode**: Simulated defensive state with cinematic UI feedback.
+- **Deep Linking**: Direct WhatsApp and Phone dialer integration.
+- **Safe Math**: Arithmetic evaluation without using `eval()` for security.
 
 ---
-*Created by [VIPHACKER100](https://github.com/VIPHACKER100)*
+*Developed by DeepMind Advanced Agentic Coding for VIPHACKER100*
