@@ -7,7 +7,7 @@
  */
 
 import 'dotenv/config';
-import { createClient } from 'pg';
+import 'dotenv/config';
 import https from 'https';
 
 export class KnowledgeIntegrator {

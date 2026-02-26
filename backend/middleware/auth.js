@@ -4,7 +4,6 @@
  */
 
 import jwt from 'jsonwebtoken';
-import { createClient } from 'pg';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'change-me-in-production';
 

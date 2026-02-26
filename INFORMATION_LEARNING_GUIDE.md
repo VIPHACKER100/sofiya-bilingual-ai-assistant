@@ -1,4 +1,4 @@
-# SOFIYA Information & Learning Guide
+# SOFIYA Information & Learning Guide (v5.1.0)
 
 ## 📰 News Curation
 

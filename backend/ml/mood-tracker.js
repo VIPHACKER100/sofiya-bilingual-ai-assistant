@@ -8,7 +8,7 @@
 
 import 'dotenv/config';
 import { EmotionDetector } from '../../voice-engine/emotion-detector.js';
-import { createClient } from 'pg';
+import 'dotenv/config';
 
 export class MoodTracker {
     constructor(options = {}) {
@@ -31,19 +31,19 @@ export class MoodTracker {
         try {
             // Fetch interaction data
             const interactions = await this.fetchInteractions(userId, days);
-            
+
             // Analyze mood from interactions
             const moodScores = await this.analyzeMoodScores(interactions);
-            
+
             // Fetch external factors
             const externalFactors = await this.fetchExternalFactors(userId, days);
-            
+
             // Correlate mood with external factors
             const correlations = this.correlateMoodWithFactors(moodScores, externalFactors);
-            
+
             // Detect trends
             const trends = this.detectTrends(moodScores);
-            
+
             // Generate insights and suggestions
             const insights = this.generateMoodInsights(moodScores, correlations, trends);
 
@@ -167,7 +167,7 @@ export class MoodTracker {
         const audioWeight = 0.3;
 
         const combinedScore = (textAnalysis.score * textWeight) + (audioMood.score * audioWeight);
-        
+
         // Determine dominant emotion
         let emotion = textAnalysis.emotion;
         if (Math.abs(audioMood.score) > Math.abs(textAnalysis.score)) {
@@ -288,7 +288,7 @@ export class MoodTracker {
         // Calculate correlations
         Object.keys(factorsByType).forEach(factorType => {
             const typeFactors = factorsByType[factorType];
-            
+
             // Match mood scores with factors by date
             const matchedPairs = [];
             moodScores.forEach(mood => {
@@ -440,7 +440,7 @@ export class MoodTracker {
         // Low mood intervention
         const recentMoods = moodScores.slice(-3);
         const avgRecentMood = recentMoods.reduce((sum, m) => sum + m.score, 0) / recentMoods.length;
-        
+
         if (avgRecentMood < -0.5) {
             insights.push({
                 type: 'intervention',
@@ -469,7 +469,7 @@ export class MoodTracker {
         }
 
         const avgScore = moodScores.reduce((sum, m) => sum + m.score, 0) / moodScores.length;
-        
+
         if (avgScore > 0.3) {
             return 'positive';
         } else if (avgScore < -0.3) {

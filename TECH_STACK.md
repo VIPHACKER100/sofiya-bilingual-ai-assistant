@@ -1,4 +1,4 @@
-# 🛠️ SOFIYA Tech Stack
+# 🛠️ SOFIYA Tech Stack (v5.1.0)
 
 This document outlines the complete technology stack for the SOFIYA Bilingual AI Assistant, ensuring a robust, scalable, and modern architecture.
 

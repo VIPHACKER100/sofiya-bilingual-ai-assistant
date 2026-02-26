@@ -1,4 +1,6 @@
-# SOFIYA Monitoring & Observability Guide
+# SOFIYA Monitoring Guide (v5.1.0)
+
+& Observability Guide
 
 ## 🎯 Overview
 
@@ -13,6 +15,7 @@ SOFIYA includes comprehensive monitoring, alerting, and observability capabiliti
 **Purpose:** Collects metrics on every aspect of the system.
 
 **Usage:**
+
 ```javascript
 import { MetricsCollector } from './metrics-collector.js';
 
@@ -44,6 +47,7 @@ const prometheus = metrics.exportPrometheus();
 ```
 
 **Tracked Metrics:**
+
 - API requests (count, latency, status codes)
 - Voice commands (count, latency, accuracy, confidence)
 - Integration operations (success rate, duration)
@@ -58,6 +62,7 @@ const prometheus = metrics.exportPrometheus();
 **Purpose:** Defines alert conditions and sends notifications when thresholds are exceeded.
 
 **Usage:**
+
 ```javascript
 import { AlertingRules } from './alerting-rules.js';
 
@@ -80,6 +85,7 @@ const history = alerting.getAlertHistory(24); // Last 24 hours
 ```
 
 **Default Alert Rules:**
+
 - **High API Latency**: p95 > 1000ms
 - **High Error Rate**: >1% error rate
 - **Low Voice Accuracy**: <85% accuracy
@@ -90,6 +96,7 @@ const history = alerting.getAlertHistory(24); // Last 24 hours
 - **Voice Command Timeouts**: >5% timeout rate
 
 **Adding Custom Rules:**
+
 ```javascript
 alerting.addRule({
     name: 'custom_alert',
@@ -110,6 +117,7 @@ alerting.addRule({
 **Purpose:** Tracks requests across multiple services to identify bottlenecks.
 
 **Usage:**
+
 ```javascript
 import { DistributedTracing } from './distributed-tracing.js';
 
@@ -144,6 +152,7 @@ const slowTraces = tracing.getSlowTraces(1000); // >1s
 ```
 
 **HTTP Middleware Integration:**
+
 ```javascript
 // Express middleware
 app.use((req, res, next) => {
@@ -170,6 +179,7 @@ app.use((req, res, next) => {
 **Purpose:** Tracks service reliability commitments and compliance.
 
 **Usage:**
+
 ```javascript
 import { SLAMonitor } from './sla-monitor.js';
 
@@ -197,12 +207,14 @@ const report = slaMonitor.exportReport();
 ```
 
 **SLA Definitions:**
+
 - **Uptime**: 99.5% per month (max 3.6 hours downtime)
 - **API Latency**: p95 < 200ms
 - **Voice Latency**: p99 < 1s
 - **Error Rate**: <0.1%
 
 **Dashboard Endpoint:**
+
 ```javascript
 app.get('/api/sla/dashboard', (req, res) => {
     const dashboard = slaMonitor.getDashboard();
@@ -362,6 +374,7 @@ scrape_configs:
 ### Grafana Dashboard
 
 Import Prometheus metrics into Grafana:
+
 1. Add Prometheus data source
 2. Create dashboard with panels for:
    - API request rate
@@ -376,18 +389,21 @@ Import Prometheus metrics into Grafana:
 ## 🔍 Troubleshooting
 
 ### High Latency
+
 1. Check API latency histogram (p95, p99)
 2. Review distributed traces for slow spans
 3. Check database query times
 4. Verify cache hit rate
 
 ### High Error Rate
+
 1. Review error logs
 2. Check integration status (WhatsApp, smart home)
 3. Review database connection pool
 4. Check system resources (memory, CPU)
 
 ### SLA Violations
+
 1. Review SLA dashboard for specific violations
 2. Check remaining downtime budget
 3. Review alert history for patterns

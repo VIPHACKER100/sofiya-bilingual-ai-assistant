@@ -8,7 +8,7 @@
  */
 
 import 'dotenv/config';
-import { createClient } from 'pg';
+import 'dotenv/config';
 import { FacialRecognition } from '../integrations/facial-recognition.js';
 
 export class IdentityManager {

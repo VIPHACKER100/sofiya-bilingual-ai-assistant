@@ -7,7 +7,7 @@
  */
 
 import 'dotenv/config';
-import { createClient } from 'pg';
+import 'dotenv/config';
 import { GoogleHomeConnector } from '../integrations/google-home-connector.js';
 import { AlexaConnector } from '../integrations/alexa-connector.js';
 import { IFTTTConnector } from '../integrations/ifttt-connector.js';

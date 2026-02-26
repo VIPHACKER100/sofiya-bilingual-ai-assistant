@@ -7,7 +7,7 @@
  */
 
 import 'dotenv/config';
-import { createClient } from 'pg';
+import 'dotenv/config';
 
 export class HealthAnalytics {
     constructor(options = {}) {

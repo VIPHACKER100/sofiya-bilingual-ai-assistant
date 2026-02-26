@@ -7,7 +7,7 @@
  */
 
 import 'dotenv/config';
-import { createClient } from 'pg';
+import 'dotenv/config';
 import { createClient as createRedisClient } from 'redis';
 
 export class NotificationEngine {
@@ -27,7 +27,7 @@ export class NotificationEngine {
     async sendNotification(userId, notification) {
         // Get user preferences
         const preferences = await this.getUserPreferences(userId);
-        
+
         // Check if notification should be sent
         if (!this.shouldSend(notification, preferences)) {
             return {
@@ -39,13 +39,13 @@ export class NotificationEngine {
         // Check optimal timing
         const optimalTime = await this.getOptimalTime(userId, notification);
         const now = Date.now();
-        
+
         if (optimalTime > now) {
             // Queue for later
             await this.queueNotification(userId, notification, optimalTime);
             return {
                 sent: false,
-            queued: true,
+                queued: true,
                 scheduledFor: new Date(optimalTime)
             };
         }
@@ -175,7 +175,7 @@ export class NotificationEngine {
 
         // Check user availability
         const availability = await this.checkAvailability(userId);
-        
+
         if (!availability.available) {
             // Wait until available
             return availability.nextAvailableTime || now + (1000 * 60 * 30); // 30 min default
@@ -339,7 +339,7 @@ export class NotificationEngine {
         const top3 = notifications.slice(0, 3);
         const summaries = top3.map(n => `• ${n.title || n.type}`);
         const remaining = notifications.length - 3;
-        
+
         if (remaining > 0) {
             return summaries.join('\n') + `\n...and ${remaining} more`;
         }

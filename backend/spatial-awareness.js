@@ -7,7 +7,7 @@
  */
 
 import 'dotenv/config';
-import { createClient } from 'pg';
+import 'dotenv/config';
 import { VisionService } from '../integrations/vision-service.js';
 
 export class SpatialAwareness {

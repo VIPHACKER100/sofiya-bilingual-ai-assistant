@@ -1,4 +1,4 @@
-# SOFIYA Calendar & Reminders Guide
+# SOFIYA Calendar & Reminders Guide (v5.1.0)
 
 ## 📅 Calendar Integration
 

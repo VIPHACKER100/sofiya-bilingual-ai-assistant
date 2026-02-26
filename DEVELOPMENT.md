@@ -4,15 +4,27 @@ Goal: refine and update the project to improve code quality, maintainability, an
 
 ---
 
-## ✅ Completed (v5.0)
+### ✅ Completed (v5.1.0)
+
+### Standalone HTML Demo expansion
+
+- **18 New Features** - Parity with React stack (Timer, Tasks, Routines, etc.)
+- **Bilingual Banking** - Random jokes and facts in EN + HI
+- **Math Engine** - High-security regex-based arithmetic
+- **Deep Linking** - Zero-backend WhatsApp and Call integration
+- **Visual Overhaul** - Integrated Right Panel with Timer and Task List widgets
+
+### ✅ Completed (v5.0)
 
 ### Testing Infrastructure
+
 - **Vitest** - Unit testing framework
 - **Playwright** - E2E testing with multi-browser support
 - **45+ unit tests** for command processor
 - **E2E tests** for core functionality
 
 ### New Services (10)
+
 - `themeService.ts` - Theme management
 - `i18nService.ts` - Multi-language support
 - `analyticsService.ts` - Event tracking
@@ -25,10 +37,12 @@ Goal: refine and update the project to improve code quality, maintainability, an
 - `loggerService.ts` - Debug logging
 
 ### New Hooks (2)
+
 - `useUndoRedo.ts` - Undo/Redo state
 - `useCommon.ts` - 15+ utility hooks
 
 ### Accessibility
+
 - `accessibilityService.ts` - ARIA, keyboard nav
 
 ---
@@ -56,6 +70,7 @@ npm run test:e2e:ui    # E2E tests with UI
 ```
 
 ### Package.json Updated
+
 - Added: `vitest`, `@playwright/test`
 - Added test scripts
 - Version bumped to 5.0.0

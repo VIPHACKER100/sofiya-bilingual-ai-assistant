@@ -7,7 +7,7 @@
  */
 
 import 'dotenv/config';
-import { createClient } from 'pg';
+import 'dotenv/config';
 import { HabitDetector } from './ml/habit-detector.js';
 
 export class HabitsEngine {

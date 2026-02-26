@@ -1,4 +1,6 @@
-# SOFIYA Social & Relationship Management Guide
+# SOFIYA Social Relationship Guide (v5.1.0)
+
+Management Guide
 
 ## 👥 Social Secretary
 

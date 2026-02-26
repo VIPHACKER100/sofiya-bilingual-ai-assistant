@@ -7,7 +7,7 @@
  */
 
 import 'dotenv/config';
-import { createClient } from 'pg';
+import 'dotenv/config';
 
 export class BehaviorPredictor {
     constructor(options = {}) {
@@ -37,10 +37,10 @@ export class BehaviorPredictor {
 
         // Extract features from training data
         const features = this.extractFeatures(trainingData);
-        
+
         // Build Markov chain transition matrix
         const transitionMatrix = this.buildMarkovChain(features);
-        
+
         // Calculate action probabilities by context
         const contextProbabilities = this.calculateContextProbabilities(features);
 
@@ -56,7 +56,7 @@ export class BehaviorPredictor {
         await this.saveModel(this.model);
 
         console.log(`[BehaviorPredictor] Model trained on ${trainingData.length} samples`);
-        
+
         return {
             success: true,
             trainingSamples: trainingData.length,
@@ -88,7 +88,7 @@ export class BehaviorPredictor {
 
         // Get predictions from Markov chain
         const markovPrediction = this.predictFromMarkov(contextFeatures);
-        
+
         // Get predictions from context probabilities
         const contextPrediction = this.predictFromContext(contextFeatures);
 
@@ -166,7 +166,7 @@ export class BehaviorPredictor {
      */
     buildMarkovChain(features) {
         const transitions = {};
-        
+
         // Group by user and create sequences
         const userSequences = {};
         features.forEach(f => {
@@ -181,7 +181,7 @@ export class BehaviorPredictor {
             for (let i = 0; i < sequence.length - 1; i++) {
                 const from = sequence[i].action;
                 const to = sequence[i + 1].action;
-                
+
                 if (!transitions[from]) {
                     transitions[from] = {};
                 }
@@ -212,7 +212,7 @@ export class BehaviorPredictor {
 
         features.forEach(f => {
             const contextKey = `${f.hour}_${f.dayOfWeek}_${f.location}`;
-            
+
             if (!contextCounts[contextKey]) {
                 contextCounts[contextKey] = {};
             }
@@ -332,7 +332,7 @@ export class BehaviorPredictor {
             return {
                 action: markovPrediction.action,
                 confidence: Math.min(
-                    markovPrediction.confidence * weights.markov + 
+                    markovPrediction.confidence * weights.markov +
                     contextPrediction.confidence * weights.context,
                     1.0
                 )
@@ -364,7 +364,7 @@ export class BehaviorPredictor {
         const fs = await import('fs/promises');
         const path = await import('path');
         const modelDir = path.dirname(this.modelPath);
-        
+
         try {
             await fs.mkdir(modelDir, { recursive: true });
             await fs.writeFile(

@@ -1,4 +1,4 @@
-# SOFIYA Health & Wellness Guide
+# SOFIYA Health & Wellness Guide (v5.1.0)
 
 ## 🏃 Wearable Integration
 

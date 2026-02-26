@@ -1,4 +1,4 @@
-# ⚙️ SOFIYA — Configuration Guide
+# ⚙️ SOFIYA — Configuration Guide (v5.1.0)
 
 All configuration is done via environment variables in `.env.local`.
 
@@ -142,4 +142,30 @@ Output goes to `dist/`. Deploy this folder to any static host:
 - [Netlify](https://netlify.com): drag & drop `dist/` folder
 - [GitHub Pages](https://pages.github.com): use `gh-pages` package
 
-> ⚠️ Remember to set your environment variables in your hosting provider's dashboard (not just `.env.local`, which is local-only).
+- [GitHub Pages](https://pages.github.com): use `gh-pages` package
+
+---
+
+## 🚀 Standalone Demo (`sofiya-assistant.html`)
+
+The standalone version is **zero-config** for basic use, but can be customized by editing the script block directly inside the file:
+
+### Customizing Contacts
+
+Search for `const CONTACTS` in the `<script>` tag (around line 1021):
+
+```javascript
+const CONTACTS = {
+    'mom': '1234567890',
+    'dad': '0987654321',
+    'मम्मी': '1234567890'
+};
+```
+
+### Customizing App Links
+
+Search for `const APPS` (around line 1007) to update URLs for YouTube, Google, or social platforms.
+
+### Environment
+
+Since it's a static file, it does not support `.env` files. If you need a full LLM integration, move to the React stack.

@@ -7,7 +7,7 @@
  */
 
 import 'dotenv/config';
-import { createClient } from 'pg';
+import 'dotenv/config';
 
 export class HabitDetector {
     constructor(options = {}) {
@@ -30,20 +30,20 @@ export class HabitDetector {
         try {
             // Fetch action history
             const actions = await this.fetchActionHistory(userId, days);
-            
+
             if (actions.length < this.minOccurrences) {
                 return [];
             }
 
             // Cluster actions by time patterns
             const clusters = await this.clusterByTime(actions);
-            
+
             // Identify recurring patterns
             const habits = await this.identifyHabits(clusters, actions);
-            
+
             // Detect anomalies
             const anomalies = await this.detectAnomalies(actions, habits);
-            
+
             // Generate insights
             const insights = this.generateInsights(habits, anomalies);
 
@@ -95,7 +95,7 @@ export class HabitDetector {
     async clusterByTime(actions) {
         // Group actions by hour and day of week
         const timeGroups = {};
-        
+
         actions.forEach(action => {
             const key = `${action.hour}_${action.dayOfWeek}_${action.action}`;
             if (!timeGroups[key]) {
@@ -131,10 +131,10 @@ export class HabitDetector {
 
         clusters.forEach(cluster => {
             const [hour, dayOfWeek, action] = cluster.pattern.split('_');
-            
+
             // Calculate frequency
             const totalDays = Math.ceil(
-                (allActions[allActions.length - 1].timestamp - allActions[0].timestamp) / 
+                (allActions[allActions.length - 1].timestamp - allActions[0].timestamp) /
                 (1000 * 60 * 60 * 24)
             );
             const frequency = cluster.count / totalDays;
@@ -173,7 +173,7 @@ export class HabitDetector {
         // Check for missing expected actions
         habits.forEach(habit => {
             const expectedTimes = this.getExpectedTimes(habit, actions);
-            const actualTimes = actions.filter(a => 
+            const actualTimes = actions.filter(a =>
                 a.action === habit.action &&
                 a.hour === habit.time.hour &&
                 a.dayOfWeek === habit.time.dayOfWeek
@@ -291,7 +291,7 @@ export class HabitDetector {
      */
     async getHabitSummary(userId) {
         const result = await this.detectHabits(userId);
-        
+
         if (result.habits.length === 0) {
             return "I haven't detected any strong patterns yet. Keep using SOFIYA and I'll learn your habits!";
         }

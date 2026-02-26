@@ -1,4 +1,6 @@
-# SOFIYA Performance Optimization Guide
+# SOFIYA Performance Guide (v5.1.0)
+
+Optimization Guide
 
 ## 🎯 Performance Targets
 
@@ -16,6 +18,7 @@
 ### 1. Caching Strategy (`backend/cache-strategy.js`)
 
 **Usage:**
+
 ```javascript
 import { CacheStrategy } from './cache-strategy.js';
 
@@ -36,6 +39,7 @@ await cache.invalidate('user123', 'userPreferences');
 ```
 
 **Cache TTLs:**
+
 - Weather: 15 minutes
 - News: 1 hour
 - Calendar: 30 minutes
@@ -45,6 +49,7 @@ await cache.invalidate('user123', 'userPreferences');
 - NLP Results: 1 hour
 
 **Monitoring:**
+
 ```javascript
 const stats = cache.getStats();
 console.log(`Hit Rate: ${stats.hitRate}`);
@@ -55,6 +60,7 @@ console.log(`Hit Rate: ${stats.hitRate}`);
 ### 2. Database Optimization (`backend/database-optimizer.js`)
 
 **Create Indexes:**
+
 ```javascript
 import { DatabaseOptimizer } from './database-optimizer.js';
 
@@ -63,6 +69,7 @@ const { created, skipped } = await optimizer.createIndexes();
 ```
 
 **Paginated Queries:**
+
 ```javascript
 const result = await optimizer.paginate(
     'SELECT * FROM voice_commands WHERE user_id = $1',
@@ -74,6 +81,7 @@ const result = await optimizer.paginate(
 ```
 
 **Materialized Views:**
+
 ```javascript
 await optimizer.createMaterializedView(
     'user_activity_summary',
@@ -85,6 +93,7 @@ await optimizer.refreshMaterializedView('user_activity_summary');
 ```
 
 **Slow Query Analysis:**
+
 ```javascript
 const slowQueries = await optimizer.analyzeSlowQueries(100); // >100ms
 slowQueries.forEach(q => {
@@ -93,6 +102,7 @@ slowQueries.forEach(q => {
 ```
 
 **Data Archiving:**
+
 ```javascript
 await optimizer.archiveOldData(
     'voice_commands',
@@ -107,6 +117,7 @@ await optimizer.archiveOldData(
 ### 3. Horizontal Scaling (`backend/scaling-architecture.js`)
 
 **Stateless Sessions:**
+
 ```javascript
 import { ScalingArchitecture } from './scaling-architecture.js';
 
@@ -124,6 +135,7 @@ const session = await scaling.getSession('session123');
 ```
 
 **Async Task Queue:**
+
 ```javascript
 // Enqueue task
 const taskId = await scaling.enqueueTask(
@@ -141,6 +153,7 @@ await scaling.processTasks(async (taskType, taskData) => {
 ```
 
 **Distributed Locks:**
+
 ```javascript
 const lock = await scaling.acquireLock('critical-operation', 10);
 if (lock.acquired) {
@@ -154,6 +167,7 @@ if (lock.acquired) {
 ```
 
 **Server Health:**
+
 ```javascript
 const health = await scaling.getHealthMetrics();
 // Returns: { status, memory, cpu, uptime }
@@ -164,6 +178,7 @@ const health = await scaling.getHealthMetrics();
 ### 4. Voice Pipeline Optimization (`voice-engine/voice-pipeline-optimizer.js`)
 
 **Optimized Processing:**
+
 ```javascript
 import { VoicePipelineOptimizer } from './voice-pipeline-optimizer.js';
 
@@ -182,12 +197,14 @@ const result = await optimizer.processVoiceCommand(audioBuffer);
 ```
 
 **Streaming Mode:**
+
 ```javascript
 optimizer.setStreaming(true);
 // Processes audio as it arrives, starts NLP before audio completes
 ```
 
 **Parallel Processing:**
+
 ```javascript
 optimizer.setParallel(true);
 // Decodes audio and transcribes simultaneously
@@ -198,12 +215,14 @@ optimizer.setParallel(true);
 ## 🔧 Configuration
 
 ### Redis Configuration
+
 ```env
 REDIS_URL=redis://localhost:6379
 REDIS_PASSWORD=your-password
 ```
 
 ### Database Configuration
+
 ```env
 DATABASE_URL=postgresql://user:pass@localhost:5432/sofiya
 DATABASE_POOL_SIZE=20
@@ -211,6 +230,7 @@ DATABASE_MAX_CONNECTIONS=100
 ```
 
 ### Performance Tuning
+
 ```env
 CACHE_DEFAULT_TTL=3600
 CACHE_ENABLED=true
@@ -224,24 +244,28 @@ VOICE_PARALLEL_ENABLED=true
 ## 📈 Monitoring & Metrics
 
 ### Cache Metrics
+
 - Hit rate (target: >80%)
 - Memory cache size
 - Redis connection status
 - Cache operations (hits, misses, sets, deletes)
 
 ### Database Metrics
+
 - Query execution time (p50, p95, p99)
 - Slow queries (>100ms)
 - Connection pool usage
 - Index usage statistics
 
 ### Voice Pipeline Metrics
+
 - Processing latency (target: <1s p95)
 - Timeout rate
 - Fallback usage
 - Streaming vs batch ratio
 
 ### Scaling Metrics
+
 - Active server count
 - Task queue depth
 - Lock contention
@@ -267,6 +291,7 @@ VOICE_PARALLEL_ENABLED=true
 ## 🐛 Troubleshooting
 
 ### High Latency
+
 1. Check cache hit rate (should be >80%)
 2. Analyze slow queries
 3. Verify indexes exist
@@ -274,12 +299,14 @@ VOICE_PARALLEL_ENABLED=true
 5. Review voice pipeline timeout settings
 
 ### High Memory Usage
+
 1. Reduce cache TTLs
 2. Clean up memory cache periodically
 3. Archive old data
 4. Limit pagination page size
 
 ### Database Connection Issues
+
 1. Check connection pool size
 2. Monitor active connections
 3. Optimize slow queries

@@ -7,7 +7,6 @@
  */
 
 import 'dotenv/config';
-import { createClient } from 'pg';
 
 export class PrivacyController {
     constructor(options = {}) {

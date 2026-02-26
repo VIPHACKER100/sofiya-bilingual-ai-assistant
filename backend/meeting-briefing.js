@@ -7,7 +7,7 @@
  */
 
 import 'dotenv/config';
-import { createClient } from 'pg';
+import 'dotenv/config';
 import { CalendarService } from '../integrations/calendar-service.js';
 
 export class MeetingBriefing {

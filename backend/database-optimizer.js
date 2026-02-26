@@ -7,7 +7,7 @@
  */
 
 import 'dotenv/config';
-import { createClient } from 'pg';
+import 'dotenv/config';
 
 export class DatabaseOptimizer {
     constructor(options = {}) {
@@ -114,7 +114,7 @@ export class DatabaseOptimizer {
             try {
                 const uniqueClause = index.unique ? 'UNIQUE' : '';
                 const columns = index.columns.join(', ');
-                
+
                 const query = `
                     CREATE ${uniqueClause} INDEX IF NOT EXISTS ${index.name}
                     ON ${index.table} (${columns})
@@ -345,7 +345,7 @@ export class DatabaseOptimizer {
         `;
 
         const result = await this.db.query(query, [tableName]);
-        
+
         return {
             tableName,
             columns: result.rows,
@@ -371,7 +371,7 @@ export class DatabaseOptimizer {
     async explainQuery(query, params = []) {
         const explainQuery = `EXPLAIN ANALYZE ${query}`;
         const result = await this.db.query(explainQuery, params);
-        
+
         return {
             plan: result.rows.map(row => row['QUERY PLAN']).join('\n'),
             query

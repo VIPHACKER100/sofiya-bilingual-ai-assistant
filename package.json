@@ -1,6 +1,7 @@
 {
   "name": "sofiya-bilingual-ai-assistant",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "cd frontend && npm run dev",
     "test:backend": "node --test tests/*.test.js tests/integration/*.test.js",
@@ -13,6 +14,7 @@
     "googleapis": "^171.4.0",
     "natural": "^8.1.0",
     "pg": "^8.18.0",
-    "redis": "^5.11.0"
+    "redis": "^5.11.0",
+    "twilio": "^4.23.0"
   }
 }
