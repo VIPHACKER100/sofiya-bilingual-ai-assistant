@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SOFIYA — Bilingual AI Assistant | सोफ़िया — द्विभाषी AI सहायक</title>
+  <meta name="description"
+    content="SOFIYA is a personal AI assistant supporting English and Hindi voice commands. सोफ़िया एक व्यक्तिगत AI सहायक है जो हिंदी और अंग्रेज़ी दोनों भाषाओं में काम करती है।" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Hind:wght@300;400;500;600;700&family=Poppins:wght@300;400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap"
+    rel="stylesheet" />
+  <style>
+    /* ─── CSS RESET & CUSTOM PROPERTIES ─── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      --bg: #070b14;
+      --surface: #0d1424;
+      --surface2: #111928;
+      --border: #1e3a5f;
+      --glow-en: #00d4ff;
+      --glow-hi: #ff9933;
+      --accent: #00d4ff;
+      --accent2: #7c3aed;
+      --text: #c8d8f0;
+      --text-dim: #4a6080;
+      --danger: #ff4444;
+      --success: #00ff88;
+      --font-en: 'Poppins', 'Rajdhani', sans-serif;
+      --font-hi: 'Hind', 'Poppins', sans-serif;
+      --reactor-size: 200px;
+    }
+
+    html,
+    body {
+      height: 100%;
+      overflow: hidden
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-en);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* ─── BACKGROUND EFFECTS ─── */
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-image:
+        radial-gradient(circle at 50% 50%, #0d2040 0%, transparent 70%),
+        linear-gradient(rgba(0, 212, 255, .04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 212, 255, .04) 1px, transparent 1px);
+      background-size: 100% 100%, 40px 40px, 40px 40px;
+      animation: gridDrift 20s linear infinite;
+    }
+
+    @keyframes gridDrift {
+      to {
+        background-position: 0 0, 0 40px, 40px 0
+      }
+    }
+
+    .scanline {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      background: repeating-linear-gradient(transparent, transparent 2px, rgba(0, 0, 0, .15) 2px, rgba(0, 0, 0, .15) 4px);
+      animation: scanMove 8s linear infinite;
+    }
+
+    @keyframes scanMove {
+      0% {
+        background-position: 0 0
+      }
+
+      100% {
+        background-position: 0 40px
+      }
+    }
+
+    .vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      background: radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, .85) 100%);
+    }
+
+    /* ─── GLITCH EFFECT ─── */
+    @keyframes glitch1 {
+
+      0%,
+      94%,
+      100% {
+        transform: none;
+        opacity: 1
+      }
+
+      95% {
+        transform: skewX(-5deg) translateX(3px);
+        opacity: .7
+      }
+
+      97% {
+        transform: skewX(3deg) translateX(-2px);
+        opacity: .9
+      }
+    }
+
+    @keyframes glitch2 {
+
+      0%,
+      90%,
+      100% {
+        clip-path: none
+      }
+
+      91% {
+        clip-path: inset(20% 0 60% 0)
+      }
+
+      93% {
+        clip-path: inset(70% 0 10% 0)
+      }
+    }
+
+    .logo {
+      animation: glitch1 7s infinite
+    }
+
+    /* ─── LAYOUT ─── */
+    #app {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto auto;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 0;
+      padding: 16px;
+      overflow: hidden;
+    }
+
+    /* ─── HEADER ─── */
+    header {
+      grid-column: 1/-1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(0, 212, 255, .12);
+      margin-bottom: 8px;
+    }
+
+    .logo {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 700;
+      letter-spacing: .3em;
+      background: linear-gradient(135deg, var(--glow-en), #7c3aed, var(--glow-hi));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-transform: uppercase;
+    }
+
+    .logo span {
+      font-size: .5em;
+      opacity: .6;
+      display: block;
+      letter-spacing: .2em;
+      -webkit-text-fill-color: var(--text-dim)
+    }
+
+    .lang-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 6px 14px;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      cursor: pointer;
+      transition: all .3s;
+      user-select: none;
+    }
+
+    .lang-toggle .en-lbl,
+    .lang-toggle .hi-lbl {
+      transition: color .3s
+    }
+
+    .lang-toggle .en-lbl.active {
+      color: var(--glow-en)
+    }
+
+    .lang-toggle .hi-lbl.active {
+      color: var(--glow-hi)
+    }
+
+    .lang-toggle .sep {
+      color: var(--text-dim)
+    }
+
+    #detectedLang {
+      font-size: .65rem;
+      color: var(--text-dim);
+      font-family: 'Share Tech Mono', monospace;
+      letter-spacing: .05em;
+    }
+
+    /* ─── LEFT PANEL ─── */
+    .left-panel {
+      grid-column: 1;
+      grid-row: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-self: center;
+      padding-right: 12px;
+    }
+
+    /* ─── RIGHT PANEL ─── */
+    .right-panel {
+      grid-column: 3;
+      grid-row: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-self: center;
+      padding-left: 12px;
+    }
+
+    /* ─── GLASS PANEL ─── */
+    .glass {
+      background: rgba(13, 20, 36, .7);
+      border: 1px solid rgba(0, 212, 255, .12);
+      border-radius: 12px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 12px 16px;
+      transition: border-color .3s;
+    }
+
+    .glass:hover {
+      border-color: rgba(0, 212, 255, .25)
+    }
+
+    .glass h3 {
+      font-size: .6rem;
+      letter-spacing: .25em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    .glass.hi {
+      font-family: var(--font-hi)
+    }
+
+    /* ─── STATUS PANEL ─── */
+    #status-text {
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--glow-en);
+      transition: color .5s;
+    }
+
+    #status-text.hindi {
+      color: var(--glow-hi);
+      font-family: var(--font-hi)
+    }
+
+    #status-sub {
+      font-size: .7rem;
+      color: var(--text-dim);
+      margin-top: 2px;
+      line-height: 1.4
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-dim);
+      margin-right: 6px;
+      vertical-align: middle;
+      transition: background .3s;
+    }
+
+    .status-dot.active {
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
+      animation: pulse-dot 1s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+
+      0%,
+      100% {
+        transform: scale(1)
+      }
+
+      50% {
+        transform: scale(1.4)
+      }
+    }
+
+    /* ─── TRANSCRIPT ─── */
+    #transcript {
+      font-size: 1rem;
+      color: #fff;
+      font-style: italic;
+      line-height: 1.5;
+      min-height: 40px;
+      transition: opacity .3s;
+    }
+
+    #transcript.hindi {
+      font-family: var(--font-hi);
+      font-style: normal;
+      font-size: 1.1rem
+    }
+
+    #transcript:empty::before {
+      content: 'Waiting for voice input…';
+      color: var(--text-dim);
+      font-style: italic;
+      font-size: .85rem
+    }
+
+    /* ─── RESPONSE ─── */
+    #response {
+      font-size: .85rem;
+      line-height: 1.5;
+      color: var(--text);
+      min-height: 48px;
+      transition: all .3s;
+    }
+
+    #response.hindi {
+      font-family: var(--font-hi);
+      font-size: .95rem
+    }
+
+    #response:empty::before {
+      content: 'Response will appear here…';
+      color: var(--text-dim);
+      font-size: .8rem
+    }
+
+    #response .action-tag {
+      display: inline-block;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .65rem;
+      letter-spacing: .05em;
+      color: var(--glow-en);
+      background: rgba(0, 212, 255, .08);
+      border: 1px solid rgba(0, 212, 255, .2);
+      border-radius: 4px;
+      padding: 1px 6px;
+      margin-right: 4px;
+    }
+
+    /* ─── VOLUME BAR ─── */
+    .vol-track {
+      height: 6px;
+      background: var(--surface2);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+
+    #vol-fill {
+      height: 100%;
+      width: 50%;
+      background: linear-gradient(90deg, var(--accent2), var(--glow-en));
+      border-radius: 3px;
+      transition: width .4s ease;
+    }
+
+    #vol-label {
+      font-size: .75rem;
+      color: var(--text-dim);
+      margin-top: 4px
+    }
+
+    /* ─── CENTER COLUMN ─── */
+    .center {
+      grid-column: 2;
+      grid-row: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    /* ─── ARC REACTOR ─── */
+    #reactor-btn {
+      position: relative;
+      width: var(--reactor-size);
+      height: var(--reactor-size);
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+      background: none;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Ring layers */
+    .ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      pointer-events: none;
+    }
+
+    .ring-1 {
+      inset: 0;
+      border-color: rgba(0, 212, 255, .5);
+      animation: spin1 4s linear infinite
+    }
+
+    .ring-2 {
+      inset: 10px;
+      border-color: rgba(124, 58, 237, .4);
+      animation: spin1 7s linear infinite reverse
+    }
+
+    .ring-3 {
+      inset: 20px;
+      border-color: rgba(0, 212, 255, .3);
+      animation: spin1 12s linear infinite
+    }
+
+    .ring-4 {
+      inset: 30px;
+      border-color: rgba(255, 153, 51, .2);
+      animation: spin1 9s linear infinite reverse
+    }
+
+    @keyframes spin1 {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .reactor-core {
+      position: absolute;
+      inset: 40px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #1a3a6a 0%, #0a1a34 60%, #050d1a 100%);
+      border: 2px solid rgba(0, 212, 255, .4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: all .4s ease;
+      box-shadow: 0 0 20px rgba(0, 212, 255, .2), inset 0 0 20px rgba(0, 212, 255, .1);
+      overflow: hidden;
+    }
+
+    .reactor-center-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--glow-en);
+      box-shadow: 0 0 20px var(--glow-en), 0 0 40px var(--glow-en);
+      transition: all .4s;
+    }
+
+    .reactor-text {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .5rem;
+      letter-spacing: .15em;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: rgba(0, 212, 255, .8);
+      margin-top: 6px;
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    /* ACTIVE state */
+    #reactor-btn.active .reactor-core {
+      background: radial-gradient(circle, #2a1060 0%, #0d0620 60%, #050d1a 100%);
+      border-color: rgba(255, 153, 51, .6);
+      box-shadow: 0 0 40px rgba(255, 153, 51, .4), inset 0 0 30px rgba(255, 153, 51, .15);
+    }
+
+    #reactor-btn.active .reactor-center-dot {
+      background: var(--glow-hi);
+      box-shadow: 0 0 20px var(--glow-hi), 0 0 60px var(--glow-hi);
+      animation: reactorPulse 1s ease-in-out infinite;
+    }
+
+    #reactor-btn.active .ring-1 {
+      border-color: rgba(255, 153, 51, .7);
+      animation-duration: 2s
+    }
+
+    #reactor-btn.active .ring-2 {
+      border-color: rgba(255, 100, 100, .5)
+    }
+
+    #reactor-btn.active .ring-3 {
+      border-color: rgba(255, 153, 51, .4)
+    }
+
+    #reactor-btn.active .reactor-text {
+      color: rgba(255, 153, 51, .9)
+    }
+
+    @keyframes reactorPulse {
+
+      0%,
+      100% {
+        transform: scale(1)
+      }
+
+      50% {
+        transform: scale(1.3)
+      }
+    }
+
+    /* Glow ring behind button */
+    .reactor-glow {
+      position: absolute;
+      inset: -15px;
+      border-radius: 50%;
+      pointer-events: none;
+      background: radial-gradient(circle, rgba(0, 212, 255, .2) 0%, transparent 70%);
+      animation: glowBreath 3s ease-in-out infinite;
+      transition: background .5s;
+    }
+
+    #reactor-btn.active .reactor-glow {
+      background: radial-gradient(circle, rgba(255, 153, 51, .3) 0%, transparent 70%);
+      animation: reactorPulse 1s ease-in-out infinite;
+    }
+
+    @keyframes glowBreath {
+
+      0%,
+      100% {
+        opacity: .5
+      }
+
+      50% {
+        opacity: 1
+      }
+    }
+
+    /* ─── WAVEFORM ─── */
+    .waveform {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      height: 36px;
+      justify-content: center
+    }
+
+    .wave-bar {
+      width: 4px;
+      background: var(--glow-en);
+      border-radius: 2px;
+      opacity: .2;
+      height: 4px;
+      transition: opacity .3s;
+    }
+
+    .waveform.active .wave-bar {
+      opacity: 1;
+      animation: waveAnim 0.6s ease-in-out infinite alternate;
+    }
+
+    .wave-bar:nth-child(1) {
+      animation-delay: 0s;
+      --h: 16px
+    }
+
+    .wave-bar:nth-child(2) {
+      animation-delay: .08s;
+      --h: 28px
+    }
+
+    .wave-bar:nth-child(3) {
+      animation-delay: .16s;
+      --h: 36px
+    }
+
+    .wave-bar:nth-child(4) {
+      animation-delay: .24s;
+      --h: 28px
+    }
+
+    .wave-bar:nth-child(5) {
+      animation-delay: .32s;
+      --h: 20px
+    }
+
+    .wave-bar:nth-child(6) {
+      animation-delay: .4s;
+      --h: 32px
+    }
+
+    .wave-bar:nth-child(7) {
+      animation-delay: .48s;
+      --h: 36px
+    }
+
+    .wave-bar:nth-child(8) {
+      animation-delay: .56s;
+      --h: 24px
+    }
+
+    .wave-bar:nth-child(9) {
+      animation-delay: .64s;
+      --h: 18px
+    }
+
+    .wave-bar:nth-child(10) {
+      animation-delay: .72s;
+      --h: 30px
+    }
+
+    @keyframes waveAnim {
+      from {
+        height: 4px
+      }
+
+      to {
+        height: var(--h, 20px)
+      }
+    }
+
+    /* ─── FOOTER / LOG ─── */
+    #log-area {
+      grid-column: 1/-1;
+      grid-row: 3;
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 8px 0;
+      border-top: 1px solid rgba(0, 212, 255, .08);
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    .log-entry {
+      flex-shrink: 0;
+      background: var(--surface);
+      border: 1px solid rgba(0, 212, 255, .1);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .65rem;
+      color: var(--text-dim);
+      white-space: nowrap;
+      transition: border-color .3s;
+      max-width: 280px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .log-entry .log-cmd {
+      color: var(--glow-en)
+    }
+
+    .log-entry .log-lang {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+
+    .log-entry .log-lang.en {
+      background: var(--glow-en)
+    }
+
+    .log-entry .log-lang.hi {
+      background: var(--glow-hi)
+    }
+
+    /* ─── MARQUEE / TRY COMMANDS ─── */
+    .marquee-bar {
+      grid-column: 1/-1;
+      grid-row: 4;
+      border-top: 1px solid rgba(0, 212, 255, .08);
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      height: 28px;
+      background: rgba(0, 0, 0, .4);
+    }
+
+    .marquee-label {
+      padding: 0 12px;
+      border-right: 1px solid rgba(0, 212, 255, .15);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .6rem;
+      color: var(--glow-en);
+      letter-spacing: .15em;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .marquee-track {
+      display: flex;
+      animation: marqueeScroll 40s linear infinite;
+      gap: 0
+    }
+
+    .marquee-item {
+      padding: 0 20px;
+      font-size: .6rem;
+      font-family: 'Share Tech Mono', monospace;
+      color: var(--text-dim);
+      letter-spacing: .08em;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: color .2s;
+    }
+
+    .marquee-item:hover {
+      color: var(--glow-en)
+    }
+
+    @keyframes marqueeScroll {
+      0% {
+        transform: translateX(0)
+      }
+
+      100% {
+        transform: translateX(-50%)
+      }
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media(max-width:768px) {
+      #app {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto 1fr auto auto;
+      }
+
+      .left-panel {
+        grid-column: 1;
+        grid-row: 2;
+        padding: 0
+      }
+
+      .right-panel {
+        grid-column: 1;
+        grid-row: 3;
+        padding: 0;
+        flex-direction: row;
+        flex-wrap: wrap
+      }
+
+      .center {
+        grid-column: 1;
+        grid-row: 4
+      }
+
+      #log-area {
+        grid-column: 1;
+        grid-row: 5
+      }
+
+      .marquee-bar {
+        grid-column: 1;
+        grid-row: 6
+      }
+
+      :root {
+        --reactor-size: 160px
+      }
+    }
+
+    /* ─── UTILITY ─── */
+    .flex {
+      display: flex
+    }
+
+    .gap2 {
+      gap: 8px
+    }
+
+    .mt1 {
+      margin-top: 4px
+    }
+
+    .hidden {
+      display: none !important
+    }
+
+    .spin {
+      animation: spin1 .6s linear infinite
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="bg-grid"></div>
+  <div class="scanline"></div>
+  <div class="vignette"></div>
+
+  <div id="app">
+    <!-- HEADER -->
+    <header>
+      <div>
+        <div class="logo" id="logoText">SOFIYA<span id="logoSub">सोफ़िया — BILINGUAL AI ASSISTANT</span></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px">
+        <span id="detectedLang">LANG: AUTO</span>
+        <div class="lang-toggle" id="langToggle" title="Toggle Language / भाषा बदलें (L)">
+          <span class="en-lbl active" id="enLbl">EN</span>
+          <span class="sep">|</span>
+          <span class="hi-lbl" id="hiLbl">हि</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+      <!-- Status -->
+      <div class="glass" id="statusPanel">
+        <h3>◈ STATUS / स्थिति</h3>
+        <div style="display:flex;align-items:center">
+          <span class="status-dot" id="statusDot"></span>
+          <span id="status-text">Idle / निष्क्रिय</span>
+        </div>
+        <div id="status-sub">Click the reactor to activate • रिएक्टर क्लिक करें</div>
+      </div>
+
+      <!-- Transcript -->
+      <div class="glass">
+        <h3>◈ YOU SAID / आपने कहा</h3>
+        <div id="transcript"></div>
+      </div>
+
+      <!-- Response -->
+      <div class="glass">
+        <h3>◈ SOFIYA SAYS / सोफ़िया कहती है</h3>
+        <div id="response"></div>
+      </div>
+    </div>
+
+    <!-- CENTER -->
+    <div class="center">
+      <button id="reactor-btn" aria-label="Activate / सक्रिय करें" title="Activate Voice Assistant">
+        <div class="reactor-glow"></div>
+        <div class="ring ring-1"></div>
+        <div class="ring ring-2"></div>
+        <div class="ring ring-3"></div>
+        <div class="ring ring-4"></div>
+        <div class="reactor-core">
+          <div class="reactor-center-dot"></div>
+          <div class="reactor-text" id="reactorText">ACTIVATE<br />सक्रिय करें</div>
+        </div>
+      </button>
+      <div class="waveform" id="waveform">
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+      <!-- Volume -->
+      <div class="glass" style="flex:1">
+        <h3>◈ VOLUME / आवाज़</h3>
+        <div id="vol-label">50%</div>
+        <div class="vol-track">
+          <div id="vol-fill"></div>
+        </div>
+      </div>
+
+      <!-- Quick commands -->
+      <div class="glass" style="flex:2">
+        <h3>◈ TRY COMMANDS / कमांड आज़माएं</h3>
+        <div style="font-size:.7rem;color:var(--text-dim);line-height:1.8">
+          "Open YouTube" &nbsp;·&nbsp; "गूगल खोलो"<br />
+          "What time is it?" &nbsp;·&nbsp; "कितने बजे हैं?"<br />
+          "Play Bollywood songs on YouTube"<br />
+          "आवाज़ बढ़ाओ" &nbsp;·&nbsp; "Hello" &nbsp;·&nbsp; "नमस्ते"
+        </div>
+      </div>
+
+      <!-- Info -->
+      <div class="glass"
+        style="flex:1;font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--text-dim);line-height:1.8">
+        <h3>◈ SYSTEM</h3>
+        NEURAL_LINK: <span style="color:var(--success)">STABLE</span><br />
+        BILINGUAL: <span style="color:var(--glow-en)">ACTIVE</span><br />
+        SECURITY: <span style="color:#fff">AES-256</span>
+      </div>
+    </div>
+
+    <!-- LOG -->
+    <div id="log-area">
+      <div class="log-entry" style="color:var(--glow-en)">◈ SOFIYA.OS — NEURAL_LINK_V4 READY</div>
+    </div>
+
+    <!-- MARQUEE -->
+    <div class="marquee-bar">
+      <div class="marquee-label">TRY →</div>
+      <div style="overflow:hidden;flex:1">
+        <div class="marquee-track" id="marqueeTrack"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ============================================================
+       SOFIYA — BILINGUAL AI ASSISTANT
+       Supports: English (en-US) | Hindi (hi-IN)
+       Skill Modules: Navigation, YouTube, WhatsApp,
+                      Time/Date, Volume, Greetings
+       ============================================================ */
+
+    'use strict';
+
+    /* ── CONTACTS (bilingual keys → phone number) ── */
+    const CONTACTS = {
+      'mom': '9876500001',
+      'मम्मी': '9876500001',
+      'मां': '9876500001',
+      'dad': '9876500002',
+      'पिता जी': '9876500002',
+      'पापा': '9876500002',
+      'office': '9876500003',
+      'ऑफिस': '9876500003',
+      'raj': '9876500004',
+      'राज': '9876500004',
+      'priya': '9876500005',
+      'प्रिया': '9876500005',
+      'amit': '9876500006',
+      'अमित': '9876500006',
+    };
+
+    /* ── MARQUEE COMMANDS ── */
+    const MARQUEE_CMDS = [
+      '"Open Google"', '"YouTube खोलो"', '"What time is it?"', '"कितने बजे हैं?"',
+      '"Play Bollywood on YouTube"', '"गूगल खोलो"', '"आवाज़ बढ़ाओ"',
+      '"Send message to mom saying hello"', '"Hello"', '"नमस्ते"',
+      '"Who are you?"', '"तुम कौन हो?"', '"आज कौन सी तारीख है?"',
+      '"Increase volume"', '"वॉल्यूम कम करो"', '"Thank you"', '"धन्यवाद"',
+    ];
+
+    /* ── STATE ── */
+    let isActive = false;
+    let volume = 50;
+    let currentLang = 'en'; // 'en' | 'hi'
+    let recognition = null;
+    let isSpeaking = false;
+    let shouldRestart = false;
+
+    /* ── DOM REFS ── */
+    const $ = id => document.getElementById(id);
+    const reactorBtn = $('reactor-btn');
+    const reactorText = $('reactorText');
+    const statusDot = $('statusDot');
+    const statusText = $('status-text');
+    const statusSub = $('status-sub');
+    const transcriptEl = $('transcript');
+    const responseEl = $('response');
+    const waveform = $('waveform');
+    const volFill = $('vol-fill');
+    const volLabel = $('vol-label');
+    const logArea = $('log-area');
+    const langToggle = $('langToggle');
+    const enLbl = $('enLbl');
+    const hiLbl = $('hiLbl');
+    const detectedLang = $('detectedLang');
+
+    /* ── LANGUAGE DETECTION ──
+       Simple heuristic: if text contains Devanagari Unicode block → Hindi */
+    function detectLang(text) {
+      return /[\u0900-\u097F]/.test(text) ? 'hi' : 'en';
+    }
+
+    /* ── UI: SET LANGUAGE DISPLAY ── */
+    function setLangDisplay(lang) {
+      currentLang = lang;
+      enLbl.classList.toggle('active', lang === 'en');
+      hiLbl.classList.toggle('active', lang === 'hi');
+      detectedLang.textContent = lang === 'hi' ? 'LANG: HI-IN' : 'LANG: EN-US';
+      transcriptEl.className = lang === 'hi' ? 'hindi' : '';
+      responseEl.className = lang === 'hi' ? 'hindi' : '';
+    }
+
+    /* ── UI: STATUS ── */
+    function setStatus(textEn, textHi, active) {
+      statusText.textContent = active
+        ? (currentLang === 'hi' ? textHi : textEn)
+        : (textEn + ' / ' + textHi);
+      statusText.className = currentLang === 'hi' ? 'hindi' : '';
+      statusDot.className = 'status-dot' + (active ? ' active' : '');
+    }
+
+    /* ── UI: SHOW RESPONSE ── */
+    function showResponse(actionTag, text) {
+      responseEl.innerHTML =
+        `<span class="action-tag">${actionTag}</span>${text}`;
+    }
+
+    /* ── LOG ── */
+    function addLog(cmd, resp, lang) {
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
+      entry.innerHTML =
+        `<span class="log-lang ${lang}"></span><span class="log-cmd">${cmd.slice(0, 40)}</span> → ${resp.slice(0, 50)}`;
+      logArea.appendChild(entry);
+      logArea.scrollLeft = logArea.scrollWidth;
+      // Keep max 20 entries
+      while (logArea.children.length > 21) logArea.removeChild(logArea.children[1]);
+    }
+
+    /* ── TTS ── */
+    function speak(text, lang) {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const utt = new SpeechSynthesisUtterance(text);
+      utt.lang = lang === 'hi' ? 'hi-IN' : 'en-US';
+      utt.rate = 0.95; utt.pitch = 1.1; utt.volume = volume / 100;
+      // Prefer a matching voice
+      const voices = window.speechSynthesis.getVoices();
+      const pref = voices.find(v => v.lang.startsWith(lang === 'hi' ? 'hi' : 'en'));
+      if (pref) utt.voice = pref;
+      isSpeaking = true;
+      utt.onend = utt.onerror = () => { isSpeaking = false; };
+      window.speechSynthesis.speak(utt);
+    }
+
+    /* ── VOLUME CONTROL ── */
+    function setVolume(val) {
+      volume = Math.max(0, Math.min(100, val));
+      volFill.style.width = volume + '%';
+      volLabel.textContent = volume + '%';
+    }
+    setVolume(50);
+
+    /* ── WEB SITE MAPPING ── */
+    const SITE_MAP = {
+      'google': 'google.com', 'youtube': 'youtube.com', 'github': 'github.com',
+      'facebook': 'facebook.com', 'instagram': 'instagram.com', 'twitter': 'twitter.com',
+      'x': 'x.com', 'whatsapp': 'web.whatsapp.com', 'gmail': 'gmail.com', 'maps': 'maps.google.com',
+      'netflix': 'netflix.com', 'amazon': 'amazon.in', 'flipkart': 'flipkart.com',
+      'stackoverflow': 'stackoverflow.com', 'linkedin': 'linkedin.com', 'reddit': 'reddit.com',
+    };
+    /* Hindi site name transliterations */
+    const HINDI_SITE = {
+      'गूगल': 'google', 'यूट्यूब': 'youtube', 'गिटहब': 'github', 'फेसबुक': 'facebook',
+      'इंस्टाग्राम': 'instagram', 'ट्विटर': 'twitter', 'व्हाट्सएप': 'whatsapp',
+      'जीमेल': 'gmail', 'नेटफ्लिक्स': 'netflix', 'अमेज़न': 'amazon', 'फ्लिपकार्ट': 'flipkart',
+      'लिंक्डइन': 'linkedin', 'रेड्डिट': 'reddit',
+    };
+
+    function resolveSite(name) {
+      name = name.toLowerCase().trim();
+      const hindiKey = Object.keys(HINDI_SITE).find(k => name.includes(k));
+      if (hindiKey) name = HINDI_SITE[hindiKey];
+      if (SITE_MAP[name]) return 'https://www.' + SITE_MAP[name];
+      // Fallback: treat as domain
+      return 'https://www.' + name.replace(/\s+/g, '-') + '.com';
+    }
+
+    /* ── COMMAND PROCESSOR ── */
+    function processCommand(text) {
+      const raw = text.trim();
+      const low = raw.toLowerCase();
+      const lang = detectLang(raw);
+      setLangDisplay(lang);
+
+      transcriptEl.textContent = `"${raw}"`;
+      setStatus('Processing…', 'प्रोसेस हो रहा है…', true);
+
+      // ── A. WEB NAVIGATION ──
+      // English: "open/go to/navigate to <site>"
+      let m = low.match(/(?:open|go to|navigate to|search on)\s+(.+?)(?:\s+website)?$/);
+      if (!m) {
+        // Hindi: "<site> खोलो / पर जाओ / वेबसाइट खोलो"
+        m = raw.match(/(.+?)\s*(?:खोलो|खोलिए|पर जाओ|पर जा)/);
+        if (!m) m = raw.match(/वेबसाइट खोलो\s+(.+)/i);
+      }
+      if (m) {
+        const siteName = m[1].trim();
+        const url = resolveSite(siteName);
+        window.open(url, '_blank');
+        const resp = lang === 'hi'
+          ? `${siteName} खोल रहा हूँ।`
+          : `Opening ${siteName}…`;
+        showResponse(lang === 'hi' ? 'वेब नेविगेशन' : 'WEB NAV', resp);
+        speak(resp, lang);
+        addLog(raw, resp, lang);
+        setStatus('Done / हो गया', '', false);
+        return;
+      }
+
+      // ── B. YOUTUBE ──
+      // Priority-ordered regex attempts for both languages
+      let ytQuery = null;
+      // English patterns
+      const ytEn1 = low.match(/(?:play|search|find|watch)\s+(.+?)\s+on\s+(?:youtube|yt)/);
+      const ytEn2 = low.match(/(?:play|search|find|watch)\s+(.+?)\s+(?:youtube par|youtube पर)/);
+      // Hindi patterns — handle both word orders:
+      //   "<query> YouTube पर चलाओ/देखना है/सुनना है"
+      //   "YouTube पर <query> चलाओ/सर्च करो/देखो"
+      const ytHi1 = raw.match(/(.+?)\s+(?:YouTube|यूट्यूब)\s*पर\s*(?:चलाओ|देखना है|सुनना है|सर्च करो|ढूंढो)/i);
+      const ytHi2 = raw.match(/(?:YouTube|यूट्यूब)\s*पर\s+(.+?)\s*(?:चलाओ|देखना है|देखो|सुनना है|सर्च करो|ढूंढो)/i);
+      const ytHi3 = raw.match(/(?:YouTube|यूट्यूब)\s*पर\s+(.+)/i);
+      if (ytEn1) ytQuery = ytEn1[1];
+      else if (ytEn2) ytQuery = ytEn2[1];
+      else if (ytHi1) ytQuery = ytHi1[1];
+      else if (ytHi2) ytQuery = ytHi2[1];
+      else if (ytHi3) ytQuery = ytHi3[1];
+
+      if (ytQuery) {
+        ytQuery = ytQuery.trim();
+        const encoded = encodeURIComponent(ytQuery);
+        window.open(`https://www.youtube.com/results?search_query=${encoded}`, '_blank');
+        const resp = lang === 'hi'
+          ? `YouTube पर "${ytQuery}" सर्च कर रहा हूँ।`
+          : `Searching YouTube for "${ytQuery}"…`;
+        showResponse('YOUTUBE', resp);
+        speak(resp, lang);
+        addLog(raw, resp, lang);
+        setStatus('Done', '', false);
+        return;
+      }
+
+      // ── C. WHATSAPP ──
+      // English: "send message to <name> saying <msg>"
+      // Hindi: "<name> को मैसेज भेजो <msg>" | "<name> को कहो <msg>"
+      let waName = null, waMsg = '';
+      const waEnMatch = low.match(/send (?:a )?(?:message|msg|whatsapp) to (.+?) (?:saying|that|:)\s*(.+)/);
+      const waHiMatch = raw.match(/(.+?)\s*(?:को मैसेज भेजो|को मैसेज करो|को कहो|को संदेश दो)\s*(.+)/i)
+        || raw.match(/व्हाट्सएप पर\s*(.+?)\s*को\s*(?:मैसेज|संदेश)\s*(?:दो|भेजो)\s*(.+)/i);
+      if (waEnMatch) { waName = waEnMatch[1].trim(); waMsg = waEnMatch[2].trim(); }
+      else if (waHiMatch) { waName = waHiMatch[1].trim(); waMsg = waHiMatch[2].trim(); }
+      if (waName) {
+        const num = CONTACTS[waName] || CONTACTS[waName.toLowerCase()];
+        if (num) {
+          const url = `https://wa.me/${num}?text=${encodeURIComponent(waMsg)}`;
+          window.open(url, '_blank');
+          const resp = lang === 'hi'
+            ? `${waName} को WhatsApp मैसेज भेज रहा हूँ।`
+            : `Opening WhatsApp to message ${waName}…`;
+          showResponse('WHATSAPP', resp);
+          speak(resp, lang);
+          addLog(raw, resp, lang);
+        } else {
+          window.open('https://web.whatsapp.com', '_blank');
+          const resp = lang === 'hi'
+            ? `"${waName}" संपर्क नहीं मिला। WhatsApp Web खोल रहा हूँ। कृपया QR कोड स्कैन करें।`
+            : `Contact "${waName}" not found. Opening WhatsApp Web — please scan QR code.`;
+          showResponse('WHATSAPP', resp);
+          speak(resp, lang);
+          addLog(raw, resp, lang);
+        }
+        setStatus('Done', '', false);
+        return;
+      }
+
+      // ── D. TIME ──
+      if (/कितने बजे|time hai|what time|टाइम क्या|what's the time/i.test(raw)) {
+        const t = new Date().toLocaleTimeString(lang === 'hi' ? 'hi-IN' : 'en-US', { hour: '2-digit', minute: '2-digit' });
+        const resp = lang === 'hi' ? `अभी ${t} बजे हैं।` : `The current time is ${t}.`;
+        showResponse(lang === 'hi' ? 'समय' : 'TIME', resp);
+        speak(resp, lang);
+        addLog(raw, resp, lang);
+        setStatus('Done', '', false);
+        return;
+      }
+
+      // ── D. DATE ──
+      if (/आज कौन|तारीख|what.*date|today.*date|date today/i.test(raw)) {
+        const d = new Date().toLocaleDateString(lang === 'hi' ? 'hi-IN' : 'en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        const resp = lang === 'hi' ? `आज की तारीख है ${d}।` : `Today is ${d}.`;
+        showResponse(lang === 'hi' ? 'तारीख' : 'DATE', resp);
+        speak(resp, lang);
+        addLog(raw, resp, lang);
+        setStatus('Done', '', false);
+        return;
+      }
+
+      // ── E. VOLUME ──
+      if (/आवाज़ बढ़|volume up|increase volume|louder|ऊँचा करो/i.test(raw)) {
+        setVolume(volume + 15);
+        const resp = lang === 'hi' ? `आवाज़ बढ़ा रहा हूँ। अभी ${volume}% है।` : `Increasing volume to ${volume}%.`;
+        showResponse(lang === 'hi' ? 'वॉल्यूम' : 'VOLUME', resp);
+        speak(resp, lang);
+        addLog(raw, resp, lang);
+        setStatus('Done', '', false);
+        return;
+      }
+      if (/वॉल्यूम कम|आवाज़ कम|धीमा|volume down|decrease volume|lower volume/i.test(raw)) {
+        setVolume(volume - 15);
+        const resp = lang === 'hi' ? `आवाज़ कम कर रहा हूँ। अभी ${volume}% है।` : `Decreasing volume to ${volume}%.`;
+        showResponse(lang === 'hi' ? 'वॉल्यूम' : 'VOLUME', resp);
+        speak(resp, lang);
+        addLog(raw, resp, lang);
+        setStatus('Done', '', false);
+        return;
+      }
+      if (/म्यूट|mute/i.test(raw)) {
+        setVolume(0);
+        const resp = lang === 'hi' ? 'म्यूट कर दिया।' : 'Muted.';
+        showResponse(lang === 'hi' ? 'वॉल्यूम' : 'VOLUME', resp);
+        speak(resp, lang);
+        addLog(raw, resp, lang);
+        setStatus('Done', '', false);
+        return;
+      }
+
+      // ── F. GREETINGS ──
+      if (/^(hello|hi|hey)\b/i.test(raw)) {
+        const resp = 'Hello Sir! How can I help you?';
+        showResponse('GREET', resp);
+        speak(resp, 'en');
+        addLog(raw, resp, 'en');
+        setStatus('Done', '', false);
+        return;
+      }
+      if (/नमस्ते|हेलो|नमस्कार|प्रणाम/i.test(raw)) {
+        const resp = 'नमस्ते सर! मैं आपकी कैसे मदद कर सकता हूँ?';
+        showResponse('अभिवादन', resp);
+        speak(resp, 'hi');
+        setLangDisplay('hi');
+        addLog(raw, resp, 'hi');
+        setStatus('Done', '', false);
+        return;
+      }
+      if (/thank you|thanks|धन्यवाद|शुक्रिया/i.test(raw)) {
+        const resp = lang === 'hi' ? 'आपका स्वागत है सर!' : "You're welcome, Sir!";
+        showResponse(lang === 'hi' ? 'स्वागत' : 'WELCOME', resp);
+        speak(resp, lang);
+        addLog(raw, resp, lang);
+        setStatus('Done', '', false);
+        return;
+      }
+      if (/who are you|तुम कौन हो|आप कौन हैं|तुम्हारा नाम/i.test(raw)) {
+        const resp = lang === 'hi'
+          ? 'मैं सोफ़िया हूँ, आपका निजी AI सहायक।'
+          : 'I am SOFIYA, your personal bilingual AI assistant.';
+        showResponse(lang === 'hi' ? 'पहचान' : 'IDENTITY', resp);
+        speak(resp, lang);
+        addLog(raw, resp, lang);
+        setStatus('Done', '', false);
+        return;
+      }
+
+      // ── UNKNOWN ──
+      const unknown = lang === 'hi'
+        ? 'माफ़ करें, मैं यह नहीं समझ पाया। कृपया दोबारा कहें।'
+        : "Sorry, I didn't understand that. Please try again.";
+      showResponse(lang === 'hi' ? 'अज्ञात' : 'UNKNOWN', unknown);
+      speak(unknown, lang);
+      addLog(raw, unknown, lang);
+      setStatus('Ready', 'तैयार', false);
+    }
+
+    /* ── SPEECH RECOGNITION ── */
+    function initRecognition() {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) {
+        showResponse('ERROR', 'Speech Recognition not supported. Use Chrome. | Chrome ब्राउज़र उपयोग करें।');
+        return null;
+      }
+      const r = new SR();
+      r.continuous = false;
+      r.interimResults = true;
+      r.maxAlternatives = 3;
+      // Use hi-IN — Chrome handles mixed English words within Hindi context well
+      r.lang = 'hi-IN';
+
+      r.onstart = () => {
+        setStatus('Listening…', 'सुन रहा हूँ…', true);
+        waveform.classList.add('active');
+      };
+
+      r.onresult = (e) => {
+        const results = Array.from(e.results);
+        const last = results[results.length - 1];
+        const interim = last[0].transcript;
+        // Show interim
+        transcriptEl.textContent = interim;
+        if (last.isFinal) {
+          // Pick best alternative that has Devanagari if user spoke Hindi
+          let best = last[0].transcript;
+          for (let i = 0; i < last.length; i++) {
+            if (/[\u0900-\u097F]/.test(last[i].transcript)) { best = last[i].transcript; break; }
+          }
+          processCommand(best);
+        }
+      };
+
+      r.onerror = (e) => {
+        if (e.error === 'no-speech') {
+          if (shouldRestart) { restartListen(); } return;
+        }
+        if (e.error === 'not-allowed') {
+          showResponse('ERROR', 'Microphone denied. / माइक्रोफ़ोन अस्वीकार।');
+          deactivate();
+          return;
+        }
+        setStatus('Error — retrying…', 'दोबारा कोशिश…', true);
+        if (shouldRestart) setTimeout(restartListen, 1000);
+      };
+
+      r.onend = () => {
+        waveform.classList.remove('active');
+        if (shouldRestart && !isSpeaking) restartListen();
+        else if (shouldRestart && isSpeaking) {
+          // Wait for speech to finish then restart
+          const iv = setInterval(() => { if (!isSpeaking) { clearInterval(iv); restartListen(); } }, 200);
+        }
+      };
+
+      return r;
+    }
+
+    function restartListen() {
+      if (!shouldRestart || !recognition) return;
+      try { recognition.start(); } catch (_) { }
+    }
+
+    function activate() {
+      isActive = true; shouldRestart = true;
+      reactorBtn.classList.add('active');
+      reactorText.innerHTML = 'DEACTIVATE<br/>निष्क्रिय करें';
+      setStatus('Listening…', 'सुन रहा हूँ…', true);
+      recognition = initRecognition();
+      if (recognition) { try { recognition.start(); } catch (_) { } }
+    }
+
+    function deactivate() {
+      isActive = false; shouldRestart = false;
+      reactorBtn.classList.remove('active');
+      reactorText.innerHTML = 'ACTIVATE<br/>सक्रिय करें';
+      waveform.classList.remove('active');
+      setStatus('Idle', 'निष्क्रिय', false);
+      if (recognition) { try { recognition.stop(); } catch (_) { } recognition = null; }
+      window.speechSynthesis.cancel();
+    }
+
+    reactorBtn.addEventListener('click', () => { isActive ? deactivate() : activate(); });
+
+    /* ── LANGUAGE TOGGLE ── */
+    langToggle.addEventListener('click', () => {
+      setLangDisplay(currentLang === 'en' ? 'hi' : 'en');
+    });
+
+    /* ── KEYBOARD SHORTCUTS ── */
+    document.addEventListener('keydown', e => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.code === 'Space') { e.preventDefault(); isActive ? deactivate() : activate(); }
+      if (e.key.toLowerCase() === 'l') setLangDisplay(currentLang === 'en' ? 'hi' : 'en');
+      if (e.key === 'ArrowUp') { setVolume(volume + 10); }
+      if (e.key === 'ArrowDown') { setVolume(volume - 10); }
+    });
+
+    /* ── MARQUEE ── */
+    (function buildMarquee() {
+      const track = $('marqueeTrack');
+      const items = [...MARQUEE_CMDS, ...MARQUEE_CMDS];
+      items.forEach(cmd => {
+        const el = document.createElement('span');
+        el.className = 'marquee-item';
+        el.textContent = cmd;
+        el.addEventListener('click', () => processCommand(cmd.replace(/"/g, '')));
+        track.appendChild(el);
+      });
+    })();
+
+    /* ── VOICES PRELOAD ── */
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.getVoices();
+      window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    }
+
+    /* ── INIT ── */
+    setStatus('Ready — Click Reactor or press Space', 'तैयार — रिएक्टर क्लिक करें', false);
+  </script>
+</body>
+
+</html>

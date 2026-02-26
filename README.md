@@ -15,6 +15,35 @@
 
 ---
 
+## ⚡ Standalone Demo (No Build Required)
+
+> **Just open one file — zero install, zero build step.**
+
+The file **`sofiya-assistant.html`** at the project root is a fully self-contained single-page app. Open it directly in **Google Chrome**:
+
+```
+sofiya-bilingual-ai-assistant/
+└── sofiya-assistant.html   ← double-click or drag into Chrome
+```
+
+| What it includes | Detail |
+|---|---|
+| 🎙️ Bilingual Voice Recognition | Web Speech API (`hi-IN` mode, handles English too) |
+| 🧠 Language Auto-Detection | Devanagari Unicode heuristic EN ↔ HI |
+| 🌐 Web Navigation | "Open YouTube" / "गूगल खोलो" |
+| 🎬 YouTube Search | "Play Bollywood on YouTube" / "यूट्यूब पर गाना चलाओ" |
+| 💬 WhatsApp | Bilingual contact map + `wa.me` deep-link |
+| 🕐 Time & Date | Spoken in the detected language |
+| 🔊 Volume Simulation | Visual bar + spoken feedback |
+| 👋 Greetings | Hello / नमस्ते / धन्यवाद / तुम कौन हो? |
+| 🎨 Futuristic UI | Arc-reactor button, scanlines, glassmorphism, Devanagari fonts |
+
+**Keyboard shortcuts:** `Space` — activate/deactivate · `L` — toggle EN/HI · `↑↓` — volume
+
+> ⚠️ Requires Google Chrome (Web Speech API). Allow microphone when prompted.
+
+---
+
 ## ✨ Overview
 
 **SOFIYA** (Smart Omnilingual Framework for Intelligent Yet Approachable AI) is a futuristic, voice-controlled browser assistant that recognises and responds to commands in **English, Hindi, and Hinglish** — with personality, style, and precision.
