@@ -820,6 +820,10 @@
       display: none !important
     }
 
+    .collapsed {
+      display: none !important;
+    }
+
     .spin {
       animation: spin1 .6s linear infinite
     }
@@ -923,6 +927,25 @@
       <div class="glass" style="flex:1.5">
         <h3>◈ TASKS / कार्य</h3>
         <div id="taskList"><span style="color:var(--text-dim);font-size:.7rem">No tasks yet</span></div>
+      </div>
+
+      <!-- AI Settings -->
+      <div class="glass" style="flex:1">
+        <h3 style="cursor:pointer" onclick="document.getElementById('aiSettingsBody').classList.toggle('collapsed')">
+          ◈ AI SETTINGS / AI सेटिंग्स ▾
+        </h3>
+        <div id="aiSettingsBody">
+          <label style="font-size:.6rem;color:var(--text-dim);display:block;margin-bottom:4px">OpenRouter API
+            Key</label>
+          <input type="password" id="apiKeyInput" placeholder="sk-or-v1-…"
+            style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:5px 8px;color:var(--text);font-size:.65rem;font-family:'Share Tech Mono',monospace;outline:none"
+            oninput="saveApiKey(this.value)" />
+          <label style="font-size:.6rem;color:var(--text-dim);display:block;margin:6px 0 4px">Model</label>
+          <input type="text" id="aiModelInput" placeholder="openai/gpt-oss-120b:free"
+            style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:5px 8px;color:var(--text);font-size:.65rem;font-family:'Share Tech Mono',monospace;outline:none"
+            oninput="saveAiModel(this.value)" />
+          <div id="aiStatus" style="font-size:.55rem;margin-top:4px;color:var(--text-dim)">AI fallback: inactive</div>
+        </div>
       </div>
 
       <!-- Quick commands -->
@@ -1042,6 +1065,60 @@
     let timerInterval = null;
     let timerRemaining = 0;
     let tasks = JSON.parse(localStorage.getItem('sofiya_tasks') || '[]');
+
+    /* ── OPENROUTER AI CONFIG ── */
+    let OPENROUTER_API_KEY = localStorage.getItem('sofiya_api_key') || '';
+    let AI_MODEL = localStorage.getItem('sofiya_ai_model') || 'openai/gpt-oss-120b:free';
+
+    function saveApiKey(val) {
+      OPENROUTER_API_KEY = val.trim();
+      localStorage.setItem('sofiya_api_key', OPENROUTER_API_KEY);
+      updateAiStatus();
+    }
+    function saveAiModel(val) {
+      AI_MODEL = val.trim() || 'openai/gpt-oss-120b:free';
+      localStorage.setItem('sofiya_ai_model', AI_MODEL);
+    }
+    function updateAiStatus() {
+      const el = $('aiStatus');
+      if (!el) return;
+      if (OPENROUTER_API_KEY) {
+        el.innerHTML = 'AI fallback: <span style="color:var(--success)">active ✓</span>';
+      } else {
+        el.innerHTML = 'AI fallback: <span style="color:var(--text-dim)">inactive</span>';
+      }
+    }
+
+    async function askAI(prompt, lang) {
+      if (!OPENROUTER_API_KEY) return '';
+      const systemPrompt = lang === 'hi'
+        ? 'आप सोफिया हैं, एक मददगार और बुद्धिमान द्विभाषी AI सहायक। संक्षिप्त और स्पष्ट उत्तर दें। अधिकतम 2-3 वाक्यों में जवाब दें।'
+        : 'You are Sofiya, a helpful and intelligent bilingual AI assistant. Provide concise and clear responses in 2-3 sentences max.';
+      try {
+        setStatus('Thinking…', 'सोच रही हूँ…', true);
+        const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+            'HTTP-Referer': window.location.href,
+            'X-Title': 'Sofiya AI Assistant',
+          },
+          body: JSON.stringify({
+            model: AI_MODEL,
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: prompt }
+            ],
+          }),
+        });
+        const data = await resp.json();
+        return data.choices?.[0]?.message?.content || '';
+      } catch (err) {
+        console.error('OpenRouter error:', err);
+        return '';
+      }
+    }
 
     /* ── DOM REFS ── */
     const $ = id => document.getElementById(id);
@@ -1197,7 +1274,7 @@
     }
 
     /* ── COMMAND PROCESSOR ── */
-    function processCommand(text) {
+    async function processCommand(text) {
       const raw = text.trim();
       const low = raw.toLowerCase();
       const lang = detectLang(raw);
@@ -1612,6 +1689,17 @@
         setStatus('Done', '', false); return;
       }
 
+      // ── AI FALLBACK (OpenRouter) ──
+      if (OPENROUTER_API_KEY) {
+        const aiReply = await askAI(raw, lang);
+        if (aiReply) {
+          const wrapped = wrapResponse(aiReply, lang);
+          showResponse('AI', wrapped);
+          speak(wrapped, lang); addLog(raw, wrapped, lang);
+          setStatus('Done', '', false); return;
+        }
+      }
+
       // ── FALLBACK: WEB SEARCH ──
       const query = raw.replace(/search|find|google|look up|dhundo|khojo|please/gi, '').trim();
       if (/^(hello|hi|hey|namaste|नमस्ते)$/i.test(query)) {
@@ -1750,6 +1838,14 @@
 
     /* ── INIT ── */
     renderTasks();
+    // Restore saved API key & model
+    (() => {
+      const keyInput = $('apiKeyInput');
+      const modelInput = $('aiModelInput');
+      if (keyInput && OPENROUTER_API_KEY) keyInput.value = OPENROUTER_API_KEY;
+      if (modelInput && AI_MODEL) modelInput.value = AI_MODEL;
+      updateAiStatus();
+    })();
     setStatus('Ready — Click Reactor or press Space', 'तैयार — रिएक्टर क्लिक करें', false);
   </script>
 </body>
