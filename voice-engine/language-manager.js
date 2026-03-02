@@ -7,7 +7,7 @@
  */
 
 import 'dotenv/config';
-import { createClient } from 'pg';
+// import { createClient } from 'pg'; // Removed unused and incorrect import
 
 export class LanguageManager {
     constructor(options = {}) {
@@ -174,7 +174,7 @@ export class LanguageManager {
      */
     getLanguageConfig(languageCode) {
         const lang = this.supportedLanguages[languageCode] || this.supportedLanguages['en'];
-        
+
         return {
             code: lang.code,
             name: lang.name,
@@ -211,13 +211,13 @@ export class LanguageManager {
             //     from: fromLang,
             //     to: toLang
             // });
-            
+
             // Placeholder: return text with language marker
             const translation = `[${toLang}] ${text}`;
-            
+
             // Cache translation
             this.translationCache.set(cacheKey, translation);
-            
+
             // Limit cache size
             if (this.translationCache.size > 1000) {
                 const firstKey = this.translationCache.keys().next().value;

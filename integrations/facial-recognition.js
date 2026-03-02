@@ -7,7 +7,7 @@
  */
 
 import 'dotenv/config';
-import { createClient } from 'pg';
+// import { createClient } from 'pg'; // Removed unused and incorrect import
 
 export class FacialRecognition {
     constructor(options = {}) {

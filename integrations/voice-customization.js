@@ -7,7 +7,7 @@
  */
 
 import 'dotenv/config';
-import { createClient } from 'pg';
+// import { createClient } from 'pg'; // Removed unused and incorrect import
 import { createClient as createRedisClient } from 'redis';
 
 export class VoiceCustomization {
@@ -16,7 +16,7 @@ export class VoiceCustomization {
         this.redis = options.redis || null;
         this.modelsPath = options.modelsPath || './ml/models/voice_clones';
         this.ttsService = options.ttsService || 'google'; // google, elevenlabs, custom
-        
+
         // Voice emotion presets
         this.emotionPresets = {
             happy: { rate: 1.1, pitch: 1.15, volume: 1.0 },
@@ -53,7 +53,7 @@ export class VoiceCustomization {
         const modelId = await this.queueTraining(userId, sampleId);
 
         console.log(`[VoiceCustomization] Voice samples recorded for ${userId}, training queued: ${modelId}`);
-        
+
         return modelId;
     }
 
@@ -65,7 +65,7 @@ export class VoiceCustomization {
      */
     async trainVoiceModel(userId, sampleId) {
         const modelId = `voice_${userId}_${Date.now()}`;
-        
+
         console.log(`[VoiceCustomization] Training voice model ${modelId}...`);
 
         // In production, this would:
@@ -202,7 +202,7 @@ export class VoiceCustomization {
      */
     async queueTraining(userId, sampleId) {
         const modelId = `voice_${userId}_${Date.now()}`;
-        
+
         // In production, use job queue (BullMQ, etc.)
         // For now, start training immediately
         this.trainVoiceModel(userId, sampleId).catch(error => {
@@ -220,10 +220,10 @@ export class VoiceCustomization {
         // In production, this would take 2-4 hours
         // For now, just update status
         console.log(`[VoiceCustomization] Simulating training for ${modelId}...`);
-        
+
         // Update status periodically
         await this.updateTrainingStatus(modelId, 'training', 0);
-        
+
         // Simulate progress
         for (let progress = 25; progress <= 100; progress += 25) {
             await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate delay

@@ -8,7 +8,7 @@
 
 import 'dotenv/config';
 import https from 'https';
-import { createClient } from 'pg';
+// import { createClient } from 'pg'; // Removed unused and incorrect import
 
 export class NewsService {
     constructor(options = {}) {

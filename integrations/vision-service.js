@@ -7,7 +7,7 @@
  */
 
 import 'dotenv/config';
-import { createClient } from 'pg';
+// import { createClient } from 'pg'; // Removed unused and incorrect import
 
 export class VisionService {
     constructor(options = {}) {
@@ -15,7 +15,7 @@ export class VisionService {
         this.modelPath = options.modelPath || './ml/models/yolo/yolov8n.onnx';
         this.model = null; // YOLO model instance
         this.confidenceThreshold = options.confidenceThreshold || 0.5;
-        
+
         // Item categories to track
         this.trackableItems = [
             'keys', 'wallet', 'phone', 'remote', 'glasses', 'watch',
@@ -31,11 +31,11 @@ export class VisionService {
      */
     async initialize() {
         console.log('[VisionService] Initializing object detection model...');
-        
+
         // In production, load YOLO model:
         // const { InferenceSession } = require('onnxruntime-node');
         // this.model = await InferenceSession.create(this.modelPath);
-        
+
         console.log('[VisionService] Model initialized (simulated)');
     }
 
@@ -109,9 +109,9 @@ export class VisionService {
      */
     async scanFridge(imageData) {
         const detections = await this.processImage(imageData, 'fridge');
-        
+
         // Filter for food items
-        const foodItems = detections.filter(d => 
+        const foodItems = detections.filter(d =>
             ['apple', 'banana', 'milk', 'eggs', 'bread', 'cheese', 'vegetable', 'fruit'].includes(d.class)
         );
 
@@ -244,7 +244,7 @@ export class VisionService {
     parseYOLOOutput(results) {
         // In production, parse YOLO output format
         // YOLO returns: [batch, num_detections, 85] where 85 = [x, y, w, h, conf, class_probs...]
-        
+
         const detections = [];
         // Parse logic here
         return detections;
@@ -257,13 +257,13 @@ export class VisionService {
      */
     startMonitoring(onItemDetected, intervalMs = 5000) {
         console.log('[VisionService] Starting continuous monitoring');
-        
+
         // In production, this would:
         // 1. Capture frames from camera feed
         // 2. Process each frame
         // 3. Detect items
         // 4. Trigger callbacks for trackable items
-        
+
         this.monitoringInterval = setInterval(async () => {
             // Simulate frame capture and processing
             // const frame = await captureFrame();

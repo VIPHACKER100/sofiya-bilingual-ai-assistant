@@ -7,7 +7,7 @@
  */
 
 import 'dotenv/config';
-import { createClient } from 'pg';
+// import { createClient } from 'pg'; // Removed unused and incorrect import
 
 export class DocumentScanner {
     constructor(options = {}) {
@@ -117,7 +117,7 @@ export class DocumentScanner {
         console.log('[DocumentScanner] Scanning whiteboard...');
 
         const ocrText = await this.performOCR(imageData);
-        
+
         // Extract structured notes (bullets, lists, etc.)
         const structuredNotes = this.extractStructuredNotes(ocrText);
 
@@ -175,7 +175,7 @@ export class DocumentScanner {
         if (amountMatches && amountMatches.length > 0) {
             const amounts = amountMatches.map(m => parseFloat(m.replace('$', '')));
             data.total = Math.max(...amounts);
-            
+
             // Second largest might be subtotal
             if (amounts.length > 1) {
                 amounts.sort((a, b) => b - a);
@@ -190,7 +190,7 @@ export class DocumentScanner {
         const lines = ocrText.split('\n');
         lines.forEach(line => {
             const itemMatch = line.match(/^(.+?)\s+\$?(\d+\.\d{2})$/);
-            if (itemMatch && !itemMatch[1].toLowerCase().includes('total') && 
+            if (itemMatch && !itemMatch[1].toLowerCase().includes('total') &&
                 !itemMatch[1].toLowerCase().includes('tax')) {
                 data.items.push({
                     name: itemMatch[1].trim(),
@@ -294,7 +294,7 @@ export class DocumentScanner {
 
         lines.forEach(line => {
             const trimmed = line.trim();
-            
+
             // Bullet points
             if (trimmed.match(/^[•\-\*]\s+/)) {
                 structured.bullets.push(trimmed.replace(/^[•\-\*]\s+/, ''));
