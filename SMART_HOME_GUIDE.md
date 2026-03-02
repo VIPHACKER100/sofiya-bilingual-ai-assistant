@@ -1,4 +1,4 @@
-# SOFIYA Smart Home Guide (v5.1.0)
+# SOFIYA Smart Home Guide (v5.6.0)
 
 ## 🏠 Overview
 

@@ -1,4 +1,4 @@
-# 🗣️ SOFIYA — Voice Commands Reference (v4.3.0)
+# 🗣️ SOFIYA — Voice Commands Reference (v5.6.0)
 
 Complete list of all supported voice commands in English, Hindi, and Hinglish.
 
@@ -118,6 +118,35 @@ Routines are sequences of multiple actions triggered by a single phrase.
 | Fun fact | "Tell me a fact" / "Interesting fact" | "Koi rochak baat batao" |
 | Web search | "Search for Mars Rover" | "Mars Rover dhundo" |
 | YouTube | "Search YouTube for cooking videos" | "YouTube par cooking dekho" |
+
+---
+
+## 🏘️ Household Intelligence (v5.6.0)
+
+| Intent | English | Hindi / Hinglish |
+| :--- | :--- | :--- |
+| Item location | "Where are my keys?" | "Mera chabi kahan hai?" / "Chabiyan dhundo" |
+| Add inventory | "Add keys to drawer" | "Chabi drawer mein jodo" |
+| Sync status | "Sync household" | "Household sync karo" |
+
+---
+
+## 🤝 Collaborative Workspace (v5.6.0)
+
+| Intent | English | Hindi / Hinglish |
+| :--- | :--- | :--- |
+| Show shared tasks | "Show shared tasks" | "Sajha task dikhao" |
+| Workspace sync | "Sync workspace" | "Workspace sync karo" |
+| Shared calendar | "Show group calendar" | "Group calendar dikhao" |
+
+---
+
+## 🎁 Social Relations (v5.6.0)
+
+| Intent | English | Hindi / Hinglish |
+| :--- | :--- | :--- |
+| Add gift idea | "Save gift idea: Watch" | "Gift idea save karo: Ghadi" |
+| Get gift ideas | "What are the gift ideas?" | "Maine kya socha tha gift ke liye?" |
 
 ---
 

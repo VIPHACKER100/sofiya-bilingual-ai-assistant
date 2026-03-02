@@ -1,4 +1,4 @@
-# SOFIYA Monitoring Guide (v5.1.0)
+# SOFIYA Monitoring Guide (v5.6.0)
 
 & Observability Guide
 
@@ -36,6 +36,13 @@ metrics.recordDatabaseQuery('get_user_preferences', 50, true);
 
 // Record cache operation
 metrics.recordCacheOperation('hit', 'redis');
+
+// Multi-Node System Bridge Health (v5.6.0)
+metrics.recordBridgeStatus('bridge_0', 'connected', 120); // Bridge heartbeat
+metrics.recordOCRPerformance('vision_ocr', 1500, true);   // OCR latency
+
+// Household Sync Performance (v5.6.0)
+metrics.recordSyncLatency('HH_99', 450); // Peer-to-peer sync time
 
 // Get histogram statistics
 const stats = metrics.getHistogramStats('api_request_duration_ms', {});
@@ -325,11 +332,10 @@ async function processVoiceCommand(audioData) {
    - Calendar sync success rate (%)
    - Average operation duration (ms)
 
-5. **SLA Compliance**
-   - Uptime percentage
-   - API latency compliance
-   - Voice latency compliance
-   - Error rate compliance
+5. **Distributed Node Health (v5.6.0)**
+   - Bridge connection uptime (%)
+   - Peer sync latency (ms)
+   - OCR success rate (%)
 
 ---
 

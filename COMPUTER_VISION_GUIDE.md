@@ -1,4 +1,4 @@
-# SOFIYA Computer Vision & AR Guide
+# SOFIYA Computer Vision & AR Guide (v5.6.0)
 
 ## 📷 Vision Service
 
@@ -348,6 +348,7 @@ const total = expenses.reduce((sum, e) => sum + e.amount, 0);
 While complex vision processing is reserved for the full React app, the standalone demo features **Security Simulation**:
 
 - **Sentry Mode**: "Sentry" / "सुरक्षा" / "निगरानी" (Activates a simulated high-alert state).
+- **Vision Prototypes**: Simulates "Where are my keys?" responses using pre-defined local states.
 - **Cinematic Feedback**: The Arc Reactor UI pulses with a faster, defensive rhythm.
 - **Auditory Alert**: SOFIYA confirms security protocols are active in the detected language.
 - **Prototyping**: Demonstrates how vision-triggered events could be handled in a real-world scenario.

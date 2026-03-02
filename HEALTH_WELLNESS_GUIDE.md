@@ -1,4 +1,4 @@
-# SOFIYA Health & Wellness Guide (v5.1.0)
+# SOFIYA Health & Wellness Guide (v5.6.0)
 
 ## 🏃 Wearable Integration
 
@@ -193,9 +193,33 @@ const suggestion = wellness.suggestActivity(7, { timeOfDay: 'afternoon' });
 
 ---
 
-## 🥗 Nutrition Service
+## 🥗 Nutrition & Shared Inventory (v5.6.0)
 
-### Fridge Inventory
+SOFIYA's nutrition service now leverages **Household IQ** for real-time inventory:
+
+### Collaborative Pantry
+
+```javascript
+// Check shared household inventory (Household IQ)
+const pantry = await nutrition.getHouseholdInventory('HH_99');
+
+// Find item expiration dates
+const expiring = pantry.filter(i => i.expiryDate < Date.now() + 3 * 24 * 60 * 60 * 1000);
+```
+
+### Shared Meal Planning
+
+```javascript
+// Sync meal plan across family devices
+await nutrition.syncMealPlan('HH_99', {
+    date: '2026-03-05',
+    meal: 'Dinner',
+    recipe: 'Vegetable Curry',
+    assignedTo: ['Chef_User']
+});
+```
+
+---
 
 ```javascript
 import { NutritionService } from './integrations/nutrition-service.js';
@@ -354,6 +378,16 @@ CREATE TABLE fridge_inventory (
     user_id VARCHAR(255) PRIMARY KEY,
     items JSONB NOT NULL,
     scanned_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Household Inventory Table
+CREATE TABLE household_inventory (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    household_id VARCHAR(50),
+    name VARCHAR(100),
+    quantity DECIMAL,
+    expiry_date DATE,
+    updated_at TIMESTAMP DEFAULT NOW()
 );
 ```
 

@@ -54,6 +54,39 @@ This document outlines the database schema for PostgreSQL and Redis.
 | `value` | NUMERIC | |
 | `recorded_at` | TIMESTAMP | |
 
+### `household_items` Table
+
+| Column | Type | Description |
+|---|---|---|
+| `id` | UUID (PK) | |
+| `name` | VARCHAR(100) | Item name |
+| `location` | VARCHAR(255) | Current location |
+| `category` | VARCHAR(50) | e.g., electronics, tools |
+| `owner_id` | UUID (FK) | Primary owner |
+| `updated_at` | TIMESTAMP | |
+
+### `shared_calendar_events` Table
+
+| Column | Type | Description |
+|---|---|---|
+| `id` | UUID (PK) | |
+| `title` | VARCHAR(255) | |
+| `start_time` | TIMESTAMP | |
+| `end_time` | TIMESTAMP | |
+| `is_shared` | BOOLEAN | Household visibility |
+| `created_by` | UUID (FK) | |
+
+### `gift_ideas` Table
+
+| Column | Type | Description |
+|---|---|---|
+| `id` | UUID (PK) | |
+| `recipient_name`| VARCHAR(100) | |
+| `item_description`| TEXT | |
+| `hidden_from` | UUID[] | Stealth Protocol IDs |
+| `is_bought` | BOOLEAN | |
+| `created_at` | TIMESTAMP | |
+
 ---
 
 ## ⚡ Redis Schema (Key-Value/Cache)

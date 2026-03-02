@@ -1,4 +1,4 @@
-# SOFIYA Calendar & Reminders Guide (v5.1.0)
+# SOFIYA Calendar & Reminders Guide (v5.6.0)
 
 ## 📅 Calendar Integration
 
@@ -361,6 +361,16 @@ CREATE TABLE reminders (
 
 CREATE INDEX idx_reminders_user_status ON reminders(user_id, status);
 CREATE INDEX idx_reminders_due_time ON reminders(due_time);
+
+-- Shared Events Table
+CREATE TABLE shared_calendar_events (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    household_id VARCHAR(50),
+    title VARCHAR(255),
+    start_time TIMESTAMP,
+    end_time TIMESTAMP,
+    is_shared BOOLEAN DEFAULT TRUE
+);
 ```
 
 ### Location Reminders Table

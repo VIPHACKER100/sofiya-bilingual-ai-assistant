@@ -1,4 +1,4 @@
-# 🛠️ SOFIYA Tech Stack (v5.1.0)
+# 🛠️ SOFIYA Tech Stack (v5.6.0)
 
 This document outlines the complete technology stack for the SOFIYA Bilingual AI Assistant, ensuring a robust, scalable, and modern architecture.
 
@@ -11,6 +11,8 @@ This document outlines the complete technology stack for the SOFIYA Bilingual AI
 - **Framework**: Express.js or Fastify
 - **Voice Computing**: Python (for heavy NLP or specific audio processing tasks if needed, via child processes or microservices)
 - **Task Scheduling**: Node-cron or BullMQ (Redis-backed)
+- **System Bridge (Python)**: `pywin32` (Windows API), `pyautogui` (Screen Control), `psutil` (System Resources), `pytesseract` (OCR)
+- **Node Sync**: ZeroMQ (ZMQ) for low-latency peer-to-peer message passing between Bridge and Backend.
 
 ## 🎨 Frontend & Mobile
 

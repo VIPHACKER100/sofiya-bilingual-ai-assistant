@@ -4,6 +4,15 @@ Goal: refine and update the project to improve code quality, maintainability, an
 
 ---
 
+### ✅ Completed (v5.6.0)
+
+### Household & Social Intelligence
+
+- **Phase 22: Collaborative Workspace** - Shared task boards, unified calendar sync.
+- **Phase 22.3: Household IQ** - Inventory tracking and item location knowledge.
+- **Phase 23: Digital Life Protection** - Stealth Gift Protocol with privacy-first logic.
+- **Manual Data Entry v2** - Native UI widgets for all household modules.
+
 ### ✅ Completed (v5.1.0)
 
 ### Standalone HTML Demo expansion

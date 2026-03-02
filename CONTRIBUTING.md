@@ -1,4 +1,4 @@
-# 🤝 Contributing to SOFIYA (v5.1.0)
+# 🤝 Contributing to SOFIYA (v5.6.0)
 
 Thank you for your interest in contributing! Here's everything you need to know.
 
@@ -19,12 +19,12 @@ npm run dev
 ## Project Structure
 
 ```text
-services/          — Core logic (commandProcessor, AI, Security, etc.)
-hooks/             — Custom hooks (useAssistant handles app state/actions)
-components/        — React UI components
-App.tsx            — Root component & UI Shell
-types.ts           — Shared TypeScript interfaces & enums
-constants.ts       — App-wide constants & command examples
+frontend/          — React 19 UI (Components, Hooks, Services)
+backend/           — Node.js/Express API (PostgreSQL, Auth, Routing)
+system-bridge/     — Python Automation (Windows API, OCR, Macros)
+voice-engine/      — Voice Processing logic
+integrations/      — Third-party API adapters
+database/          — SQL schemas and migrations
 ```
 
 ---

@@ -1,4 +1,4 @@
-# SOFIYA Information & Learning Guide (v5.1.0)
+# SOFIYA Information & Learning Guide (v5.6.0)
 
 ## 📰 News Curation
 
@@ -260,6 +260,15 @@ CREATE TABLE knowledge_assessments (
     score DECIMAL NOT NULL,
     level VARCHAR(20) NOT NULL,
     assessed_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Shared Knowledge Table
+CREATE TABLE shared_knowledge (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    household_id VARCHAR(50),
+    topic VARCHAR(255),
+    content_meta JSONB,
+    shared_at TIMESTAMP DEFAULT NOW()
 );
 ```
 

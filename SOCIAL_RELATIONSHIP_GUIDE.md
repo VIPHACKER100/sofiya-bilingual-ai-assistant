@@ -1,4 +1,4 @@
-# SOFIYA Social Relationship Guide (v5.1.0)
+# SOFIYA Social Relationship Guide (v5.6.0)
 
 Management Guide
 
@@ -23,7 +23,10 @@ await social.addContact({
     birthday: '1990-05-15',
     anniversary: '2015-06-20',
     preferences: { hobbies: 'photography', favorite_store: 'Amazon' },
-    giftIdeas: ['camera lens', 'photo album'],
+    giftIdeas: [
+        { item: 'camera lens', hidden_from: ['sarah_user_id'] },
+        { item: 'photo album', hidden_from: [] }
+    ],
     notes: 'Loves nature photography'
 });
 
@@ -154,6 +157,8 @@ const status = await coordinator.getRSVPStatus('event_123');
 - "Remind me about upcoming birthdays" → `setBirthdayReminders()`
 - "Suggest a gift for Sarah" → `suggestGiftIdeas()`
 - "Generate a birthday message for Mom" → `generateMessage()`
+- "Save gift idea: Watch for Sarah" → `SOCIAL_ADD_GIFT` (Stealth Protocol)
+- "What should I get for Papa?" → `SOCIAL_GET_GIFTS` (Filters out recipient)
 
 ### Meeting Briefing
 
@@ -229,8 +234,7 @@ CREATE TABLE event_rsvps (
 
 The standalone demo provides simplified communication tools:
 
-- **Bilingual Identity**: "Who are you?" / "तुम कौन हो?" (Assumes the assistant persona in both languages).
-- **Deep Linking**:
-  - **WhatsApp Messaging**: "WhatsApp Mom hello" / "मम्मी को व्हाट्सएप करो" (Opens `wa.me` in a new tab).
-  - **Voice Calls**: "Call Mom" / "मम्मी को कॉल करो" (Triggers device dialer via `tel:` link).
-- **Privacy**: No contact data is sent to a server; communication remains between you and your browser.
+- **Digital Life Protection**:
+  - **Stealth Gifts**: "Save gift idea: Watch for Sarah" / "उपहार आइडिया: घड़ी" (Automatically hidden from Sarah).
+  - **Surprise Protection**: Native Gift Widget with blurred preview for sensitive items.
+  - **Bilingual Interface**: Social and relationship commands fully supported in English and Hindi.

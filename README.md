@@ -4,7 +4,7 @@
 
 > *Your intelligent, voice-powered AI companion that speaks both English and Hindi*
 
-[![Version](https://img.shields.io/badge/version-5.2.0-8b5cf6?style=for-the-badge)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-5.6.0-8b5cf6?style=for-the-badge)](CHANGELOG.md)
 [![React](https://img.shields.io/badge/React-19-61dafb?style=for-the-badge&logo=react)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178c6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org)
 [![Vite](https://img.shields.io/badge/Vite-6-646cff?style=for-the-badge&logo=vite)](https://vitejs.dev)
@@ -89,6 +89,9 @@ Built with React 19, TypeScript, and the Web Speech API, SOFIYA runs in the brow
 | 🖥️ **System Health** | Spoken reports for CPU, Memory, Battery, and Disk |
 | 🤖 **Macro Engine** | Execute multi-stage command routines (e.g. Deep Cleanup) |
 | 🔐 **Secure OS Control** | Percentage-based volume, shutdown, and restart with auth |
+| 🏘️ **Household IQ** | Shared inventory and location tracking for family items |
+| 📅 **Shared Calendar** | Synchronized scheduling with proactive coordination |
+| 🎁 **Stealth Gift Protocol**| Privacy-focused gift idea tracking with access security |
 
 ### Advanced Features (v5.0+)
 
@@ -146,6 +149,14 @@ Built with React 19, TypeScript, and the Web Speech API, SOFIYA runs in the brow
 |---|---|
 | "Increase volume" | "Awaaz badhao" / "Volume tez karo" |
 | "Mute" | "Chup karo" / "Mute karo" |
+
+### Household & Social
+
+| English | Hindi / Hinglish |
+|---|---|
+| "Where are my car keys?" | "Mera car keys kahan hai?" |
+| "Add event Family Dinner" | "Family dinner ka event jodo" |
+| "Gift idea for Sarah: Watch" | "Sarah ke liye gift idea: Watch" |
 
 > 📖 Full command reference: [COMMANDS.md](COMMANDS.md)
 

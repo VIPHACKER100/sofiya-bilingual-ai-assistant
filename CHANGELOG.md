@@ -5,6 +5,35 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [5.6.0] — 2026-03-02
+
+### Added — Comprehensive Household & Social Intelligence
+
+#### Collaborative Workspace (Phase 22)
+
+- **Shared Task Board**: Synchronized task management for families and teams with real-time updates.
+- **Unified Calendar**: Integrated shared calendar events with conflict detection and automated reminders.
+- **Collaborative Sync**: "Sync workspace" / "वर्कस्पेस सिंक करें" command to refresh all shared nodes.
+
+#### Household IQ (Phase 22.3)
+
+- **Inventory Tracking**: "Where are my keys?" / "चाबियाँ कहाँ हैं?" — Shared knowledge base for item locations.
+- **Item Expiry Notifications**: Automated alerts for perishables or subscription renewals.
+- **Household Widget**: New UI module for managing shared household intelligence and inventory.
+
+#### Stealth Gift Protocol (Phase 23)
+
+- **Privacy-First Gifting**: "Save gift idea: Watch for Sarah" / "उपहार आइडिया: घड़ी" — Automatically hides ideas from specific users.
+- **Hidden From Logic**: Backend security prevents gift ideas from being leaked via API or UI to the 'hidden_from' user list.
+- **Surprise Protection**: Dedicated Gift Widget with blurred preview for sensitive items.
+
+#### Documentation & API
+
+- **v2 API Specifications**: Full documentation for `/api/household`, `/api/calendar`, and `/api/social` endpoints.
+- **New Feature Guides**: Created `HOUSEHOLD_IQ_GUIDE.md`, `STEALTH_GIFT_PROTOCOL.md`, and `COLLABORATIVE_WORKSPACE_GUIDE.md`.
+
+---
+
 ## [5.3.0] — 2026-03-02
 
 ### Added — JARVIS-Inspired Window & Input Control

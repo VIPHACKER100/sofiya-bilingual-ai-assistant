@@ -1,6 +1,6 @@
-# ⚙️ SOFIYA — Configuration Guide (v5.1.0)
+# ⚙️ SOFIYA — Configuration Guide (v5.6.0)
 
-All configuration is done via environment variables in `.env.local`.
+All configuration is done via environment variables across the distributed nodes.
 
 ---
 
@@ -62,15 +62,30 @@ This variable is present for historical reasons but is **not used** in the curre
 
 ---
 
-## `.env.example`
+---
 
-```env
-# OpenRouter API key (required for AI responses)
-VITE_OPENROUTER_API_KEY=your_key_here
+## 🖥️ System Bridge (Python)
 
-# AI model to use via OpenRouter
-VITE_AI_MODEL=openai/gpt-4o-mini
-```
+Located in `system-bridge/`. Create a `.env` file there if it doesn't exist.
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `BACKEND_PORT` | `8000` | Port for the Python bridge server |
+| `FRONTEND_URL` | `http://localhost:5173` | UI origin for CORS |
+| `ENABLE_DANGEROUS_COMMANDS` | `true` | Allows shutdown/restart commands |
+| `WHATSAPP_DESKTOP_PATH` | - | Manual path to WhatsApp.exe |
+
+---
+
+## 🏢 Backend Service (Node.js)
+
+Located in `backend/`. Requires PostgreSQL for persistent features.
+
+| Variable | Purpose |
+|---|---|
+| `DATABASE_URL` | PostgreSQL connection string (Required for Household IQ & Calendar) |
+| `JWT_SECRET` | Secret key for user authentication |
+| `TWILIO_ACCOUNT_SID` | Required for server-side WhatsApp messaging |
 
 ---
 

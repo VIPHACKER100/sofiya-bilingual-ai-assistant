@@ -267,6 +267,43 @@ Any command that SOFIYA doesn't recognize is automatically searched on Google.
 
 ---
 
+## 🏘️ Household & Social Intelligence (v5.6.0)
+
+SOFIYA now acts as a central nervous system for your shared home, coordinating tasks, inventory, and social bonds.
+
+### 📅 Shared Calendar & Scheduling
+
+| English | Hindi |
+| --- | --- |
+| "Add event Family Dinner at 7pm" | "परिवार का रात का खाना शाम 7 बजे जोड़ो" |
+| "What's on my calendar?" | "कैलेंडर में क्या है?" |
+| "Schedule meeting with Team" | "टीम के साथ मीटिंग लगाओ" |
+
+- **Manual Entry**: Click the **Calendar** icon and use the **NEW_EVENT** button to manually type an event title.
+
+### 📦 Household IQ (Inventory & Knowledge)
+
+| English | Hindi |
+| --- | --- |
+| "Where are my car keys?" | "कार की चाबियाँ कहाँ हैं?" |
+| "Remember that the drill is in the garage" | "याद रखो कि ड्रिल गैरेज में है" |
+| "Show household items" | "घर का सामान दिखाओ" |
+
+- **Manual Entry**: Click the **Home** icon and use the **SCAN_INVENTORY** button to record an item's location.
+
+### 🎁 Stealth Gift Protocol
+
+| English | Hindi |
+| --- | --- |
+| "Gift idea for Sarah: New headphones" | "सारा के लिए गिफ्ट आइडिया: नए हेडफोन" |
+| "Add gift idea for Dad: Blue tie" | "पापा के लिए नीली टाई का गिफ्ट आइडिया" |
+| "Show gift list" | "गिफ्ट लिस्ट दिखाओ" |
+
+- **Security**: Gift ideas are automatically hidden from the person they are intended for if that user is currently logged in.
+- **Manual Entry**: Click the **Gift** icon and use the **Add Idea** button to save a suggestion discreetly.
+
+---
+
 ## 🎨 Interactive Marquee
 
 At the bottom of the screen, you'll see a scrolling list of 30+ commands. **Click any command** to execute it instantly — great for discovering features.

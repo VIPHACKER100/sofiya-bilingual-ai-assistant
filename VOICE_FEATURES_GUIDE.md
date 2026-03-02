@@ -1,4 +1,4 @@
-# SOFIYA Advanced Voice Features Guide (v5.1.0)
+# SOFIYA Advanced Voice Features Guide (v5.6.0)
 
 ## 🌍 Multi-Language Support
 
@@ -178,6 +178,22 @@ listener.addKeywordPattern(
     'User mentioned coffee'
 );
 ```
+
+---
+
+## 🛰️ Household & Social Intelligence (v5.6.0)
+
+SOFIYA now supports complex shared living and work coordination commands:
+
+- **Collaborative Workspace**:
+  - "Sync workspace" / "वर्कस्पेस सिंक करें" → Triggers real-time sync across household nodes.
+  - "Show shared tasks" / "साझा कार्य दिखाओ" → Opens the collaborative task board.
+- **Household IQ**:
+  - "Where are my keys?" / "चाबियाँ कहाँ हैं?" → Retrieves shared item location data.
+  - "Add keys to living room drawer" / "चाबियाँ दराज में रखें" → Updates inventory database.
+- **Stealth Gift Protocol**:
+  - "Save gift idea: Watch for Sarah" / "उपहार आइडिया: घड़ी" → Automatically applies 'hidden_from' privacy.
+  - "What are the gift ideas?" / "उपहार आइडिया क्या हैं?" → Displays filtered list based on current user.
 
 ---
 

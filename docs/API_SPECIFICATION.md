@@ -104,3 +104,28 @@ This document defines the RESTful API endpoints for the SOFIYA Backend.
 
 - **Endpoint**: `GET /user/profile`
 - **Endpoint**: `PATCH /user/settings`
+
+---
+
+## 🏘️ Household & Collaborative (v2)
+
+### Household Knowledge
+
+- **Endpoint**: `POST /api/household/knowledge`
+- **Body**: `{ "itemName": "Keys", "location": "Table", "room": "Hall" }`
+
+### Shared Calendar
+
+- **Endpoint**: `POST /api/calendar/events`
+- **Body**: `{ "title": "Dinner", "start_time": "ISO", "end_time": "ISO", "is_shared": true }`
+
+### Social & Gifts
+
+- **Endpoint**: `POST /api/social/gifts`
+- **Body**: `{ "giftIdea": "Watch", "hiddenFrom": ["user_id_1"] }`
+
+### Shared Tasks
+
+- **Endpoint**: `GET /api/tasks`
+- **Endpoint**: `POST /api/tasks`
+- **Body**: `{ "title": "Buy Milk", "is_shared": true }`
