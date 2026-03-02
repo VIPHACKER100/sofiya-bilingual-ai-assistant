@@ -49,24 +49,26 @@ router.get('/events', async (req, res) => {
  * POST /api/calendar/events
  * Creates a new event
  */
-try {
-    const { title, description, startTime, start_time, endTime, end_time, location, isShared, is_shared } = req.body;
-    const userId = req.user.id;
+router.post('/events', async (req, res) => {
+    try {
+        const { title, description, startTime, start_time, endTime, end_time, location, isShared, is_shared } = req.body;
+        const userId = req.user.id;
 
-    const effectiveStartTime = startTime || start_time;
-    const effectiveEndTime = endTime || end_time;
-    const effectiveIsShared = isShared !== undefined ? isShared : (is_shared !== undefined ? is_shared : false);
+        const effectiveStartTime = startTime || start_time;
+        const effectiveEndTime = endTime || end_time;
+        const effectiveIsShared = isShared !== undefined ? isShared : (is_shared !== undefined ? is_shared : false);
 
-    const query = `
-            INSERT INTO calendar_events (user_id, title, description, start_time, end_time, location, is_shared)
-            VALUES ($1, $2, $3, $4, $5, $6, $7)
-            RETURNING *
-        `;
-    const result = await pool.query(query, [userId, title, description, effectiveStartTime, effectiveEndTime, location, effectiveIsShared]);
-    res.json(result.rows[0]);
-} catch (error) {
-    res.status(500).json({ error: error.message });
-}
+        const query = `
+                INSERT INTO calendar_events (user_id, title, description, start_time, end_time, location, is_shared)
+                VALUES ($1, $2, $3, $4, $5, $6, $7)
+                RETURNING *
+            `;
+        const result = await pool.query(query, [userId, title, description, effectiveStartTime, effectiveEndTime, location, effectiveIsShared]);
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
+
 
 export default router;
