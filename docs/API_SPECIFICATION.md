@@ -126,6 +126,37 @@ This document defines the RESTful API endpoints for the SOFIYA Backend.
 
 ### Shared Tasks
 
-- **Endpoint**: `GET /api/tasks`
 - **Endpoint**: `POST /api/tasks`
 - **Body**: `{ "title": "Buy Milk", "is_shared": true }`
+
+---
+
+## 🖥️ System Bridge & Vision (v2)
+
+### Screen Narration (OCR)
+
+- **Endpoint**: `POST /api/vision/narrate`
+- **Response**: `{ "text": "Extracted screen content..." }`
+
+### Extract Text from Image
+
+- **Endpoint**: `POST /api/vision/ocr`
+- **Body**: `{ "image_url": "...", "lang": "hi" }`
+
+### System Control
+
+- **Endpoint**: `POST /api/system/control`
+- **Body**:
+
+  ```json
+  {
+    "action": "shutdown" | "restart" | "volume_set",
+    "value": 50,
+    "auth_token": "..."
+  }
+  ```
+
+### System Health
+
+- **Endpoint**: `GET /api/system/health`
+- **Response**: `{ "cpu": 15, "memory": 45, "disk": 70, "battery": 95 }`

@@ -243,6 +243,31 @@ const lights = controller.getDevicesByType('light');
 
 ---
 
+## 🧠 Household IQ (Spatial Intelligence)
+
+v5.6.0 introduces **Household IQ**, turning your smart home into a repository of shared physical knowledge.
+
+### Inventory & Location Tracking
+
+SOFIYA tracks the metadata and location of physical objects, synchronizing this data across all nodes in the household.
+
+- **Storage**: PostgreSQL `household_items` table.
+- **Sync**: ZeroMQ low-latency state propagation.
+
+### Voice Interaction
+
+- "Where is the [item]?" → SOFIYA retrieves the `last_known_location` and `last_updated_by` metadata.
+- "I put the [item] in the [location]" → SOFIYA updates the spatial database and confirms via TTS.
+
+### Proactive Household Management
+
+Household IQ integrates with wellness and routines:
+
+- **Pantry Tracking**: "Do we have milk?" checks the `household_items` status.
+- **Expiry Alerts**: Proactive notifications when items reach their `expiry_date`.
+
+---
+
 ## 🔧 Integration with Command Router
 
 The smart home features are integrated into the command router:

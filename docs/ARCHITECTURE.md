@@ -1,4 +1,4 @@
-# 🏗️ SOFIYA — Architecture Documentation
+# 🏗️ SOFIYA — Architecture Documentation (v5.6.0)
 
 > Deep-dive into how SOFIYA is designed, how data flows, and how the key systems work.
 
@@ -12,22 +12,26 @@
             │  ┌───────────────────────────────────┐  │
             │  │          App.tsx (Root)            │  │
             │  │   UI Shell & Protocol Orchestrator │  │
-            │  └────────────────┬──────────────────┘  │
-            │                   │                      │
-            │     ┌─────────────┼─────────────┬──────┐│
-            │     ▼             ▼             ▼      ▼│
-            │  useAssistant   soundService  Weather  News│
-            │  (Custom Hook)                Service Service
-            │     │                                   │
-            │     ▼ transcript (text)                 │
-            │  commandProcessor.ts                    │
-            │     │                                   │
-            │     ├── Matched Intent ──► ProcessedCommand
-            │     │                                   │
-            │     └── No Match ──► aiService.ts       │
-            │                          │              │
-            │                    OpenRouter API       │
-            └─────────────────────────────────────────┘
+            │  └────────────────┬───────────┬──────┘  │
+            │                   │           │          │
+            │     ┌─────────────┼───────────┴──────┐  │
+            │     ▼             ▼                  ▼  │
+            │  useAssistant   soundService     State Sync
+            │  (Custom Hook)  (Web Audio)     (WebSocket)
+            │     │                                │
+            │     ▼                                │
+            └─────┬────────────────────────────────┴──┘
+                  │ (Command/Event)
+                  ▼
+            ┌─────────────┐       (ZMQ Sync)       ┌────────────────┐
+            │   Backend   │◄──────────────────────►│  System Bridge  │
+            │  (Node.js)  │                        │    (Python)    │
+            └──────┬──────┘                        └────────┬───────┘
+                   │                                        │
+            ┌──────┴──────┐                        ┌────────┴───────┐
+            │  PostgreSQL │                        │  OS APIs/OCR   │
+            │ (Household) │                        │ (Desktop Ctrl) │
+            └─────────────┘                        └────────────────┘
 ```
 
 ---
@@ -90,6 +94,10 @@ tokenize(text)
 | `SECURITY_ALERT` | Password/OTP/CVV keywords | Security warning response |
 | `SEARCH_QUERY` | Unmatched query | Google/YouTube search URL |
 | `AI_RESPONSE` | AI fallback | Spoken AI-generated response |
+| `HOUSEHOLD_QU` | "Where are keys?" | Query shared inventory DB |
+| `GIFT_STEALTH` | "Gift idea for X" | Secure add with `hidden_from` check |
+| `BRIDGE_CTRL` | "Open Notepad" | Routed to Python System Bridge |
+| `OCR_NARRATE` | "Narrate screen" | OCR processing on Bridge |
 
 ---
 
@@ -274,6 +282,7 @@ Provides translations for 6 languages: EN, HI, ES, FR, DE, JA
 ### `analyticsService.ts` — Event Tracking
 
 Tracks user interactions for insights:
+
 - Session start/end
 - Command execution
 - Widget open/close
@@ -284,6 +293,7 @@ Tracks user interactions for insights:
 ### `notificationService.ts` — Toast Notifications
 
 Provides in-app notifications:
+
 - Types: info, success, warning, error
 - Auto-dismiss support
 - Subscribe/publish pattern
@@ -291,6 +301,7 @@ Provides in-app notifications:
 ### `cacheService.ts` — TTL Caching
 
 In-memory cache with time-to-live:
+
 - `set(key, data, ttl)`
 - `get(key)` — returns null if expired
 - `getOrFetch(key, fetcher, ttl)` — fetch-if-miss pattern
@@ -309,6 +320,7 @@ Granular privacy controls:
 ### `smartHomeSceneManager.ts` — Scene Orchestration
 
 8 pre-built smart home scenes:
+
 - Movie Night, Good Morning, Focus Work
 - Bedtime, Party Mode, Relax
 - Away Mode, Arriving Home
@@ -316,14 +328,26 @@ Granular privacy controls:
 ### `healthMonitoringService.ts` — Health Metrics
 
 Detailed health tracking:
+
 - Steps, Heart Rate, Sleep Quality
 - Calories, Activity Minutes, Hydration
 - Wellness Score calculation
 - Personalized insights
 
+### `householdIntelligenceService.ts` (v5.6.0)
+
+- **Shared Knowledge**: Syncs item locations and inventory across nodes.
+- **Conflict Resolution**: Handles simultaneous updates to shared household state.
+
+### `socialSecretaryService.ts` (v5.6.0)
+
+- **Stealth Protocol**: Filters gift ideas based on the active user profile.
+- **Relationship Tracking**: Manages birthday reminders and social coordination.
+
 ### `conversationEngineService.ts` — Advanced NLP
 
 Multi-intent parsing and sentiment:
+
 - Multi-intent detection ("book flight AND add reminder")
 - Entity extraction (time, numbers, locations)
 - Sentiment analysis (positive/negative/neutral)

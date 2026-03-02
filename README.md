@@ -87,6 +87,7 @@ Built with React 19, TypeScript, and the Web Speech API, SOFIYA runs in the brow
 | ✏️ **Drawing Canvas** | Full in-browser freehand drawing tool |
 | 🖌️ **Visual Themes** | Sofiya (violet), Classic (cyan), Focus (red), Zen (emerald) |
 | 🖥️ **System Health** | Spoken reports for CPU, Memory, Battery, and Disk |
+| 👁️ **Vision & OCR** | Screen narration, image text extraction, and PDF intelligence |
 | 🤖 **Macro Engine** | Execute multi-stage command routines (e.g. Deep Cleanup) |
 | 🔐 **Secure OS Control** | Percentage-based volume, shutdown, and restart with auth |
 | 🏘️ **Household IQ** | Shared inventory and location tracking for family items |
@@ -157,6 +158,8 @@ Built with React 19, TypeScript, and the Web Speech API, SOFIYA runs in the brow
 | "Where are my car keys?" | "Mera car keys kahan hai?" |
 | "Add event Family Dinner" | "Family dinner ka event jodo" |
 | "Gift idea for Sarah: Watch" | "Sarah ke liye gift idea: Watch" |
+| "Narrate screen" | "स्क्रीन पढ़ो" / "स्क्रीन पर क्या है?" |
+| "Extract text from image" | "फोटो से टेक्स्ट निकालो" |
 
 > 📖 Full command reference: [COMMANDS.md](COMMANDS.md)
 
@@ -191,11 +194,13 @@ cd ../frontend && npm install
 
 # 2. Configure environment
 cp backend/.env.example backend/.env
+cp system-bridge/.env.example system-bridge/.env
 cp voice-engine/.env.example voice-engine/.env
 # Edit .env files with your credentials
 
-# 3. Start services (3 terminals)
-cd backend && npm run dev        # Port 3001
+# 3. Start services (4 terminals)
+cd backend && npm run dev        # Port 3001 (Main API)
+cd system-bridge && python main.py # Port 8000 (OS Control & OCR)
 cd voice-engine && npm run dev   # Voice NLP
 cd frontend && npm run dev       # Port 3000 (proxies /api to backend)
 ```
@@ -227,7 +232,7 @@ See [CONFIGURATION.md](CONFIGURATION.md) for all options.
 
 ```
 sofiya-bilingual-ai-assistant/
-├── services/                      # Core services (20 total)
+├── services/                      # Core services (22 total)
 │   ├── commandProcessor.ts       # Intent detection & command routing
 │   ├── aiService.ts             # OpenRouter API integration
 │   ├── voiceService.ts           # Web Speech API (STT + TTS)
@@ -242,15 +247,15 @@ sofiya-bilingual-ai-assistant/
 │   ├── privacyControlService.ts  # Privacy mode controls
 │   ├── smartHomeSceneManager.ts  # Scene orchestration
 │   ├── healthMonitoringService.ts # Health metrics & insights
+│   ├── householdIntelligenceService.ts # Household IQ (v5.6.0)
+│   ├── socialSecretaryService.ts # Stealth Gift Protocol (v5.6.0)
 │   ├── conversationEngineService.ts # Multi-intent parsing
 │   ├── accessibilityService.ts   # ARIA & keyboard utilities
 │   └── loggerService.ts          # Debug logging
-├── hooks/                        # React hooks
-│   ├── useAssistant.ts          # Main state management
-│   ├── useUndoRedo.ts           # Undo/Redo functionality
-│   └── useCommon.ts             # Utilities (15+ hooks)
-├── components/                   # 19 React UI components
-├── tests/                        # Unit & E2E tests
+├── system-bridge/                 # Python Automation Bridge (v5.6.0)
+│   ├── modules/                  # OS Control, OCR, Window Manager
+│   ├── utils/                    # Shared Python utilities
+│   └── main.py                   # FastAPI Bridge server
 ├── App.tsx                       # Root application & state orchestration
 ├── types.ts                      # TypeScript types & enums
 ├── constants.ts                  # App constants & contact directory

@@ -43,7 +43,7 @@ If you prefer not to use voice, you can interact directly with the **Household W
 
 ## 🛠️ Configuration & Security
 
-- **Data Source**: Items are stored in the PostgreSQL `household_knowledge` table.
+- **Data Source**: Items are stored in the PostgreSQL `item_locations` table.
 - **Privacy**: Only authorized members of the primary household profile can access the inventory list.
 - **Bridge Integration**: The system bridge helps verify physical locations if connected to smart tags or OCR-enabled cameras.
 

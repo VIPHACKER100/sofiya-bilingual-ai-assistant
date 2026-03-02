@@ -141,12 +141,48 @@ Routines are sequences of multiple actions triggered by a single phrase.
 
 ---
 
-## 🎁 Social Relations (v5.6.0)
+| Add gift idea | "Save gift idea: Watch" | "Gift idea save karo: Ghadi" |
+| Get gift ideas | "What are the gift ideas?" | "Maine kya socha tha gift ke liye?" |
+
+---
+
+## 👁️ Vision & OCR (v5.6.0)
 
 | Intent | English | Hindi / Hinglish |
 | :--- | :--- | :--- |
-| Add gift idea | "Save gift idea: Watch" | "Gift idea save karo: Ghadi" |
-| Get gift ideas | "What are the gift ideas?" | "Maine kya socha tha gift ke liye?" |
+| Screen Narration | "Narrate screen" / "What's on screen?" | "स्क्रीन पढ़ो" / "स्क्रीन पर क्या है?" |
+| Screen Summary | "Screen summary" | "स्क्रीन का सारांश" |
+| Media OCR | "Extract text from image" | "फोटो से टेक्स्ट निकालो" |
+| PDF Reader | "Read PDF" | "पीडीएफ पढ़ो" |
+| Selection OCR | "What is selected?" | "क्या चुना है?" |
+
+---
+
+## 🖥️ System Control & Automation (v5.6.0)
+
+### Hardware & Health
+
+| Intent | English | Hindi / Hinglish |
+| :--- | :--- | :--- |
+| System Health | "How is my PC?" / "System Health" | "सिस्टम स्वास्थ्य" / "कैसा है पीसी?" |
+| Battery Status | "Battery level" | "बैटरी कितनी है?" |
+| Network Info | "Show Network Info" | "नेटवर्क विवरण" |
+
+### Windows Management
+
+| Intent | English | Hindi / Hinglish |
+| :--- | :--- | :--- |
+| Snap Window | "Snap left" / "Snap window right" | "बाएं स्नैप" / "विंडो बाईं ओर" |
+| Center Window | "Center window" | "विंडो बीच में" |
+| List Apps | "List running apps" | "ऐप्स सूची" / "चल रहे ऐप्स" |
+| Minimize/Maximize| "Minimize window" / "Maximize" | "विंडो छोटी/बड़ी करो" |
+
+### Automation Macros
+
+| Intent | English | Hindi / Hinglish |
+| :--- | :--- | :--- |
+| Run Macro | "Run macro Deep Cleanup" | "मैक्रो चलाओ क्लीनअप" |
+| System Check | "System Vitals Check" | "सिस्टम चेक" |
 
 ---
 

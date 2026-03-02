@@ -54,37 +54,40 @@ This document outlines the database schema for PostgreSQL and Redis.
 | `value` | NUMERIC | |
 | `recorded_at` | TIMESTAMP | |
 
-### `household_items` Table
+### `item_locations` Table
 
 | Column | Type | Description |
 |---|---|---|
-| `id` | UUID (PK) | |
-| `name` | VARCHAR(100) | Item name |
+| `user_id` | UUID (FK) | Owner of the item |
+| `item_name` | VARCHAR(100)| Unique item name per user |
 | `location` | VARCHAR(255) | Current location |
-| `category` | VARCHAR(50) | e.g., electronics, tools |
-| `owner_id` | UUID (FK) | Primary owner |
-| `updated_at` | TIMESTAMP | |
+| `room` | VARCHAR(50) | Room name |
+| `confidence` | DECIMAL | OCR/Verfication confidence |
+| `is_shared` | BOOLEAN | Household visibility |
+| `last_seen` | TIMESTAMP | Last movement time |
 
-### `shared_calendar_events` Table
+### `calendar_events` Table
 
 | Column | Type | Description |
 |---|---|---|
 | `id` | UUID (PK) | |
+| `user_id` | UUID (FK) | |
 | `title` | VARCHAR(255) | |
 | `start_time` | TIMESTAMP | |
 | `end_time` | TIMESTAMP | |
 | `is_shared` | BOOLEAN | Household visibility |
-| `created_by` | UUID (FK) | |
+| `created_at` | TIMESTAMP | |
 
-### `gift_ideas` Table
+### `shared_gifts` Table
 
 | Column | Type | Description |
 |---|---|---|
 | `id` | UUID (PK) | |
-| `recipient_name`| VARCHAR(100) | |
-| `item_description`| TEXT | |
+| `user_id` | UUID (FK) | |
+| `target_contact_id`| UUID (FK)| Linked contact |
+| `gift_idea` | TEXT | Description |
+| `price_estimate` | DECIMAL | |
 | `hidden_from` | UUID[] | Stealth Protocol IDs |
-| `is_bought` | BOOLEAN | |
 | `created_at` | TIMESTAMP | |
 
 ---

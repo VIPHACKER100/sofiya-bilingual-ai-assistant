@@ -52,3 +52,30 @@ case 'LIGHT_STATUS':
 - **Health**: Fitbit, Apple Health, Google Fit.
 - **Information**: NewsAPI, Google Search, Maps.
 - **Productivity**: Google Calendar, Todoist.
+
+---
+
+## 🐍 Python Automation Bridge (v5.6.0)
+
+For OS-level integrations (Windows API, Hardware, OCR), use the `system-bridge/` module.
+
+### 1. Create a Python Module
+
+Create `system-bridge/modules/{feature_name}.py`.
+
+### 2. Register with FastAPI
+
+Add the route to `system-bridge/main.py`.
+
+### 3. State Synchronization (ZMQ)
+
+Collaborative features use ZeroMQ for peer-to-peer sync between the Bridge and the Node.js Backend. Ensure your feature updates the shared state via the `StateSyncManager`.
+
+---
+
+## 🏘️ Household Intelligence Sync
+
+Integrations that affect shared household data (Inventory, Calendar) must target the v2 API endpoints:
+
+- `POST /api/v2/household/inventory`
+- `POST /api/v2/calendar/events`

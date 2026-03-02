@@ -56,7 +56,7 @@ Say **"Work Mode"** or **"कंप्यूटर मोड"** to trigger the C
 
 ## 🛠️ Technical Details
 
-- **Database**: Uses `shared_tasks` and `calendar_events` tables in PostgreSQL.
+- **Database**: Uses `tasks` and `calendar_events` tables in PostgreSQL.
 - **WebSocket Sync**: Real-time updates delivered via the System Bridge when a change is made.
 - **API Endpoints**: `/api/calendar/events` and `/api/tasks`.
 
