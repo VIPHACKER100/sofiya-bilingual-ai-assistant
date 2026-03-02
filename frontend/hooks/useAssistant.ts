@@ -1,14 +1,22 @@
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
+
 import { AppMode, Language, PersonalityMode, CommandResult, SmartDevice, CommunicationData, MediaTrack, HealthData } from '../types';
 import { voiceService } from '../services/voiceService';
 import { soundService } from '../services/soundService';
 import { weatherService } from '../services/weatherService';
 import { newsService } from '../services/newsService';
 import { processTranscript } from '../services/commandProcessor';
-import { themeService, ThemeKey } from '../services/themeService';
+import { themeService } from '../services/themeService';
+
 import { analyticsService } from '../services/analyticsService';
 import { INITIAL_VOLUME, ERROR_MESSAGES } from '../constants';
+import { useSystemBridge } from './useSystemBridge';
+
+
+interface CalendarEvent { id: string; title: string; start_time: string; end_time: string; location?: string; is_shared: boolean; user_id: string; }
+interface HouseholdItem { id: string; item_name: string; location: string; room?: string; description?: string; last_seen?: string; }
+interface GiftIdea { id: string; gift_idea: string; url?: string; price_estimate?: number; target_contact_id?: string; hidden_from: string[]; }
 
 export const useAssistant = () => {
     const [isBooting, setIsBooting] = useState(true);
@@ -23,11 +31,13 @@ export const useAssistant = () => {
     const [personality, setPersonality] = useState<PersonalityMode>(PersonalityMode.DEFAULT);
 
     // Widget Visibility & Data
-    const [weatherData, setWeatherData] = useState<any>(null);
+    const [weatherData, setWeatherData] = useState<unknown>(null);
+
     const [isWeatherLoading, setIsWeatherLoading] = useState(false);
-    const [tasks, setTasks] = useState<string[]>([]);
+    const [tasks, setTasks] = useState<{ id: string, title: string, completed: boolean, is_shared: boolean }[]>([]);
     const [showTasks, setShowTasks] = useState(false);
-    const [newsItems, setNewsItems] = useState<any[]>([]);
+    const [newsItems, setNewsItems] = useState<unknown[]>([]);
+
     const [isNewsLoading, setIsNewsLoading] = useState(false);
     const [showNews, setShowNews] = useState(false);
     const [calcData, setCalcData] = useState<{ expression: string, result: number } | null>(null);
@@ -55,6 +65,30 @@ export const useAssistant = () => {
     const [showFeedback, setShowFeedback] = useState(false);
     const [showHelp, setShowHelp] = useState(false);
     const [showReportIssue, setShowReportIssue] = useState(false);
+    const [showAutomation, setShowAutomation] = useState(false);
+    const [showMemory, setShowMemory] = useState(false);
+    const [showDesktopPanel, setShowDesktopPanel] = useState(false);
+    const [currentUser, setCurrentUser] = useState<{ id: string, name: string } | null>(null);
+    const [calendarEvents, setCalendarEvents] = useState<CalendarEvent[]>([]);
+    const [showCalendar, setShowCalendar] = useState(false);
+    const [householdKnowledge, setHouseholdKnowledge] = useState<HouseholdItem[]>([]);
+    const [showHousehold, setShowHousehold] = useState(false);
+    const [giftIdeas, setGiftIdeas] = useState<GiftIdea[]>([]);
+    const [showGifts, setShowGifts] = useState(false);
+
+    // Bridge Integration
+    const {
+        isConnected: isBridgeConnected,
+        connectionStatus: bridgeConnectionStatus,
+        systemStatus,
+        sendCommand: sendBridgeCommand,
+        lastResponse: bridgeResponse,
+        resetLastResponse,
+        pendingConfirmation,
+        confirmAction: confirmBridgeAction,
+        reconnect: reconnectBridge
+    } = useSystemBridge();
+
 
     const processingRef = useRef(false);
     const isActiveRef = useRef(false);
@@ -64,7 +98,8 @@ export const useAssistant = () => {
         if (navigator.permissions && navigator.permissions.query) {
             navigator.permissions.query({ name: 'microphone' as PermissionName }).then((status) => {
                 if (status.state === 'denied') setShowPermissionModal(true);
-            }).catch(() => { });
+            }).catch(() => undefined);
+
         }
 
         // Load Tasks
@@ -76,6 +111,56 @@ export const useAssistant = () => {
         setTheme(savedTheme);
 
         voiceService.setLanguage(language);
+
+        // Fetch tasks from backend
+        const fetchTasks = async () => {
+            try {
+                const resp = await fetch('http://localhost:3001/api/tasks');
+                const data = await resp.json();
+                if (Array.isArray(data)) {
+                    setTasks(data);
+                }
+            } catch (e) {
+                console.error('Failed to fetch tasks', e);
+            }
+        };
+        fetchTasks();
+
+        // Fetch user from backend
+        const fetchUser = async () => {
+            try {
+                const resp = await fetch('http://localhost:3001/api/identity/current');
+                const data = await resp.json();
+                if (data.status === 'authenticated') {
+                    setCurrentUser({ id: data.userId, name: data.userId });
+                }
+            } catch (e) {
+                console.error('Failed to fetch user', e);
+            }
+        };
+        fetchUser();
+
+        // Fetch shared data
+        const fetchSharedData = async () => {
+            try {
+                const [calResp, houseResp, giftResp] = await Promise.all([
+                    fetch('http://localhost:3001/api/calendar/events'),
+                    fetch('http://localhost:3001/api/household/knowledge'),
+                    fetch('http://localhost:3001/api/social/gifts')
+                ]);
+
+                const calData = await calResp.json();
+                const houseData = await houseResp.json();
+                const giftData = await giftResp.json();
+
+                if (Array.isArray(calData)) setCalendarEvents(calData);
+                if (Array.isArray(houseData)) setHouseholdKnowledge(houseData);
+                if (Array.isArray(giftData)) setGiftIdeas(giftData);
+            } catch (e) {
+                console.error('Failed to fetch shared data', e);
+            }
+        };
+        fetchSharedData();
 
         // Track boot completion
         setTimeout(() => {
@@ -109,6 +194,79 @@ export const useAssistant = () => {
     useEffect(() => {
         analyticsService.trackEvent('LANGUAGE_CHANGED', { language });
     }, [language]);
+
+    // System Watchdog (Health Alerts)
+    const [lastAlertTime, setLastAlertTime] = useState(0);
+    useEffect(() => {
+        if (!systemStatus || !isBridgeConnected || Date.now() - lastAlertTime < 60000) return; // Alert once per minute max
+
+        const cpuUsage = systemStatus.cpu?.percent || 0;
+        const memUsage = systemStatus.memory?.percent || 0;
+        const batteryLevel = systemStatus.battery?.percent || 100;
+        const isPlugged = systemStatus.battery?.power_plugged ?? true;
+
+        if (cpuUsage > 92) {
+            const msg = language === Language.HINDI
+                ? "सावधान! CPU उपयोग सीमा से अधिक है।"
+                : "Warning! CPU usage is critically high. Performance may be degraded.";
+            voiceService.speak(msg, language === Language.HINDI ? 'hi' : 'en');
+            setLastAlertTime(Date.now());
+        } else if (memUsage > 95) {
+            const msg = language === Language.HINDI
+                ? "सिस्टम मेमोरी भर गई है।"
+                : "System memory is nearly full. Consider closing some applications.";
+            voiceService.speak(msg, language === Language.HINDI ? 'hi' : 'en');
+            setLastAlertTime(Date.now());
+        } else if (batteryLevel < 15 && !isPlugged) {
+            const msg = language === Language.HINDI
+                ? "बैटरी कम है, कृपया चार्जर कनेक्ट करें।"
+                : "Battery is critically low. Directing you to power source.";
+            voiceService.speak(msg, language === Language.HINDI ? 'hi' : 'en');
+            setLastAlertTime(Date.now());
+        }
+    }, [systemStatus, isBridgeConnected, language, lastAlertTime]);
+
+    // Handle Bridge Responses
+    useEffect(() => {
+        if (bridgeResponse) {
+            if (bridgeResponse.success) {
+                // If the bridge provides a new volume, sync it
+                if (bridgeResponse.volume !== undefined) {
+                    setVolume(bridgeResponse.volume);
+                }
+
+                // Add to history
+                addToHistory({
+                    transcript: transcript, // This might be slightly off if multiple commands are in flight
+                    response: bridgeResponse.response,
+                    actionType: bridgeResponse.command_key.toUpperCase(),
+                    language: bridgeResponse.language,
+                    timestamp: Date.now()
+                });
+
+                // Speak response
+                voiceService.speak(bridgeResponse.response, bridgeResponse.language);
+                setMode(AppMode.SPEAKING);
+
+                // Open external URLs if provided
+                if (bridgeResponse.data?.external_url) {
+                    window.open(bridgeResponse.data.external_url as string, '_blank');
+                }
+
+            } else if (bridgeResponse.error) {
+                console.error('Bridge Error:', bridgeResponse.error);
+            }
+
+            // Allow processing of next command after a short delay
+            const delay = bridgeResponse.response.length * 50 + 1000; // rough estimate of speaking time
+            setTimeout(() => {
+                processingRef.current = false;
+                resetLastResponse();
+                if (isActiveRef.current) startListening();
+                else setMode(AppMode.IDLE);
+            }, Math.min(delay, 5000));
+        }
+    }, [bridgeResponse]);
 
     const addToHistory = (entry: CommandResult) => {
         setHistory(prev => [...prev, entry]);
@@ -191,36 +349,72 @@ export const useAssistant = () => {
                     setPersonality(PersonalityMode.FOCUS);
                     soundService.playUIConfirm();
                     analyticsService.trackEvent('ROUTINE_EXECUTED', { type: 'night' });
+                } else if (result.actionType === 'ROUTINE_WORK') {
+                    setTheme('focus');
+                    setPersonality(PersonalityMode.FOCUS);
+                    setShowTasks(true);
+                    soundService.playStartup();
+                    analyticsService.trackEvent('ROUTINE_EXECUTED', { type: 'work' });
                 }
 
-                // Action Handlers
-                else if (result.actionType === 'WEATHER_FETCH') { fetchWeather(); analyticsService.trackWidgetOpen('weather'); }
+                // Handle specific Action Handlers
+                if (result.actionType === 'WEATHER_FETCH') { fetchWeather(); analyticsService.trackWidgetOpen('weather'); }
                 else if (result.actionType === 'NEWS_FETCH') { fetchNews(); setShowNews(true); analyticsService.trackWidgetOpen('news'); }
                 else if (result.actionType === 'NEWS_HIDE') setShowNews(false);
                 else if (result.actionType === 'CALCULATION' && result.data) { setCalcData(result.data); setShowCalc(true); soundService.playUIConfirm(); analyticsService.trackWidgetOpen('calculator'); }
                 else if (result.actionType === 'TIMER' && result.data) { setActiveTimer(result.data); soundService.playUIConfirm(); analyticsService.trackWidgetOpen('timer'); }
-                else if (result.actionType === 'TASK_ADD' && result.data?.task) { setTasks(p => [...p, result.data.task]); setShowTasks(true); analyticsService.trackWidgetOpen('tasks'); }
+                else if (result.actionType === 'TASK_ADD' && result.data?.task) { addTask(result.data.task); setShowTasks(true); analyticsService.trackWidgetOpen('tasks'); }
                 else if (result.actionType === 'TASK_SHOW') { setShowTasks(true); analyticsService.trackWidgetOpen('tasks'); }
                 else if (result.actionType === 'DRAWING_MODE') { setShowDrawingCanvas(true); analyticsService.trackWidgetOpen('drawing'); }
                 else if (result.actionType === 'SENTRY_MODE') { setShowSentryMode(true); analyticsService.trackWidgetOpen('sentry'); }
                 else if (result.actionType === 'HEALTH_SHOW') { setShowHealth(true); analyticsService.trackWidgetOpen('health'); }
                 else if (result.actionType === 'MINDFULNESS_START') { setShowMindfulness(true); analyticsService.trackWidgetOpen('mindfulness'); }
+                else if (result.actionType === 'AUTOMATION_STATUS') { setShowAutomation(true); analyticsService.trackWidgetOpen('automation'); }
+                else if (result.actionType === 'MEMORY_SHOW') { setShowMemory(true); analyticsService.trackWidgetOpen('memory'); }
                 else if (result.actionType === 'PERSONALITY_CHANGE' && result.data?.mode) {
                     setPersonality(result.data.mode);
                     soundService.playStartup();
                     analyticsService.trackEvent('PERSONALITY_CHANGED', { mode: result.data.mode });
                 }
+                else if (result.actionType === 'CALENDAR_SHOW') { setShowCalendar(true); analyticsService.trackWidgetOpen('calendar'); }
+                else if (result.actionType === 'CALENDAR_ADD' && result.data?.event) {
+                    addCalendarEvent(result.data.event as Omit<CalendarEvent, 'id' | 'user_id'>);
+                    setShowCalendar(true);
+                }
+                else if (result.actionType === 'HOUSEHOLD_SHOW') { setShowHousehold(true); analyticsService.trackWidgetOpen('household'); }
+                else if (result.actionType === 'HOUSEHOLD_ITEM_ADD' && result.data?.item) {
+                    addHouseholdItem(result.data.item as string, "Living Room"); // Default location for voice add
+                    setShowHousehold(true);
+                }
+                else if (result.actionType === 'GIFTS_SHOW') { setShowGifts(true); analyticsService.trackWidgetOpen('gifts'); }
+                else if (result.actionType === 'GIFT_IDEAS_ADD' && result.data?.gift) {
+                    addGiftIdea(result.data.gift as string);
+                    setShowGifts(true);
+                }
+                else if (result.actionType === 'THEME_CHANGE' && result.data?.theme) {
+                    const newTheme = result.data.theme as 'sofiya' | 'classic' | 'focus' | 'zen';
+                    setTheme(newTheme);
+                    soundService.playScan();
+                    analyticsService.trackThemeChange(newTheme);
+                }
+                else if (result.actionType === 'VOLUME_SET' && result.data?.volume !== undefined) {
+                    const newVol = result.data.volume as number;
+                    setVolume(newVol);
+                    if (isBridgeConnected) sendBridgeCommand(`set volume to ${newVol}`, result.language);
+                    soundService.playUIConfirm();
+                }
 
-                // Volume control
-                else if (result.actionType === 'VOLUME_UP') { setVolume(v => Math.min(100, v + 10)); soundService.playUIClick(); }
-                else if (result.actionType === 'VOLUME_DOWN') { setVolume(v => Math.max(0, v - 10)); soundService.playUIClick(); }
-                else if (result.actionType === 'VOLUME_MUTE') { setVolume(0); soundService.playUIClick(); }
-                else if (result.actionType === 'VOLUME_UNMUTE') { setVolume(60); soundService.playUIClick(); }
-
+                // Volume, Media, Communication, Smart Home handlers...
+                else if (result.actionType === 'NAVIGATE') {
+                    // Immediately open the external URL (e.g. web app launch, Hindi website names)
+                    if (result.externalUrl) {
+                        soundService.playUIClick();
+                        window.open(result.externalUrl, '_blank');
+                    }
+                }
                 else if (result.actionType === 'MEDIA_PLAY' && result.data) { setMediaTrack(result.data); setShowMedia(true); }
                 else if (result.actionType === 'MEDIA_PAUSE' && mediaTrack) { setMediaTrack({ ...mediaTrack, isPlaying: false }); }
                 else if (result.actionType === 'MEDIA_RESUME' && mediaTrack) { setMediaTrack({ ...mediaTrack, isPlaying: true }); }
-
                 else if ((result.actionType === 'COMM_MESSAGE_DRAFT' || result.actionType === 'COMM_CALL_START') && result.data) {
                     setCommData({ type: result.data.type, contact: result.data.contact, content: result.data.content, status: 'draft' });
                     setShowComm(true);
@@ -232,9 +426,73 @@ export const useAssistant = () => {
                         setTheme('focus');
                     } else if (result.data?.deviceType === 'light') {
                         setSmartDevices(prev => prev.map(d => d.type === 'light' ? { ...d, status: result.data.state } : d));
+                    } else if (result.data?.deviceType === 'fan') {
+                        setSmartDevices(prev => prev.map(d => d.type === 'fan' ? { ...d, status: result.data.state } : d));
+                    } else if (result.data?.deviceType === 'ac') {
+                        setSmartDevices(prev => prev.map(d => d.type === 'ac' ? { ...d, status: result.data.state } : d));
+                    } else if (result.data?.deviceType === 'thermostat') {
+                        setSmartDevices(prev => prev.map(d => d.type === 'thermostat' ? { ...d, status: `${result.data.state}°C` } : d));
+                    } else if (result.data?.deviceType === 'lock') {
+                        setSmartDevices(prev => prev.map(d => d.type === 'lock' ? { ...d, status: result.data.state ? 'Locked' : 'Unlocked' } : d));
                     }
                 }
 
+                // UI indicators for system actions
+                const uiFeedbackActions = [
+                    'VOLUME_UP', 'VOLUME_DOWN', 'VOLUME_MUTE', 'VOLUME_UNMUTE',
+                    'BRIGHTNESS_UP', 'BRIGHTNESS_DOWN',
+                    'WINDOW_MINIMIZE', 'WINDOW_MAXIMIZE', 'WINDOW_CLOSE', 'SHOW_DESKTOP',
+                    'SNAP_LEFT', 'SNAP_RIGHT', 'CENTER_WINDOW', 'MEDIA_NEXT', 'MEDIA_PREV',
+                    'SHUTDOWN_CONFIRM', 'RESTART_CONFIRM', 'SLEEP_CONFIRM',
+                    'CLIPBOARD_COPY', 'CLIPBOARD_PASTE', 'HOTKEY_SAVE', 'HOTKEY_UNDO',
+                    'NEW_TAB', 'CLOSE_TAB', 'SCROLL_UP', 'SCROLL_DOWN',
+                    'OCR_IMAGE', 'OCR_PDF', 'READ_PDF', 'NARRATE_SCREEN', 'MAKE_DRAWING'
+                ];
+                if (uiFeedbackActions.includes(result.actionType)) {
+                    soundService.playUIClick();
+                }
+
+                // --- SYSTEM BRIDGE INTEGRATION ---
+                // If it's a system command, send it to the bridge for actual execution
+                const systemCommands = [
+                    'WINDOW_MINIMIZE', 'WINDOW_MAXIMIZE', 'WINDOW_CLOSE', 'SHOW_DESKTOP',
+                    'SNAP_LEFT', 'SNAP_RIGHT', 'CENTER_WINDOW', 'LIST_APPS', 'OPEN_APP',
+                    'VOLUME_UP', 'VOLUME_DOWN', 'VOLUME_MUTE', 'VOLUME_UNMUTE',
+                    'BRIGHTNESS_UP', 'BRIGHTNESS_DOWN', 'SCREENSHOT', 'FILE_SEARCH', 'FOLDER_CREATE',
+                    'FILE_COPY', 'FILE_MOVE', 'FILE_RENAME', 'FILE_DELETE_CONFIRM',
+                    'MOUSE_CLICK', 'MOUSE_DOUBLE_CLICK', 'MOUSE_RIGHT_CLICK', 'SCROLL_UP', 'SCROLL_DOWN',
+                    'GET_CLIPBOARD', 'SET_CLIPBOARD', 'CLIPBOARD_COPY', 'CLIPBOARD_PASTE',
+                    'HOTKEY_SAVE', 'HOTKEY_UNDO', 'NEW_TAB', 'CLOSE_TAB',
+                    'OCR_IMAGE', 'OCR_PDF', 'IMAGE_CONVERT',
+                    'IMAGE_RESIZE', 'IMAGE_COMPRESS', 'PDF_MERGE', 'PDF_TO_IMAGES', 'IMAGES_TO_PDF',
+                    'SHUTDOWN_CONFIRM', 'RESTART_CONFIRM', 'SLEEP_CONFIRM',
+                    'BATTERY_STATUS', 'SYSTEM_STATUS_FULL', 'UPTIME', 'NETWORK_INFO', 'SYSTEM_HEALTH',
+                    'CHANGE_WALLPAPER', 'EMPTY_RECYCLE_BIN', 'TOGGLE_TASKBAR', 'ZOOM_IN', 'ZOOM_OUT',
+                    'SEARCH_QUERY', 'WIKIPEDIA_FETCH',
+                    'MEDIA_PLAY', 'MEDIA_PAUSE', 'MEDIA_RESUME', 'MEDIA_NEXT', 'MEDIA_PREV', 'MEDIA_STOP',
+                    'BATCH_PDF', 'SCAN_FOLDER', 'MAKE_DRAWING', 'GET_SELECTED_TEXT', 'READ_PDF',
+                    'NARRATE_SCREEN', 'SCREEN_SUMMARY', 'RUN_MACRO', 'AUTOMATION_STATUS', 'MEMORY_SHOW'
+                ];
+
+
+
+                if (isBridgeConnected && systemCommands.includes(result.actionType)) {
+                    sendBridgeCommand(text, result.language);
+                    // Add optimistic history entry
+                    addToHistory({
+                        transcript: text,
+                        response: result.response,
+                        actionType: result.actionType,
+                        language: result.language,
+                        timestamp: Date.now(),
+                        emotion: result.emotion
+                    });
+                    // The actual speaking and response will be handled by the bridge effect
+                    return;
+                }
+                // ---------------------------------
+
+                // Standard history for non-bridge actions
                 addToHistory({
                     transcript: text,
                     response: result.response,
@@ -304,8 +562,101 @@ export const useAssistant = () => {
         }
     };
 
+    const addTask = async (title: string, isShared: boolean = false) => {
+        try {
+            const resp = await fetch('http://localhost:3001/api/tasks', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, isShared })
+            });
+            const data = await resp.json();
+            if (data.id) {
+                setTasks(prev => [data, ...prev]);
+            }
+        } catch (e) {
+            console.error('Failed to add task', e);
+        }
+    };
+
+    const toggleTask = async (taskId: string, completed: boolean) => {
+        try {
+            const resp = await fetch(`http://localhost:3001/api/tasks/${taskId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ completed })
+            });
+            const data = await resp.json();
+            if (data.id) {
+                setTasks(prev => prev.map(t => t.id === taskId ? data : t));
+            }
+        } catch (e) {
+            console.error('Failed to toggle task', e);
+        }
+    };
+
+    const addCalendarEvent = async (event: Omit<CalendarEvent, 'id' | 'user_id' | 'is_shared'> & { is_shared?: boolean }) => {
+        try {
+            const resp = await fetch('http://localhost:3001/api/calendar/events', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...event, is_shared: true })
+            });
+            const data = await resp.json() as CalendarEvent;
+            if (data.id) setCalendarEvents(prev => [data, ...prev]);
+        } catch (e) { console.error('Failed to add event', e); }
+    };
+
+    const addHouseholdItem = async (itemName: string, location: string) => {
+        try {
+            const resp = await fetch('http://localhost:3001/api/household/knowledge', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ itemName, location, room: location })
+            });
+            const data = await resp.json() as HouseholdItem;
+            if (data.id) setHouseholdKnowledge(prev => [data, ...prev]);
+        } catch (e) { console.error('Failed to add item', e); }
+    };
+
+    const addGiftIdea = async (itemName: string) => {
+        try {
+            const resp = await fetch('http://localhost:3001/api/social/gifts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ giftIdea: itemName, hiddenFrom: [] })
+            });
+            const data = await resp.json() as GiftIdea;
+            if (data.id) setGiftIdeas(prev => [data, ...prev]);
+        } catch (e) { console.error('Failed to add gift', e); }
+    };
+
     const executeCommand = (cmd: string) => {
         handleCommandResult(cmd, true);
+    };
+
+    const switchUser = async (userId: string) => {
+        try {
+            const resp = await fetch('http://localhost:3001/api/identity/switch', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId })
+            });
+            const data = await resp.json();
+            if (data.success) {
+                setCurrentUser({ id: userId, name: userId });
+                soundService.playStartup();
+                addToHistory({
+                    transcript: "SWITCH_PROFILE",
+                    response: `Switched to ${userId}'s profile.`,
+                    actionType: "SYSTEM",
+                    language: 'en',
+                    timestamp: Date.now(),
+                    isSystemMessage: true
+                });
+            }
+        } catch (e) {
+            console.error('Failed to switch user', e);
+        }
     };
 
     return {
@@ -334,8 +685,28 @@ export const useAssistant = () => {
         showFeedback, setShowFeedback,
         showHelp, setShowHelp,
         showReportIssue, setShowReportIssue,
+        showAutomation, setShowAutomation,
+        showMemory, setShowMemory,
+        showDesktopPanel, setShowDesktopPanel,
+        currentUser, setCurrentUser, switchUser,
+        addTask, toggleTask,
+        calendarEvents, showCalendar, setShowCalendar,
+        householdKnowledge, showHousehold, setShowHousehold,
+        giftIdeas, showGifts, setShowGifts,
         toggleActivation, executeCommand,
         addToHistory,
-        fetchWeather, fetchNews
+        fetchWeather, fetchNews,
+
+
+        // Bridge
+        isBridgeConnected,
+        bridgeConnectionStatus,
+        systemStatus,
+        pendingConfirmation,
+        confirmBridgeAction,
+        addCalendarEvent,
+        addHouseholdItem,
+        addGiftIdea,
+        reconnectBridge
     };
 };

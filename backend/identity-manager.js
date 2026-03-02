@@ -8,7 +8,6 @@
  */
 
 import 'dotenv/config';
-import 'dotenv/config';
 import { FacialRecognition } from '../integrations/facial-recognition.js';
 
 export class IdentityManager {
@@ -135,9 +134,11 @@ export class IdentityManager {
      * Checks if current user can access resource
      * @param {string} resourceOwner - Resource owner user ID
      * @param {string} resourceType - Resource type (calendar, messages, etc.)
+     * @param {boolean} isShared - Whether the resource is marked as shared
      * @returns {boolean} Whether access is allowed
      */
-    canAccessResource(resourceOwner, resourceType) {
+    canAccessResource(resourceOwner, resourceType, isShared = false) {
+        if (isShared) return true;
         if (!this.activeUser) return false;
         if (this.activeUser === resourceOwner) return true;
 

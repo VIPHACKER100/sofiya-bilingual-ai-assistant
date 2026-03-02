@@ -104,16 +104,15 @@ export function useTimeout(callback: () => void, delay: number | null) {
   }, [delay]);
 }
 
-export function useHover(): [boolean, (boolean) => void] {
+export function useHover(): [boolean, { onMouseEnter: () => void; onMouseLeave: () => void }] {
   const [hovered, setHovered] = useState(false);
 
   const onMouseEnter = () => setHovered(true);
   const onMouseLeave = () => setHovered(false);
 
-  return [hovered, (value) => {
-    setHovered(value);
-  }];
+  return [hovered, { onMouseEnter, onMouseLeave }];
 }
+
 
 export function useClickOutside(
   ref: { current: HTMLElement | null },
@@ -137,18 +136,35 @@ export function useClickOutside(
   }, [ref, handler]);
 }
 
-export function useKeyPress(targetKey: string, handler: () => void) {
+export interface KeyPressOptions {
+  ctrl?: boolean;
+  shift?: boolean;
+  alt?: boolean;
+  meta?: boolean;
+}
+
+export function useKeyPress(targetKey: string, handler: () => void, options?: KeyPressOptions) {
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === targetKey) {
-        handler();
+      const matchKey = event.key.toLowerCase() === targetKey.toLowerCase();
+
+      if (matchKey) {
+        const matchCtrl = options?.ctrl === undefined || event.ctrlKey === options.ctrl;
+        const matchShift = options?.shift === undefined || event.shiftKey === options.shift;
+        const matchAlt = options?.alt === undefined || event.altKey === options.alt;
+        const matchMeta = options?.meta === undefined || event.metaKey === options.meta;
+
+        if (matchCtrl && matchShift && matchAlt && matchMeta) {
+          handler();
+        }
       }
     };
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [targetKey, handler]);
+  }, [targetKey, handler, options?.ctrl, options?.shift, options?.alt, options?.meta]);
 }
+
 
 export function useMediaQuery(query: string): boolean {
   const [matches, setMatches] = useState(false);

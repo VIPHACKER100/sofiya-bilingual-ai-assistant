@@ -28,11 +28,11 @@ export class FacialRecognition {
         }
 
         console.log('[FacialRecognition] Initializing FaceNet model...');
-        
+
         // In production, load FaceNet model:
         // const { InferenceSession } = require('onnxruntime-node');
         // this.model = await InferenceSession.create(this.modelPath);
-        
+
         console.log('[FacialRecognition] Model initialized (simulated)');
     }
 
@@ -184,13 +184,14 @@ export class FacialRecognition {
         try {
             // Get all stored embeddings
             const query = `
-                SELECT user_id, embedding, name
-                FROM face_embeddings
-                WHERE enabled = true
+                SELECT f.user_id, f.embedding, u.username as name
+                FROM face_embeddings f
+                JOIN users u ON f.user_id = u.id
+                WHERE f.enabled = true
             `;
 
             const result = await this.db.query(query);
-            
+
             let bestMatch = null;
             let bestDistance = Infinity;
 

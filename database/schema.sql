@@ -68,6 +68,22 @@ CREATE TABLE reminders (
 CREATE INDEX idx_reminders_user_status ON reminders(user_id, status);
 CREATE INDEX idx_reminders_due ON reminders(due_time);
 
+-- Tasks (Phase 22.2)
+CREATE TABLE tasks (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    completed BOOLEAN DEFAULT FALSE,
+    is_shared BOOLEAN DEFAULT FALSE,
+    assigned_to UUID REFERENCES users(id),
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX idx_tasks_user ON tasks(user_id);
+CREATE INDEX idx_tasks_shared ON tasks(is_shared);
+
 -- Location reminders
 CREATE TABLE location_reminders (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -124,6 +140,7 @@ CREATE TABLE item_locations (
     location VARCHAR(255) NOT NULL,
     room VARCHAR(50),
     confidence DECIMAL DEFAULT 1,
+    is_shared BOOLEAN DEFAULT TRUE, -- Household items are shared by default
     last_seen TIMESTAMP DEFAULT NOW(),
     PRIMARY KEY (user_id, item_name)
 );
@@ -145,7 +162,25 @@ CREATE TABLE action_history (
     created_at TIMESTAMP DEFAULT NOW()
 );
 
-CREATE INDEX idx_action_user_action ON action_history(user_id, action);
+CREATE INDEX idx_recreations_user ON action_history(user_id);
+
+-- Calendar Events (Phase 22.4)
+CREATE TABLE calendar_events (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    start_time TIMESTAMP NOT NULL,
+    end_time TIMESTAMP NOT NULL,
+    location VARCHAR(255),
+    is_shared BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX idx_calendar_user ON calendar_events(user_id);
+CREATE INDEX idx_calendar_shared ON calendar_events(is_shared);
+CREATE INDEX idx_calendar_time ON calendar_events(start_time, end_time);
 
 -- User preferences
 CREATE TABLE user_preferences (
@@ -168,6 +203,17 @@ CREATE TABLE voice_profiles (
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
     profile_id VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Face embeddings (Phase 22.1)
+CREATE TABLE face_embeddings (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    embedding TEXT NOT NULL, -- JSON array of 512 floats
+    enabled BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW(),
+    UNIQUE(user_id)
 );
 
 -- User values (ethics)
@@ -232,6 +278,20 @@ CREATE TABLE event_rsvps (
     responded_at TIMESTAMP DEFAULT NOW(),
     PRIMARY KEY (event_id, attendee)
 );
+
+-- Shared Gifts (Phase 22.5)
+CREATE TABLE shared_gifts (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    target_contact_id UUID REFERENCES social_contacts(id) ON DELETE CASCADE,
+    gift_idea TEXT NOT NULL,
+    price_estimate DECIMAL,
+    url TEXT,
+    hidden_from UUID[] DEFAULT '{}', -- Array of user IDs who shouldn't see this (e.g. the recipient)
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX idx_gifts_target ON shared_gifts(target_contact_id);
 
 -- Phase 16: Feedback & Support
 CREATE TABLE feature_feedback (

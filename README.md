@@ -4,7 +4,7 @@
 
 > *Your intelligent, voice-powered AI companion that speaks both English and Hindi*
 
-[![Version](https://img.shields.io/badge/version-5.1.0-8b5cf6?style=for-the-badge)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-5.2.0-8b5cf6?style=for-the-badge)](CHANGELOG.md)
 [![React](https://img.shields.io/badge/React-19-61dafb?style=for-the-badge&logo=react)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178c6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org)
 [![Vite](https://img.shields.io/badge/Vite-6-646cff?style=for-the-badge&logo=vite)](https://vitejs.dev)
@@ -86,6 +86,9 @@ Built with React 19, TypeScript, and the Web Speech API, SOFIYA runs in the brow
 | 🔒 **Sentry Mode** | Camera-based surveillance with motion detection |
 | ✏️ **Drawing Canvas** | Full in-browser freehand drawing tool |
 | 🖌️ **Visual Themes** | Sofiya (violet), Classic (cyan), Focus (red), Zen (emerald) |
+| 🖥️ **System Health** | Spoken reports for CPU, Memory, Battery, and Disk |
+| 🤖 **Macro Engine** | Execute multi-stage command routines (e.g. Deep Cleanup) |
+| 🔐 **Secure OS Control** | Percentage-based volume, shutdown, and restart with auth |
 
 ### Advanced Features (v5.0+)
 

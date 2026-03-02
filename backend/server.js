@@ -17,9 +17,15 @@ import analyticsRouter from './routes/analytics.js';
 import feedbackRouter from './routes/feedback.js';
 import supportRouter from './routes/support.js';
 import webhooksRouter from './routes/webhooks.js';
+import identityRouter from './routes/identity.js';
+import tasksRouter from './routes/tasks.js';
+import householdRouter from './routes/household.js';
+import calendarRouter from './routes/calendar.js';
+import socialRouter from './routes/social.js';
 import { createWebSocketServer } from './websocket-server.js';
 import { logRequest } from './logger.js';
 import { initErrorTracker, captureException } from './error-tracker.js';
+import { getIdentityManager } from './identity-service.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -45,6 +51,11 @@ app.use('/api/privacy', privacyRouter);
 app.use('/api/analytics', analyticsRouter);
 app.use('/api/feedback', feedbackRouter);
 app.use('/api/support', supportRouter);
+app.use('/api/identity', identityRouter);
+app.use('/api/tasks', tasksRouter);
+app.use('/api/household', householdRouter);
+app.use('/api/calendar', calendarRouter);
+app.use('/api/social', socialRouter);
 app.use('/webhooks', webhooksRouter);
 
 // Health
@@ -63,6 +74,7 @@ const PORT = process.env.PORT || 3001;
 
 async function start() {
   await initErrorTracker();
+  await getIdentityManager().initialize();
   process.on('unhandledRejection', (reason, promise) => {
     captureException(reason instanceof Error ? reason : new Error(String(reason)), { unhandledRejection: true });
   });

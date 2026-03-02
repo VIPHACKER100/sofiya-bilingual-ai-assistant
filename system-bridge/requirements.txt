@@ -1,0 +1,59 @@
+# Server Framework & API
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+websockets>=12.0
+python-multipart>=0.0.6
+requests>=2.31.0
+httpx>=0.27.0
+python-dotenv>=1.0.0
+
+# System Monitoring & Hardware
+psutil>=5.9.8
+screen-brightness-control>=0.22.1
+pycaw>=20240210; platform_system=="Windows"
+comtypes>=1.2.0; platform_system=="Windows"
+WMI>=1.5.1; platform_system=="Windows"
+
+# Desktop Automation & GUI
+pyautogui>=0.9.54
+pyperclip>=1.8.2
+mouseinfo>=0.1.3
+pygetwindow>=0.0.9
+pymsgbox>=1.0.9
+pyrect>=0.2.0
+pyscreeze>=0.1.30
+pytweening>=1.0.7
+keyboard>=0.13.5
+
+# Windows Specific Utilities
+pywin32>=306; platform_system=="Windows"
+winshell>=0.6; platform_system=="Windows"
+win10toast>=0.9; platform_system=="Windows"
+
+# Image Processing & OCR
+Pillow>=10.2.0
+pytesseract>=0.3.10
+
+# PDF Handling
+PyPDF2>=3.0.1
+pdf2image>=1.17.0
+
+# String Matching & Utilities
+fuzzywuzzy>=0.18.0
+python-Levenshtein>=0.23.0
+rapidfuzz>=3.6.1
+
+# Task Scheduling
+schedule>=1.2.2
+
+# Web Automation
+pywhatkit>=5.4
+wikipedia>=1.4.0
+
+# Packaging & Build
+pyinstaller>=6.3.0
+auto-py-to-exe>=2.41.0
+
+# Type Checking & Development
+typing-extensions>=4.9.0
+colorama>=0.4.6

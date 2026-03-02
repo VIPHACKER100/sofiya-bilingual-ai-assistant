@@ -40,12 +40,31 @@ class ConversationEngineService {
     const intentPatterns: Record<string, RegExp[]> = {
       BOOKING: [/\b(book|reserve|schedule|appointment)\b/],
       TASK_CREATE: [/\b(add|create|new|todo|remind)\b/],
-      MEDIA_CONTROL: [/\b(play|pause|stop|resume|skip)\b/],
-      SMART_HOME: [/\b(light|lamp|thermostat|ac|lock|door)\b/],
-      INFORMATION: [/\b(show|display|tell|what|how|when|where)\b/],
-      COMMUNICATION: [/\b(call|message|text|whatsapp|email)\b/],
-      HEALTH: [/\b(health|heart|steps|sleep|fitness|wellness)\b/],
-      EMERGENCY: [/\b(help|emergency|urgent|danger|help)\b/]
+      TASK_SHOW: [/\b(show|list|display|todo list|tasks)\b/],
+      TASK_DELETE: [/\b(delete|remove|clear|complete|done)\b/],
+      MEDIA_CONTROL: [/\b(play|pause|stop|resume|skip|next|previous)\b/],
+      MEDIA_PLAY: [/\b(play|start|open|music|song|gaana)\b/],
+      MEDIA_PAUSE: [/\b(pause|stop|halt)\b/],
+      SMART_HOME: [/\b(light|lamp|thermostat|ac|lock|door|fan|bulb)\b/],
+      SMART_HOME_ON: [/\b(on|chalu|jalao|enable|activate)\b/],
+      SMART_HOME_OFF: [/\b(off|band|मute|deactivate)\b/],
+      INFORMATION: [/\b(show|display|tell|what|how|when|where|explain)\b/],
+      COMMUNICATION: [/\b(call|message|text|whatsapp|email|send)\b/],
+      HEALTH: [/\b(health|heart|steps|sleep|fitness|wellness|heart rate|pulse)\b/],
+      WEATHER: [/\b(weather|temperature|mausam|rain|forecast)\b/],
+      NEWS: [/\b(news|headlines|samachar|khabar)\b/],
+      TIME: [/\b(time|clock|samay|waqt)\b/],
+      DATE: [/\b(date|tarikh|din|today)\b/],
+      CALENDAR: [/\b(calendar|schedule|appointment|meeting|event)\b/],
+      REMINDER: [/\b(remind|reminder|alarm|notify)\b/],
+      CALCULATE: [/\b(calculate|compute|math|hisab|guna|भाग)\b/],
+      CONVERT: [/\b(convert|change|exchange|तबदील)\b/],
+      SEARCH: [/\b(search|find|look|google|dhundo|खोजो)\b/],
+      OPEN: [/\b(open|kholo|launch|start|खोलो)\b/],
+      CLOSE: [/\b(close|exit|quit|band|बंद)\b/],
+      SETTINGS: [/\b(settings|preferences|config|options)\b/],
+      HELP: [/\b(help|aid|support|madad)\b/],
+      EMERGENCY: [/\b(help|emergency|urgent|danger|help|sos)\b/]
     };
 
     let bestIntent = 'GENERAL_QUERY';
@@ -75,8 +94,9 @@ class ConversationEngineService {
 
     const timePatterns = [
       { regex: /\b(today|tomorrow|tonight|now)\b/i, key: 'time' },
-      { regex: /\b(\d+)\s*(minute|hour|day|week)\b/i, key: 'duration' },
-      { regex: /\b(morning|afternoon|evening|night)\b/i, key: 'timeOfDay' }
+      { regex: /\b(\d+)\s*(minute|hour|day|week|month|year|मिनट|घंटा|दिन|महीना|साल)\b/i, key: 'duration' },
+      { regex: /\b(morning|afternoon|evening|night|subah|sham|raat)\b/i, key: 'timeOfDay' },
+      { regex: /\b(\d{1,2}):(\d{2})\b/, key: 'timeValue' }
     ];
 
     for (const { regex, key } of timePatterns) {
@@ -94,6 +114,16 @@ class ConversationEngineService {
       if (match) entities[key] = match[1] || match[0];
     }
 
+    const namePatterns = [
+      { regex: /\b(mom|dad|mother|father|sister|brother|friend|boss|teacher)\b/i, key: 'contact' },
+      { regex: /(?:to|for|ko)\s+(\w+)/i, key: 'target' }
+    ];
+
+    for (const { regex, key } of namePatterns) {
+      const match = text.match(regex);
+      if (match) entities[key] = match[1];
+    }
+
     return entities;
   }
 
@@ -108,9 +138,20 @@ class ConversationEngineService {
   analyzeSentiment(text: string): SentimentAnalysis {
     const lower = text.toLowerCase();
 
-    const positiveWords = ['great', 'wonderful', 'amazing', 'love', 'happy', 'excellent', 'perfect', 'thank', 'thanks', 'good'];
-    const negativeWords = ['hate', 'terrible', 'awful', 'sad', 'angry', 'frustrated', 'bad', 'wrong', 'broken', 'issue'];
-    const urgentWords = ['urgent', 'emergency', 'asap', 'now', 'immediately', 'critical', 'important'];
+    const positiveWords = [
+      'great', 'wonderful', 'amazing', 'love', 'happy', 'excellent', 'perfect', 
+      'thank', 'thanks', 'good', 'nice', 'awesome', 'fantastic', 'brilliant',
+      'accha', 'बहुत अच्छा', 'शानदार', 'बढ़िया', 'धन्यवाद', 'शुक्रिया'
+    ];
+    const negativeWords = [
+      'hate', 'terrible', 'awful', 'sad', 'angry', 'frustrated', 'bad', 'wrong', 
+      'broken', 'issue', 'problem', 'error', 'fail',
+      'बुरा', 'गलत', 'खराब', 'नहीं'
+    ];
+    const urgentWords = [
+      'urgent', 'emergency', 'asap', 'now', 'immediately', 'critical', 'important',
+      'जल्दी', 'तुरंत', 'फौरन', 'emergency'
+    ];
 
     const positiveCount = positiveWords.filter(w => lower.includes(w)).length;
     const negativeCount = negativeWords.filter(w => lower.includes(w)).length;
@@ -144,6 +185,40 @@ class ConversationEngineService {
       isMultiIntent: intents.length > 1,
       requiresConfirmation: sentiment.urgency === 'high' || intents.length > 2
     };
+  }
+
+  getGreetingResponse(language: 'en' | 'hi'): string {
+    const hour = new Date().getHours();
+    const isHindi = language === 'hi';
+    
+    if (hour < 12) {
+      return isHindi ? 'सुप्रभात! आप कैसे हैं?' : 'Good morning! How are you?';
+    } else if (hour < 17) {
+      return isHindi ? 'नमस्ते! क्या मदद चाहिए?' : 'Good afternoon! How can I help?';
+    } else {
+      return isHindi ? 'शुभ संध्या! क्या करना है?' : 'Good evening! What would you like to do?';
+    }
+  }
+
+  getFallbackResponse(language: 'en' | 'hi', query: string): string {
+    const isHindi = language === 'hi';
+    
+    const fallbacks: Record<string, Record<'en' | 'hi', string>> = {
+      unsure: {
+        en: "I'm not sure I understood that. Could you try again?",
+        hi: "मुझे समझ नहीं आया। क्या आप फिर से कोशिश कर सकते हैं?"
+      },
+      notSupported: {
+        en: "That feature is not yet available. Try something else!",
+        hi: "यह सुविधा अभी उपलब्ध नहीं है। कुछ और कोशिश करें!"
+      },
+      error: {
+        en: "Something went wrong. Please try again.",
+        hi: "कुछ गलत हो गया। कृपया पुनः प्रयास करें।"
+      }
+    };
+
+    return fallbacks.unsure[isHindi ? 'hi' : 'en'];
   }
 }
 

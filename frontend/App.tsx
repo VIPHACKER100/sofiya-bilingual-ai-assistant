@@ -1,11 +1,14 @@
 
-import React, { useEffect, useCallback } from 'react';
+import React from 'react';
+
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Settings, Shield, Globe, Terminal, Sparkles, MessageSquareWarning,
-  Mic, MicOff, Volume2, VolumeX, Sun, Moon, Plus, List, X,
-  Play, Pause, SkipForward, Home, Zap, HelpCircle
+import {
+  Shield, Globe, Terminal, Sparkles, MessageSquareWarning,
+  Mic, MicOff, Sun, List,
+  Home, Zap, HelpCircle, Monitor
 } from 'lucide-react';
+
+
 import { ArcReactor } from './components/ArcReactor';
 import { HistoryLog } from './components/HistoryLog';
 import { VolumeControl } from './components/VolumeControl';
@@ -13,12 +16,19 @@ import { PermissionModal } from './components/PermissionModal';
 import { DrawingCanvas } from './components/DrawingCanvas';
 import { WeatherWidget } from './components/WeatherWidget';
 import { TaskPanel } from './components/TaskPanel';
+import { CalendarWidget } from './components/CalendarWidget';
+import { HouseholdWidget } from './components/HouseholdWidget';
+import { GiftsWidget } from './components/GiftsWidget';
 import { NewsWidget } from './components/NewsWidget';
 import { CalculatorWidget } from './components/CalculatorWidget';
 import { TimerWidget } from './components/TimerWidget';
 import { StatusPanel } from './components/StatusPanel';
 import { SentryMode } from './components/SentryMode';
+import { AutomationDashboard } from './components/AutomationDashboard';
+import { MemoryViewer } from './components/MemoryViewer';
 import { BootSequence } from './components/BootSequence';
+
+
 import { Waveform } from './components/Waveform';
 import { HealthWidget } from './components/HealthWidget';
 import { SmartHomeWidget } from './components/SmartHomeWidget';
@@ -26,9 +36,15 @@ import { MindfulnessWidget } from './components/MindfulnessWidget';
 import { CommunicationWidget } from './components/CommunicationWidget';
 import { MediaWidget } from './components/MediaWidget';
 import { StatusBadges } from './components/StatusBadges';
+import { SystemStatus } from './components/SystemStatus';
+import { ConfirmationModal } from './components/ConfirmationModal';
 import { FeedbackModal } from './components/FeedbackModal';
+import { UserMenu } from './components/UserMenu';
+
+
 import { HelpCenter } from './components/HelpCenter';
 import { ReportIssueModal } from './components/ReportIssueModal';
+import { DesktopControlPanel } from './components/DesktopControlPanel';
 import { AppMode, Language } from './types';
 import { soundService } from './services/soundService';
 import { TRY_COMMANDS } from './constants';
@@ -42,19 +58,20 @@ const PROTOCOLS = {
   zen: { name: 'ZEN.STATE', subtitle: 'ALPHA_LEVEL_SYNC', primary: '#10b981', textClass: 'text-emerald-400', bgGradient: 'from-emerald-900/40 via-black to-black' },
 };
 
-const QuickActionButton = ({ 
-  icon: Icon, 
-  label, 
-  onClick, 
+const QuickActionButton = ({
+  icon: Icon,
+  label,
+  onClick,
   isActive,
-  color 
-}: { 
-  icon: any; 
-  label: string; 
-  onClick: () => void; 
+  color
+}: {
+  icon: React.ElementType;
+  label: string;
+  onClick: () => void;
   isActive?: boolean;
   color?: string;
 }) => (
+
   <motion.button
     whileHover={{ scale: 1.05, y: -2 }}
     whileTap={{ scale: 0.95 }}
@@ -62,8 +79,8 @@ const QuickActionButton = ({
     title={label}
     className={`
       relative p-3 rounded-2xl transition-all duration-200 group
-      ${isActive 
-        ? 'bg-white/10 border border-white/20' 
+      ${isActive
+        ? 'bg-white/10 border border-white/20'
         : 'bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10'
       }
     `}
@@ -116,7 +133,11 @@ const App: React.FC = () => {
 
   // Keyboard shortcuts
   useKeyPress('m', () => assistant.toggleActivation());
+  useKeyPress('A', () => assistant.setShowAutomation(p => !p), { shift: true });
+  useKeyPress('M', () => assistant.setShowMemory(p => !p), { shift: true });
+
   useKeyPress(' ', () => { if (!assistant.isBooting) assistant.toggleActivation(); });
+
   useKeyPress('l', () => assistant.setLanguage(l => l === Language.ENGLISH ? Language.HINDI : Language.ENGLISH));
   useKeyPress('w', () => assistant.setShowTasks(p => !p));
   useKeyPress('n', () => { assistant.setShowNews(p => !p); if (!assistant.showNews) assistant.fetchNews(); });
@@ -129,7 +150,14 @@ const App: React.FC = () => {
     if (assistant.showHealth) assistant.setShowHealth(false);
     if (assistant.showSmartHome) assistant.setShowSmartHome(false);
     if (assistant.showCalc) assistant.setShowCalc(false);
+    if (assistant.showAutomation) assistant.setShowAutomation(false);
+    if (assistant.showMemory) assistant.setShowMemory(false);
+    if (assistant.showDesktopPanel) assistant.setShowDesktopPanel(false);
   });
+
+  // Desktop panel keyboard shortcut (Shift+D)
+  useKeyPress('D', () => assistant.setShowDesktopPanel(p => !p), { shift: true });
+
 
   if (assistant.isBooting) return <BootSequence onComplete={handleBootComplete} language={assistant.language === Language.HINDI ? 'hi' : 'en'} />;
 
@@ -184,7 +212,19 @@ const App: React.FC = () => {
                 <span className="text-[10px] font-black tracking-[0.6em] text-cyan-500/60 uppercase mt-1 pl-1">
                   {currentProtocol.subtitle}
                 </span>
+
+                {/* Connection Status Badge */}
+                <div className={`mt-3 flex items-center gap-2 text-[8px] font-mono tracking-widest px-2 py-1 rounded border w-fit transition-all duration-500 ${assistant.isBridgeConnected
+                  ? 'border-emerald-500/30 text-emerald-400 bg-emerald-500/5 shadow-[0_0_10px_rgba(16,185,129,0.1)]'
+                  : 'border-red-500/30 text-red-400 bg-red-500/5 opacity-60'}`}>
+                  <div className={`w-1.5 h-1.5 rounded-full ${assistant.isBridgeConnected ? 'bg-emerald-400 animate-pulse' : 'bg-red-400 opacity-50'}`} />
+                  <span>{assistant.isBridgeConnected ? 'BRIDGE_LINK_STABLE' : 'BRIDGE_LINK_OFFLINE'}</span>
+                  {!assistant.isBridgeConnected && (
+                    <button onClick={assistant.reconnectBridge} className="ml-1 underline hover:text-white transition-colors">RETRY</button>
+                  )}
+                </div>
               </div>
+
             </div>
           </motion.div>
 
@@ -196,36 +236,43 @@ const App: React.FC = () => {
           >
             {/* Quick Action Buttons */}
             <div className="flex items-center gap-2 p-2 bg-black/40 rounded-2xl border border-white/5 backdrop-blur-md">
-              <QuickActionButton 
-                icon={assistant.mode === AppMode.LISTENING ? MicOff : Mic} 
-                label={assistant.mode === AppMode.LISTENING ? 'Stop (M)' : 'Voice (M)'} 
+              <QuickActionButton
+                icon={assistant.mode === AppMode.LISTENING ? MicOff : Mic}
+                label={assistant.mode === AppMode.LISTENING ? 'Stop (M)' : 'Voice (M)'}
                 onClick={() => assistant.toggleActivation()}
                 isActive={assistant.mode === AppMode.LISTENING}
                 color={currentProtocol.primary}
               />
-              <QuickActionButton 
-                icon={List} 
-                label="Tasks (W)" 
+              <QuickActionButton
+                icon={List}
+                label="Tasks (W)"
                 onClick={() => assistant.setShowTasks(p => !p)}
                 isActive={assistant.showTasks}
               />
-              <QuickActionButton 
-                icon={Sun} 
-                label="News (N)" 
+              <QuickActionButton
+                icon={Sun}
+                label="News (N)"
                 onClick={() => { assistant.setShowNews(p => !p); if (!assistant.showNews) assistant.fetchNews(); }}
                 isActive={assistant.showNews}
               />
-              <QuickActionButton 
-                icon={Zap} 
-                label="Smart (S)" 
+              <QuickActionButton
+                icon={Zap}
+                label="Smart (S)"
                 onClick={() => assistant.setShowSmartHome(p => !p)}
                 isActive={assistant.showSmartHome}
               />
-              <QuickActionButton 
-                icon={Home} 
-                label="Health (H)" 
+              <QuickActionButton
+                icon={Home}
+                label="Health (H)"
                 onClick={() => assistant.setShowHealth(p => !p)}
                 isActive={assistant.showHealth}
+              />
+              <QuickActionButton
+                icon={Monitor}
+                label="Desktop (⇧D)"
+                onClick={() => assistant.setShowDesktopPanel(p => !p)}
+                isActive={assistant.showDesktopPanel}
+                color={assistant.showDesktopPanel ? currentProtocol.primary : undefined}
               />
             </div>
 
@@ -264,8 +311,9 @@ const App: React.FC = () => {
                 {Object.entries(PROTOCOLS).map(([key, proto]) => (
                   <button
                     key={key}
-                    onClick={() => { soundService.playUIClick(); assistant.setTheme(key as any); }}
+                    onClick={() => { soundService.playUIClick(); assistant.setTheme(key as 'sofiya' | 'classic' | 'focus' | 'zen'); }}
                     className={`w-4 h-4 rounded-full transition-all duration-500 relative ${assistant.theme === key ? 'scale-125' : 'opacity-20 hover:opacity-100'}`}
+
                     style={{ backgroundColor: proto.primary }}
                     title={`${key.charAt(0).toUpperCase() + key.slice(1)} Theme`}
                   >
@@ -278,12 +326,17 @@ const App: React.FC = () => {
                   </button>
                 ))}
               </div>
+
+              <UserMenu
+                currentUser={assistant.currentUser}
+                onSwitchUser={assistant.switchUser}
+              />
             </div>
           </motion.div>
         </header>
 
         {/* Keyboard Hints Bar */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
@@ -293,9 +346,11 @@ const App: React.FC = () => {
           <KeyboardHint keys={['L']} label="Lang" />
           <KeyboardHint keys={['W']} label="Tasks" />
           <KeyboardHint keys={['N']} label="News" />
-          <KeyboardHint keys={['H']} label="Health" />
-          <KeyboardHint keys={['S']} label="Smart" />
+          <KeyboardHint keys={['⇧', 'A']} label="Auto" />
+          <KeyboardHint keys={['⇧', 'M']} label="Mem" />
+          <KeyboardHint keys={['⇧', 'D']} label="Desktop" />
           <KeyboardHint keys={['ESC']} label="Close" />
+
         </motion.div>
 
         {/* Neural CORE Stage */}
@@ -312,8 +367,9 @@ const App: React.FC = () => {
                   >
                     <div className="glass-panel px-6 py-3 rounded-[2rem] border-t border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.5)]">
                       <p className="text-lg lg:text-xl font-medium text-white/90 italic leading-relaxed line-clamp-2">
-                        "{assistant.transcript}"
+                        &ldquo;{assistant.transcript}&rdquo;
                       </p>
+
                       <div className="mt-2 flex justify-center gap-1">
                         {[1, 2, 3].map(i => <motion.div key={i} animate={{ opacity: [0.2, 1, 0.2] }} transition={{ repeat: Infinity, duration: 1, delay: i * 0.2 }} className="w-1 h-1 bg-cyan-500 rounded-full" />)}
                       </div>
@@ -340,13 +396,65 @@ const App: React.FC = () => {
             <AnimatePresence>
               <WeatherWidget data={assistant.weatherData} loading={assistant.isWeatherLoading} language={assistant.language === Language.HINDI ? 'hi' : 'en'} accentColor={currentProtocol.primary} textColorClass={currentProtocol.textClass} />
 
-              <div className="absolute top-0 right-0 pointer-events-auto hidden xl:block">
+              <div className="absolute top-0 right-0 pointer-events-auto hidden xl:block flex flex-col gap-4 items-end">
                 <StatusPanel />
+                <SystemStatus status={assistant.systemStatus} />
               </div>
+
+              {/* Desktop Control Panel — slides in from the right on medium screens */}
+              {assistant.showDesktopPanel && (
+                <motion.div
+                  key="desktop-panel"
+                  initial={{ x: 320, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  exit={{ x: 320, opacity: 0 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                  className="absolute top-0 right-0 w-80 z-30 pointer-events-auto"
+                >
+                  <DesktopControlPanel
+                    language={assistant.language === Language.HINDI ? 'hi' : 'en'}
+                    isConnected={assistant.isBridgeConnected}
+                    onCommand={(cmd) => assistant.executeCommand(cmd)}
+                  />
+                </motion.div>
+              )}
+
 
               <NewsWidget news={assistant.newsItems} loading={assistant.isNewsLoading} isVisible={assistant.showNews} language={assistant.language === Language.HINDI ? 'hi' : 'en'} onClose={() => assistant.setShowNews(false)} accentColor={currentProtocol.primary} />
 
-              <TaskPanel tasks={assistant.tasks} isVisible={assistant.showTasks} language={assistant.language === Language.HINDI ? 'hi' : 'en'} onClose={() => assistant.setShowTasks(false)} accentColor={currentProtocol.primary} />
+              <TaskPanel tasks={assistant.tasks} isVisible={assistant.showTasks} language={assistant.language === Language.HINDI ? 'hi' : 'en'} onClose={() => assistant.setShowTasks(false)} onToggleTask={assistant.toggleTask} onAddTask={assistant.addTask} accentColor={currentProtocol.primary} />
+
+              <CalendarWidget
+                events={assistant.calendarEvents}
+                isVisible={assistant.showCalendar}
+                language={assistant.language === Language.HINDI ? 'hi' : 'en'}
+                onClose={() => assistant.setShowCalendar(false)}
+                onAddEvent={(title) => assistant.addCalendarEvent({
+                  title,
+                  start_time: new Date(Date.now() + 3600000).toISOString(),
+                  end_time: new Date(Date.now() + 7200000).toISOString(),
+                  is_shared: true
+                })}
+                accentColor={currentProtocol.primary}
+              />
+
+              <HouseholdWidget
+                items={assistant.householdKnowledge}
+                isVisible={assistant.showHousehold}
+                language={assistant.language === Language.HINDI ? 'hi' : 'en'}
+                onClose={() => assistant.setShowHousehold(false)}
+                onAddItem={assistant.addHouseholdItem}
+                accentColor={currentProtocol.primary}
+              />
+
+              <GiftsWidget
+                ideas={assistant.giftIdeas}
+                isVisible={assistant.showGifts}
+                language={assistant.language === Language.HINDI ? 'hi' : 'en'}
+                onClose={() => assistant.setShowGifts(false)}
+                onAddIdea={assistant.addGiftIdea}
+                currentUserId={assistant.currentUser?.id}
+              />
 
               {assistant.mediaTrack && <MediaWidget track={assistant.mediaTrack} isVisible={assistant.showMedia} language={assistant.language === Language.HINDI ? 'hi' : 'en'} onClose={() => assistant.setShowMedia(false)} onTogglePlay={() => assistant.setMediaTrack({ ...assistant.mediaTrack!, isPlaying: !assistant.mediaTrack!.isPlaying })} />}
             </AnimatePresence>
@@ -397,7 +505,21 @@ const App: React.FC = () => {
         {assistant.showFeedback && <FeedbackModal isOpen={assistant.showFeedback} onClose={() => assistant.setShowFeedback(false)} language={assistant.language === Language.HINDI ? 'hi' : 'en'} accentColor={currentProtocol.primary} />}
         {assistant.showHelp && <HelpCenter isOpen={assistant.showHelp} onClose={() => assistant.setShowHelp(false)} language={assistant.language === Language.HINDI ? 'hi' : 'en'} accentColor={currentProtocol.primary} onReportIssue={() => assistant.setShowReportIssue(true)} />}
         {assistant.showReportIssue && <ReportIssueModal isOpen={assistant.showReportIssue} onClose={() => assistant.setShowReportIssue(false)} language={assistant.language === Language.HINDI ? 'hi' : 'en'} accentColor={currentProtocol.primary} />}
+
+        {assistant.showAutomation && <AutomationDashboard isOpen={assistant.showAutomation} onClose={() => assistant.setShowAutomation(false)} />}
+        {assistant.showMemory && <MemoryViewer isOpen={assistant.showMemory} onClose={() => assistant.setShowMemory(false)} />}
+
+
+        {/* System Bridge Confirmation */}
+        <ConfirmationModal
+          isOpen={!!assistant.pendingConfirmation}
+          confirmation={assistant.pendingConfirmation}
+          onConfirm={() => assistant.confirmBridgeAction(true)}
+          onCancel={() => assistant.confirmBridgeAction(false)}
+        />
+
       </AnimatePresence>
+
 
       {/* Command Flow Marquee */}
       <footer className="absolute bottom-0 w-full bg-black/80 border-t border-white/5 py-2 z-[60] backdrop-blur-xl flex items-center">

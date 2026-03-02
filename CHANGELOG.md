@@ -5,6 +5,64 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [5.3.0] — 2026-03-02
+
+### Added — JARVIS-Inspired Window & Input Control
+
+#### Hindi App Launcher (JARVIS Reference Integration)
+
+- **30+ App Mappings**: Now recognizes Hindi/Devanagari app names — "नोटपैड खोलो", "कैलकुलेटर खोलो", "क्रोम खोलो", "वीएलसी खोलो", "एक्सेल खोलो", etc.
+- **Hindi Web Mappings**: Hindi web names now resolve to URLs — "यूट्यूब", "गूगल", "नेटफ्लिक्स", "जीमेल", "व्हाट्सएप", "चैटजीपीटी".
+- **Extended Website Fallback**: Added Reddit, LinkedIn, Amazon, Flipkart, WhatsApp to the `open_app` web fallback map in `window_manager.py`.
+
+#### Window Control Commands
+
+- **Snap Window**: "Snap left" / "बाएं स्नैप" — Snaps active window to left half (Win+←).
+- **Snap Window Right**: "Snap right" / "दाएं स्नैप" — Snaps active window to right half (Win+→).
+- **Center Window**: "Center window" / "विंडो बीच में" — Centers active window on screen.
+- **List Running Apps**: "List apps" / "चल रहे ऐप्स" — Shows all running processes.
+
+#### Clipboard & Keyboard Shortcuts
+
+- **Copy Selection**: "Copy" / "कॉपी करो" — Triggers Ctrl+C via bridge.
+- **Paste Clipboard**: "Paste" / "पेस्ट करो" — Triggers Ctrl+V via bridge.
+- **Read Clipboard**: "Get clipboard" — Retrieves current clipboard text.
+- **Save File**: "Save file" / "सेव करो" — Triggers Ctrl+S.
+- **Undo**: "Undo" / "वापस करो" — Triggers Ctrl+Z.
+- **New/Close Tab**: "New tab" / "नया टैब", "Close tab" / "टैब बंद करो".
+- **Scroll Control**: "Scroll up/down" / "ऊपर/नीचे स्क्रॉल".
+
+#### New Component
+
+- **`DesktopControlPanel.tsx`**: New glassmorphism panel (ported from JARVIS `DesktopControls.tsx`) for wallpaper, taskbar, zoom, theme, icons, and window controls with full bilingual UI.
+
+---
+
+## [5.2.0] — 2026-03-01
+
+### Added — Advanced System Control & Automation Bridge
+
+#### New System Capabilities
+
+- **System Health Reporting**: "How is my PC?" / "सिस्टम स्वास्थ्य" — Bilingual spoken report of CPU, Memory, Battery, and Disk.
+- **Macro Automation System**: "Run macro [name]" — Sequential command execution with recursive callback support.
+- **Default Macros**: Added "Deep Cleanup" (Recycle Bin + Health) and "System Vitals Check".
+- **Volume Percentage Control**: "Set volume to 50" / "आवाज़ 20 प्रतिशत" — Precise OS-level volume control.
+- **Theme & Mode Switching**: "Switch to Focus mode" / "थीम बदलो" — Seamless UI and personality transitions.
+- **Work Mode Routine**: "Work mode" / "काम शुरू" — Combined theme shift, personality shift, and task panel opening.
+
+#### Security & UI
+
+- **Authorization Overhaul**: High-contrast, interactive confirmation modals for critical system actions (Shutdown, Restart, Delete).
+- **Cyberpunk Aesthetic**: Enhanced `ConfirmationModal` with `framer-motion` and `lucide-react` for a premium feel.
+
+### Fixed
+
+- **TypeScript Type Safety**: Resolved 'unknown' data casting issues in `useAssistant` hook.
+- **Battery Null Checks**: Added safety checks for desktop systems without batteries in `SystemStatus` component.
+
+---
+
 ## [5.1.0] — 2026-02-26
 
 ### Added — Standalone HTML (`sofiya-assistant.html`)

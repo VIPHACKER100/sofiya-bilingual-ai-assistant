@@ -21,12 +21,34 @@ export interface ProcessedCommand {
 // Strong Hindi Indicators: Verbs and question words that rarely appear in English context
 const HINDI_STRONG_WORDS = new Set([
   'karo', 'karna', 'kar', 'dekhna', 'dekho', 'dikhao', 'sunao', 'suno', 'sun',
-  'batao', 'btao', 'bol', 'bolo', 'kholo', 'band', 'chalao', 'lagao', 'hatao',
+  'batao', 'btao', 'bol', 'bolo', 'kholo', 'band', 'chalao', 'lagao', 'hatao', 'open', 'ओपन',
   'ruko', 'roko', 'jao', 'aao', 'bhejo', 'likho', 'padho', 'badlo', 'badhao',
   'kam', 'karein', 'karen', 'dijiye', 'lijiye', 'banao', 'jodo', 'dhundo', 'khojo',
   'kya', 'kyu', 'kyun', 'kab', 'kahan', 'kaise', 'kaun', 'kitna', 'kitne', 'kisne', 'kaunsa',
   'namaste', 'shukriya', 'dhanyavad', 'swagat', 'bajao', 'sunao', 'chala', 'mute', 'chup',
-  'tez', 'dheere', 'zyada', 'kam', 'bolo', 'bata', 'de', 'dikha', 'shubh', 'ratri', 'sawera'
+  'tez', 'dzyada', 'kam', 'bolo', 'bata', 'de', 'dikha', 'shubh', 'ratri', 'saweraheere', '',
+  // From SOFIYA reference
+  'shut down', 'shutdown', 'kholo', 'band', 'karo', 'chalao', 'bhejo', 'suno', 'sun',
+  'raha', 'mujhe', 'tum', 'aap', 'btao', 'dekhna', 'ruko', 'badhao', 'aawaz', 'awaz',
+  'par', 'ko', 'me', 'se', 'ka', 'ki', 'aur', 'kahan', 'kab', 'kyu', 'mausam', 'tapman',
+  'garmi', 'sardi', 'hisab', 'jodo', 'ghatao', 'guna', 'bhag', 'chalu', 'chala', 'shuru',
+  'bhej', 'bheja', 'send', 'call', 'phone', 'karo', 'lagao', 'suno', 'dekho', 'bolo',
+  'batao', 'dikhao', 'kholo', 'band', 'khalo', 'chal', 'chalna', 'chalni', 'chalo',
+  'jao', 'aao', 'lena', 'dena', 'lijiye', 'dijiye', 'le', 'de', 'lo', 'ke', 'ka',
+  'ki', 'kaa', 'kee', 'ke', 'ky', 'kyu', 'kyun', 'kese', 'kaise', 'kaha', 'kahan',
+  'kaun', 'kon', 'kitna', 'kitni', 'kitne', 'kaisa', 'kaisi', 'kaisey', 'aisa', 'aisi',
+  'waisa', 'waisi', 'kya', 'yeh', 'woh', 'voh', 'ye', 'yo', 'wo', 'is', 'us', 'ab',
+  'phir', 'fir', 'tab', 'tabhi', 'abhi', 'aj', 'aaj', 'kal', 'parso', 'paiso',
+  'raat', 'din', 'subah', 'shaam', 'morning', 'evening', 'night', 'day', 'date',
+  'time', 'samay', 'waqt', 'tarikh', 'mahina', 'mahine', 'saal', 'sal', 'varsha',
+  'paisa', 'rupees', 'rupiya', 'lakh', 'crore', 'number', 'nambar',
+  // Devanagari additions
+  'समय', 'क्या', 'कौन', 'कहाँ', 'कैसे', 'कब', 'क्यों', 'मैं', 'आप', 'तुम', 'मुझे', 'तुम्हें', 'उन्हें',
+  'है', 'हैं', 'था', 'थी', 'थे', 'होगा', 'होगी', 'होंगे', 'चाहिए', 'चाहती', 'चाहते',
+  'करो', 'करोगा', 'करें', 'किया', 'की', 'करके', 'हो', 'होगा', 'होना',
+  'देखो', 'सुनो', 'बोलो', 'खोलो', 'बंद करो', 'चालू करो', 'बढ़ाओ', 'घटाओ',
+  'नीचे', 'ऊपर', 'बाएं', 'दाएं', 'छोटा', 'बड़ा', 'नया', 'पुराना',
+  'लो', 'लेना', 'दो', 'देना', 'लो', 'जाओ', 'आओ', 'रुको', 'चलो'
 ]);
 
 // Common Hindi Words (nouns, pronouns, particles)
@@ -41,7 +63,22 @@ const HINDI_COMMON_WORDS = new Set([
   'thoda', 'bas', 'bilkul', 'haan', 'nahi', 'mat', 'theek', 'sahi', 'galat',
   'sandesh', 'gaana', 'sangeet', 'samachar', 'mausam', 'samay', 'tarikh', 'waqt',
   'awaaz', 'bolna', 'lao', 'kuch', 'sab', 'sara', 'bahut', 'bilkul', 'seedha',
-  'khush', 'dukh', 'bata', 'chhod', 'chalo', 'taiyar', 'kaam', 'sona', 'uthna', 'shubh', 'subah'
+  'khush', 'dukh', 'bata', 'chhod', 'chalo', 'taiyar', 'kaam', 'sona', 'uthna', 'shubh', 'subah',
+  // From SOFIYA reference
+  'samay', 'tareekh', 'din', 'aaj', 'kal', 'suno', 'sun', 'raha', 'mujhe', 'tum', 'aap',
+  'namaste', 'shukriya', 'dhanyavad', 'kaise', 'madad', 'sakte', 'btao', 'dekhna',
+  'dheere', 'tez', 'badhao', 'kam', 'aawaz', 'awaz', 'mausam', 'tapman', 'garmi', 'sardi',
+  'hisab', 'jodo', 'ghatao', 'guna', 'bhag', 'chalu', 'chala', 'shuru', 'bhej', 'bheja',
+  'phone', 'send', 'call', 'khalo', 'chal', 'chalna', 'chalni', 'le', 'ky', 'kese',
+  'kaha', 'kon', 'kitni', 'kaisa', 'kaisi', 'aisa', 'aisi', 'waisa', 'waisi', 'yo', 'wo',
+  'is', 'us', 'ab', 'phir', 'fir', 'tab', 'tabhi', 'aj', 'paiso', 'raat', 'subah',
+  'shaam', 'morning', 'evening', 'night', 'day', 'date', 'time', 'waqt', 'mahina',
+  'mahine', 'saal', 'sal', 'varsha', 'paisa', 'rupees', 'rupiya', 'lakh', 'crore', 'number', 'nambar',
+  // Devanagari
+  'नमस्ते', 'शुक्रिया', 'धन्यवाद', 'अच्छा', 'बुरा', 'जल्दी', 'अभी', 'बाद', 'आज', 'कल',
+  'थोड़ा', 'बस', 'बिल्कुल', 'हाँ', 'नहीं', 'ठीक', 'सही', 'गलत', 'कुछ', 'सब', 'बहुत',
+  'खुश', 'दुख', 'बताओ', 'छोड़', 'चलो', 'तैयार', 'काम', 'सोना', 'उठना', 'शुभ', 'सुबह',
+  'शाम', 'रात', 'दिन', 'तारीख', 'महीना', 'साल', 'पैसा', 'रुपये', 'लाख', 'करोड़'
 ]);
 
 // Strong English Indicators: Function words unique to English grammar
@@ -268,17 +305,40 @@ export const processTranscript = async (
     return createResponse('PERSONALITY_CHANGE', isHindi ? "सोफिया को रीसेट कर रही हूँ।" : "Restoring default settings.", { mode: PersonalityMode.DEFAULT });
   }
 
-  // ── Routines ─────────────────────────────────────────────────────────────
-  if (lowerText.match(/\b(good morning|shubh prabhat|suprabhat|subah ho gayi)\b/)) {
-    return createResponse(
-      'ROUTINE_MORNING',
-      isHindi
-        ? "सुप्रभात! मैं आपके लिए आज का समाचार और मौसम की जानकारी तैयार कर रही हूँ।"
-        : "Good morning! I'm preparing your briefing: weather, news, and today's schedule."
-    );
+  // ── Volume Control (Percentage) ──────────────────────────────────────────
+  if (lowerText.match(/\b(volume|sound|awaaz|awaz|आवाज़)\s+(to|set|at|पर|सेट)\s+(\d+)\b/)) {
+    const match = lowerText.match(/\b(\d+)\b/);
+    if (match) {
+      const vol = parseInt(match[0]);
+      return createResponse('VOLUME_SET', isHindi ? `आवाज़ ${vol} प्रतिशत पर सेट कर रही हूँ।` : `Setting volume to ${vol} percent.`, { volume: vol });
+    }
   }
 
-  if (lowerText.match(/\b(good night|shubh ratri|so raha hoon|bedtime|goodnight)\b/)) {
+  // ── Theme & Mode Control ──────────────────────────────────────────────────
+  if (lowerText.match(/\b(switch to|set theme|theme badlo|mode badlo|बदलो|थीम|मोड)\b/)) {
+    if (lowerText.match(/\b(sofiya|default|standard|सोफिया)\b/)) {
+      return createResponse('THEME_CHANGE', isHindi ? "सोफिया थीम सक्रिय।" : "Switching to Sofiya mode.", { theme: 'sofiya' });
+    }
+    if (lowerText.match(/\b(classic|cyber|cyan|क्लासिक)\b/)) {
+      return createResponse('THEME_CHANGE', isHindi ? "क्लासिक थीम सक्रिय।" : "Switching to Classic mode.", { theme: 'classic' });
+    }
+    if (lowerText.match(/\b(focus|red|minimal|वर्क|फोकस)\b/)) {
+      return createResponse('THEME_CHANGE', isHindi ? "फोकस थीम सक्रिय।" : "Switching to Focus mode.", { theme: 'focus' });
+    }
+    if (lowerText.match(/\b(zen|emerald|green|calm|ज़ेन)\b/)) {
+      return createResponse('THEME_CHANGE', isHindi ? "ज़ेन थीम सक्रिय।" : "Switching to Zen mode.", { theme: 'zen' });
+    }
+  }
+
+  // ── Multi-stage Routines ─────────────────────────────────────────────────
+  if (lowerText.match(/\b(good morning|suprabhat|subah ho gayi|shuru karo|गुड मॉर्निंग|सुप्रभात)\b/)) {
+    return createResponse('ROUTINE_MORNING', isHindi ? "सुप्रभात! आपका दिन शुरू करने के लिए तैयार हूँ।" : "Good morning! Initializing your daily briefing.");
+  }
+  if (lowerText.match(/\b(work mode|focus mode|start working|kam shuru|काम शुरू|फोकस मोड)\b/)) {
+    return createResponse('ROUTINE_WORK', isHindi ? "वर्क मोड सक्रिय। ध्यान केंद्रित करने का समय है।" : "Work mode activated. Let's get things done.");
+  }
+
+  if (lowerText.match(/\b(good night|shubh ratri|so raha hoon|bedtime|goodnight|रात को शुभ|शुभ रात्रि|सो जाओ)\b/)) {
     return createResponse(
       'ROUTINE_NIGHT',
       isHindi
@@ -288,9 +348,11 @@ export const processTranscript = async (
     );
   }
 
-  // ── System Status / Greeting ─────────────────────────────────────────────
+  // ── Greetings ───────────────────────────────────────────────────────────
   if (
-    lowerText.match(/\b(status|report|system|online|alive|how are you|kaisi ho|kaisi hain|hello|hi|hey|namaste|नमस्ते)\b/)
+    lowerText.match(/\b(status|report|system|online|alive|how are you|kaisi ho|kaisi hain|hello|hi|hey|namaste|नमस्ते|namaste|hola|ola)\b/) ||
+    lowerText.match(/^sofiy/i) ||
+    lowerText.match(/\b(who are you|तुम कोन हो|who is sofiya)\b/)
   ) {
     const now = new Date();
     const hour = now.getHours();
@@ -302,8 +364,8 @@ export const processTranscript = async (
 
   // ── Time & Date ──────────────────────────────────────────────────────────
   if (
-    lowerText.match(/\b(time|clock|samay|waqt|baje)\b/) ||
-    lowerText.match(/\b(date|tarikh|din|today|aaj)\b/)
+    lowerText.match(/\b(time|clock|samay|waqt|baje|समय|कितने बजे|क्या समय)\b/) ||
+    lowerText.match(/\b(date|tarikh|din|today|aaj|तारीख|आज|कौन सा दिन)\b/)
   ) {
     const now = new Date();
     const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
@@ -315,6 +377,27 @@ export const processTranscript = async (
       isHindi ? `अभी का समय है ${hiTime}। आज की तारीख ${hiDate} है।` : `The current time is ${timeStr}. Today is ${dateStr}.`,
       { time: timeStr, date: dateStr }
     );
+  }
+
+  // ── Battery & Power Status ────────────────────────────────────────────────
+  if (lowerText.match(/\b(battery|charge|power|बैटरी|चार्ज|बिजली|ऊर्जा)\b/)) {
+    return createResponse('BATTERY_STATUS', isHindi ? "बैटरी स्थिति देख रही हूँ..." : "Checking battery status...");
+  }
+
+  // ── System Status ───────────────────────────────────────────────────────────
+  if (lowerText.match(/\b(system status|pc status|computer status|system check|सिस्टम स्टेटस|पीसी स्टेटस|कंप्यूटर स्थिति|सिस्टम चेक)\b/i)) {
+    return createResponse('SYSTEM_STATUS_FULL', isHindi ? "सिस्टम जानकारी ला रही हूँ..." : "Gathering system information...");
+  }
+
+  // ── Power Controls (Require Confirmation) ────────────────────────────────
+  if (lowerText.match(/\b(shutdown|power off|turn off|band karo|computer band|pc band|system band|शटडाउन|बंद करो|पीसी बंद|कंप्यूटर बंद)\b/i)) {
+    return createResponse('SHUTDOWN_CONFIRM', isHindi ? "क्या आप वाकई कंप्यूटर बंद करना चाहते हैं?" : "Are you sure you want to shutdown the computer?");
+  }
+  if (lowerText.match(/\b(restart|reboot|dobara shuru|fir se chalu|रीस्टार्ट|दोबारा शुरू|रीबूट)\b/i)) {
+    return createResponse('RESTART_CONFIRM', isHindi ? "क्या आप वाकई कंप्यूटर रीस्टार्ट करना चाहते हैं?" : "Are you sure you want to restart the computer?");
+  }
+  if (lowerText.match(/\b(sleep|suspend|sone do|स्लीप|सोने दो)\b/i)) {
+    return createResponse('SLEEP_CONFIRM', isHindi ? "क्या आप सिस्टम स्लीप मोड में डालना चाहते हैं?" : "Do you want to put the system to sleep?");
   }
 
 
@@ -340,9 +423,9 @@ export const processTranscript = async (
   }
 
   // ── Media / Music ────────────────────────────────────────────────────────
-  if (lowerText.match(/\b(play|music|song|gaana|bajao|chalao|suno|sunao)\b/)) {
+  if (lowerText.match(/\b(play|music|song|gaana|bajao|chalao|suno|sunao|open|kholo|khola|ओपन|खोलो|चलाओ)\b/)) {
     if (!lowerText.match(/\b(stop|pause|roko|band)\b/)) {
-      const song = extractQuery(cleanText, ['play', 'music', 'song', 'gaana', 'bajao', 'chalao', 'please', 'can you', 'suno', 'sunao']);
+      const song = extractQuery(cleanText, ['play', 'music', 'song', 'gaana', 'bajao', 'chalao', 'please', 'can you', 'suno', 'sunao', 'open', 'kholo', 'ओपन', 'खोलो']);
       const title = song.length > 1 ? song : 'Chill Lo-Fi Beats';
       const colors = ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981'];
       return createResponse(
@@ -357,8 +440,33 @@ export const processTranscript = async (
     return createResponse('MEDIA_PAUSE', isHindi ? "संगीत रोका गया।" : "Playback paused.");
   }
 
-  if (lowerText.match(/\b(resume|wapas chalao|phir se chala|dobara)\b/)) {
+  if (lowerText.match(/\b(resume|wapas chalao|phir se chala|dobara|फिर से|फिर|वापस)\b/)) {
     return createResponse('MEDIA_RESUME', isHindi ? "फिर से शुरू कर रही हूँ।" : "Resuming playback.");
+  }
+
+  // ── Media Next/Previous ──────────────────────────────────────────────────
+  if (lowerText.match(/\b(next|agla|agle|skip|forward|आगे|अगला|next track|next song)\b/i)) {
+    return createResponse('MEDIA_NEXT', isHindi ? "अगला गाना बजा रही हूँ।" : "Playing next track.");
+  }
+  if (lowerText.match(/\b(previous|prev|pichla|pichle|back|pehle|पिछला|पीछे|previous track|previous song)\b/i)) {
+    return createResponse('MEDIA_PREV', isHindi ? "पिछला गाना बजा रही हूँ।" : "Playing previous track.");
+  }
+
+  if (lowerText.match(/\b(stop|band karo|ab bas|roko|रोको|बंद करो|बस)\b/i)) {
+    if (lowerText.match(/\b(media|playback|music|song|gaana|sangeet|म्यूजिक|गाना)\b/i)) {
+      return createResponse('MEDIA_STOP', isHindi ? "मीडिया प्लेबैक रोक दिया गया है।" : "Media playback stopped.");
+    }
+    return createResponse('STOP', isHindi ? "ठीक है।" : "Okay, stopping.");
+  }
+
+  // ── Go Back / Exit ────────────────────────────────────────────────────────
+  if (lowerText.match(/\b(go back|back|exit|quit|close|bahir|बाहर|निकलो|वापस)\b/i)) {
+    return createResponse('GO_BACK', isHindi ? "वापस जा रही हूँ।" : "Going back.");
+  }
+
+  // ── Repeat / Again ────────────────────────────────────────────────────────
+  if (lowerText.match(/\b(repeat|again|dobara|फिर|पुनः|ek aur|ek baar)\b/i)) {
+    return createResponse('REPEAT', isHindi ? "फिर से दोहरा रही हूँ।" : "Repeating.");
   }
 
   // ── Communication – Message ──────────────────────────────────────────────
@@ -421,6 +529,223 @@ export const processTranscript = async (
     );
   }
 
+  // ── Window Management ────────────────────────────────────────────────────────
+  if (lowerText.match(/\b(minimize|chhota|niche|छोटा|मिनिमाइज|नीचे)\b/i)) {
+    return createResponse('WINDOW_MINIMIZE', isHindi ? "विंडो छोटी कर रही हूँ।" : "Minimizing window.");
+  }
+  if (lowerText.match(/\b(maximize|bada|pura|बड़ा|मैक्सिमाइज|पूरी)\b/i)) {
+    return createResponse('WINDOW_MAXIMIZE', isHindi ? "विंडो बड़ी कर रही हूँ।" : "Maximizing window.");
+  }
+  if (lowerText.match(/\b(close window|window band|window close|विंडो बंद|खिड़की बंद)\b/i)) {
+    return createResponse('WINDOW_CLOSE', isHindi ? "विंडो बंद कर रही हूँ।" : "Closing window.");
+  }
+  if (lowerText.match(/\b(show desktop|desktop|sab band|सब बंद|डेस्कटॉप)\b/i)) {
+    return createResponse('SHOW_DESKTOP', isHindi ? "डेस्कटॉप दिखा रही हूँ।" : "Showing desktop.");
+  }
+  if (lowerText.match(/\b(snap left|left side|bayan|बाईं|बायें|left)\b/i)) {
+    return createResponse('SNAP_LEFT', isHindi ? "विंडो बाईं तरफ कर रही हूँ।" : "Snapping window to left.");
+  }
+  if (lowerText.match(/\b(snap right|right side|dayan|दाईं|दायें|right)\b/i)) {
+    return createResponse('SNAP_RIGHT', isHindi ? "विंडो दाईं तरफ कर रही हूँ।" : "Snapping window to right.");
+  }
+
+  // ── Mouse/Input Controls ───────────────────────────────────────────────────
+  if (lowerText.match(/\b(click|press|select|choose|क्लिक|दबाओ|चुनो)\b/i)) {
+    return createResponse('MOUSE_CLICK', isHindi ? "क्लिक कर रही हूँ।" : "Clicking.");
+  }
+  if (lowerText.match(/\b(double click|do bar click|double press|डबल क्लिक|दो बार)\b/i)) {
+    return createResponse('MOUSE_DOUBLE_CLICK', isHindi ? "डबल क्लिक कर रही हूँ।" : "Double clicking.");
+  }
+  if (lowerText.match(/\b(right click|context menu|options|राइट क्लिक|ऑप्शंस)\b/i)) {
+    return createResponse('MOUSE_RIGHT_CLICK', isHindi ? "राइट क्लिक कर रही हूँ।" : "Right clicking.");
+  }
+  if (lowerText.match(/\b(scroll up|upar scroll|up scroll|ऊपर|ऊपर स्क्रॉल)\b/i)) {
+    return createResponse('SCROLL_UP', isHindi ? "ऊपर स्क्रॉल कर रही हूँ।" : "Scrolling up.");
+  }
+  if (lowerText.match(/\b(scroll down|neeche scroll|down scroll|नीचे|नीचे स्क्रॉल)\b/i)) {
+    return createResponse('SCROLL_DOWN', isHindi ? "नीचे स्क्रॉल कर रही हूँ।" : "Scrolling down.");
+  }
+
+  // ── Clipboard ───────────────────────────────────────────────────────────────
+  if (lowerText.match(/\b(get clipboard|clipboard|clipboard dekho|क्लिपबोर्ड)\b/i)) {
+    return createResponse('GET_CLIPBOARD', isHindi ? "क्लिपबोर्ड की सामग्री दिखा रही हूँ।" : "Getting clipboard content.");
+  }
+  if (lowerText.match(/\b(set clipboard|copy|कॉपी|क्लिपबोर्ड में)\b/i)) {
+    return createResponse('SET_CLIPBOARD', isHindi ? "क्लिपबोर्ड में कॉपी किया।" : "Copied to clipboard.");
+  }
+
+  // ── File Operations ───────────────────────────────────────────────────────
+  if (lowerText.match(/\b(search file|find file|file dhoondo|dhundho|फ़ाइल ढूंढो|फाइल खोजो)\b/i)) {
+    const query = extractQuery(cleanText, ['search', 'file', 'find', 'dhoondo', 'dhundho', 'फ़ाइल', 'फाइल', 'खोजो', 'ढूंढो']);
+    return createResponse('FILE_SEARCH', isHindi ? `${query} खोज रही हूँ।` : `Searching for ${query}.`, { query });
+  }
+  if (lowerText.match(/\b(create folder|new folder|naya folder|folder banao|नया फोल्डर|फोल्डर बनाओ)\b/i)) {
+    const query = extractQuery(cleanText, ['create', 'folder', 'new', 'naya', 'banao', 'बनाओ', 'नया', 'फोल्डर']);
+    return createResponse('FOLDER_CREATE', isHindi ? `${query} फोल्डर बना रही हूँ।` : `Creating folder ${query}.`, { name: query });
+  }
+  if (lowerText.match(/\b(delete file|file hatao|remove file|हटाओ|डिलीट|फाइल हटाओ)\b/i)) {
+    return createResponse('FILE_DELETE_CONFIRM', isHindi ? "क्या आप इस फाइल को हटाना चाहते हैं?" : "Do you want to delete this file?");
+  }
+  if (lowerText.match(/\b(copy file|file copy|कॉपी|फाइल कॉपी)\b/i)) {
+    return createResponse('FILE_COPY', isHindi ? "फाइल कॉपी कर रही हूँ।" : "Copying file.");
+  }
+  if (lowerText.match(/\b(move file|file move|स्थानांतरित|फाइल मूव)\b/i)) {
+    return createResponse('FILE_MOVE', isHindi ? "फाइल मूव कर रही हूँ।" : "Moving file.");
+  }
+  if (lowerText.match(/\b(rename file|naam badlo|नाम बदलो)\b/i)) {
+    return createResponse('FILE_RENAME', isHindi ? "फाइल का नाम बदल रही हूँ।" : "Renaming file.");
+  }
+
+  // ── OCR & Text Extraction ─────────────────────────────────────────────────
+  if (lowerText.match(/\b(extract text|image se text|ocr image|text nikalo|इमेज से टेक्स्ट|फोटो से टेक्स्ट)\b/i)) {
+    return createResponse('OCR_IMAGE', isHindi ? "इमेज से टेक्स्ट निकाल रही हूँ।" : "Extracting text from image.");
+  }
+  if (lowerText.match(/\b(extract text from pdf|pdf se text|pdf padho|पीडीएफ से टेक्स्ट|पीडीएफ पढ़ो)\b/i)) {
+    return createResponse('OCR_PDF', isHindi ? "पीडीएफ से टेक्स्ट निकाल रही हूँ।" : "Extracting text from PDF.");
+  }
+
+  // ── Image Processing ──────────────────────────────────────────────────────
+  if (lowerText.match(/\b(convert image|image convert|format change|इमेज कन्वर्ट|फॉर्मेट बदलो)\b/i)) {
+    return createResponse('IMAGE_CONVERT', isHindi ? "इमेज कन्वर्ट कर रही हूँ।" : "Converting image.");
+  }
+  if (lowerText.match(/\b(resize image|image resize|size badlo|इमेज रिसाइज|साइज बदलो)\b/i)) {
+    return createResponse('IMAGE_RESIZE', isHindi ? "इमेज का साइज बदल रही हूँ।" : "Resizing image.");
+  }
+  if (lowerText.match(/\b(compress image|image compress|size kam|इमेज कम्प्रेस|साइज कम)\b/i)) {
+    return createResponse('IMAGE_COMPRESS', isHindi ? "इमेज कम्प्रेस कर रही हूँ।" : "Compressing image.");
+  }
+
+  // ── PDF Tools ───────────────────────────────────────────────────────────────
+  if (lowerText.match(/\b(merge pdfs|pdfs jodo|combine pdf|पीडीएफ मिलाओ|पीडीएफ जोड़ो)\b/i)) {
+    return createResponse('PDF_MERGE', isHindi ? "पीडीएफ मिला रही हूँ।" : "Merging PDFs.");
+  }
+  if (lowerText.match(/\b(pdf to images|pdf ko images|पीडीएफ को इमेज)\b/i)) {
+    return createResponse('PDF_TO_IMAGES', isHindi ? "पीडीएफ को इमेज में बदल रही हूँ।" : "Converting PDF to images.");
+  }
+  if (lowerText.match(/\b(images to pdf|images ko pdf|इमेज को पीडीएफ)\b/i)) {
+    return createResponse('IMAGES_TO_PDF', isHindi ? "इमेज को पीडीएफ में बदल रही हूँ।" : "Converting images to PDF.");
+  }
+  if (lowerText.match(/\b(batch pdf|folder pdf|सारे पीडीएफ|फोल्डर पीडीएफ)\b/i)) {
+    return createResponse('BATCH_PDF', isHindi ? "फोल्डर की सभी इमेजेज को पीडीएफ में बदल रही हूँ।" : "Converting all images in the folder to PDF.");
+  }
+  if (lowerText.match(/\b(scan folder|folder scan|फोल्डर स्कैन)\b/i)) {
+    return createResponse('SCAN_FOLDER', isHindi ? "फोल्डर स्कैन कर रही हूँ।" : "Scanning folder for files.");
+  }
+  if (lowerText.match(/\b(make drawing|drawing banao|sketch banao|ड्राइंग बनाओ|पेंट)\b/i)) {
+    return createResponse('MAKE_DRAWING', isHindi ? "पेंट खोल रही हूँ।" : "Opening Paint for drawing.");
+  }
+  if (lowerText.match(/\b(get selected text|select kiya hua text|चुना हुआ टेक्स्ट)\b/i)) {
+    return createResponse('GET_SELECTED_TEXT', isHindi ? "चुना हुआ टेक्स्ट पढ़ रही हूँ।" : "Retrieving selected text.");
+  }
+  if (lowerText.match(/\b(read pdf|pdf padho|पीडीएफ पढ़ो)\b/i)) {
+    return createResponse('READ_PDF', isHindi ? "पीडीएफ फाइल पढ़ रही हूँ।" : "Reading the PDF file.");
+  }
+  if (lowerText.match(/\b(narrate screen|screen padho|dekho kya hai|स्क्रीन पढ़ो|स्क्रीन पर क्या है)\b/i)) {
+    return createResponse('NARRATE_SCREEN', isHindi ? "स्क्रीन पर जो है वो पढ़ कर सुनाती हूँ।" : "Narrating what's on the screen.");
+  }
+  if (lowerText.match(/\b(screen summary|summary of screen|स्क्रीन सारांश)\b/i)) {
+    return createResponse('SCREEN_SUMMARY', isHindi ? "स्क्रीन का सारांश निकाल रही हूँ।" : "Getting a summary of the screen.");
+  }
+
+  // ── Calendar & Schedule ────────────────────────────────────────────────────
+  if (lowerText.match(/\b(calendar|schedule|appointment|meeting|event|kalendar|taareekh)\b/i)) {
+    if (lowerText.match(/\b(add|create|new|schedule|banao|जोड़ो)\b/i)) {
+      const eventTitle = extractQuery(cleanText, ['add', 'create', 'new', 'schedule', 'calendar', 'event', 'appointment', 'meeting', 'banao', 'जोड़ो']);
+      return createResponse('CALENDAR_ADD', isHindi ? "इवेंट जोड़ रही हूँ।" : "Adding event to calendar.", {
+        event: {
+          title: eventTitle || (isHindi ? 'नया इवेंट' : 'New Event'),
+          start_time: new Date(Date.now() + 3600000).toISOString(), // Default: 1 hour from now
+          end_time: new Date(Date.now() + 7200000).toISOString()
+        }
+      });
+    }
+    return createResponse('CALENDAR_SHOW', isHindi ? "कैलेंडर दिखा रही हूँ।" : "Showing calendar.");
+  }
+
+  // ── Household Knowledge ────────────────────────────────────────────────────
+  if (lowerText.match(/\b(household|inventory|where is|location|saman|kahan|kahan hai|सामान|कहाँ है)\b/i)) {
+    if (lowerText.match(/\b(add|create|new|save|remember|banao|yaad|rakho|रखो|याद)\b/i)) {
+      const item = extractQuery(cleanText, ['add', 'create', 'new', 'save', 'remember', 'household', 'item', 'saman', 'yaad', 'rakho', 'रखो', 'याद']);
+      return createResponse('HOUSEHOLD_ITEM_ADD', isHindi ? "घरेलू सामान जोड़ा गया।" : "Household item saved.", { item });
+    }
+    return createResponse('HOUSEHOLD_SHOW', isHindi ? "घरेलू इंटेलिजेंस लोड हो रही है।" : "Loading household intelligence.");
+  }
+
+  // ── Gifts & Social ─────────────────────────────────────────────────────────
+  if (lowerText.match(/\b(gift|surprise|stealth|upahar|gift idea|उपहार)\b/i)) {
+    if (lowerText.match(/\b(add|create|new|save|banao|joḍo|daal|daalo|डालो|जोड़ो)\b/i)) {
+      const gift = extractQuery(cleanText, ['add', 'create', 'new', 'save', 'gift', 'idea', 'upahar', 'daal', 'daalo', 'डालो', 'जोड़ो']);
+      return createResponse('GIFT_IDEAS_ADD', isHindi ? "उपहार आइडिया जोड़ा गया।" : "Gift idea added.", { gift });
+    }
+    return createResponse('GIFTS_SHOW', isHindi ? "उपहार प्रोटोकॉल सक्रिय।" : "Stealth gift protocol active.");
+  }
+
+  // ── Notes & Reminders ─────────────────────────────────────────────────────
+  if (lowerText.match(/\b(note|notes|note ban|नोट|नोट्स|नोट बनाओ)\b/i)) {
+    return createResponse('NOTES_SHOW', isHindi ? "नोट्स दिखा रही हूँ।" : "Showing notes.");
+  }
+  if (lowerText.match(/\b(remind|reminder|yaad|remember|yaad dilao|remind me)\b/i)) {
+    if (lowerText.match(/\b(add|create|set|new|banao|जोड़ो)\b/i)) {
+      return createResponse('REMINDER_ADD', isHindi ? "रिमाइंडर सेट कर रही हूँ।" : "Setting reminder.");
+    }
+    return createResponse('REMINDER_SHOW', isHindi ? "रिमाइंडर दिखा रही हूँ।" : "Showing reminders.");
+  }
+
+  // ── Smart Home Extended ───────────────────────────────────────────────────
+  if (lowerText.match(/\b(fan|पंखा|pankha)\b/i)) {
+    const isOn = lowerText.match(/\b(on|chalu|jalao)\b/) !== null;
+    return createResponse('SMART_HOME_ACTION', isHindi ? (isOn ? "पंखा चालू।" : "पंखा बंद।") : (isOn ? "Fan turned on." : "Fan turned off."), { deviceType: 'fan', state: isOn });
+  }
+  if (lowerText.match(/\b(ac|air conditioner|air condition|एसी|एयर कंडीशनर)\b/i)) {
+    const isOn = lowerText.match(/\b(on|chalu|jalao)\b/) !== null;
+    return createResponse('SMART_HOME_ACTION', isHindi ? (isOn ? "एसी चालू।" : "एसी बंद।") : (isOn ? "AC turned on." : "AC turned off."), { deviceType: 'ac', state: isOn });
+  }
+  if (lowerText.match(/\b(thermostat|temperature|tapman|तापमान)\b/i)) {
+    const tempMatch = lowerText.match(/(\d+)\s*(degree|°)?/);
+    const temp = tempMatch ? parseInt(tempMatch[1]) : 24;
+    return createResponse('SMART_HOME_ACTION', isHindi ? `तापमान ${temp} डिग्री सेट कर रही हूँ।` : `Setting temperature to ${temp} degrees.`, { deviceType: 'thermostat', state: temp });
+  }
+  if (lowerText.match(/\b(lock|unlock|ताला|लॉक|unlock)\b/i)) {
+    const isLock = lowerText.match(/\b(lock|ताला|लॉक)\b/) !== null;
+    return createResponse('SMART_HOME_ACTION', isHindi ? (isLock ? "ताला लगा दिया।" : "ताला खोल दिया।") : (isLock ? "Door locked." : "Door unlocked."), { deviceType: 'lock', state: isLock });
+  }
+
+  // ── Calculator Extended ────────────────────────────────────────────────────
+  if (lowerText.match(/\b(calculate|calculate|hisab|गणना|गुणा|भाग|घटाओ|बढ़ाओ)\b/i)) {
+    const expression = lowerText
+      .replace(/calculate|hisab|compute|गणना|गुणा|गुना|भाग|जोड़|घटाओ|बढ़ाओ/gi, '')
+      .trim();
+    if (expression) {
+      const mathMatch = expression.match(/(\d+(?:\.\d+)?)\s*([-+*/])\s*(\d+(?:\.\d+)?)/);
+      if (mathMatch) {
+        try {
+          const res: number = eval(mathMatch[0]);
+          const rounded = parseFloat(res.toFixed(4));
+          return createResponse(
+            'CALCULATION',
+            isHindi ? `${mathMatch[0]} का उत्तर है ${rounded}` : `The result of ${mathMatch[0]} is ${rounded}`,
+            { result: rounded, expression: mathMatch[0] }
+          );
+        } catch (e) { /* fallthrough */ }
+      }
+    }
+    return createResponse('CALCULATOR_OPEN', isHindi ? "कैलकुलेटर खोल रही हूँ।" : "Opening calculator.");
+  }
+
+  // ── Currency & Unit Conversion ────────────────────────────────────────────
+  if (lowerText.match(/\b(convert|currency|exchange|तबदला|विनिमय)\b/i)) {
+    if (lowerText.match(/\b(dollar|usd|डॉलर)\b/i) && lowerText.match(/\b(rupee|inr|रुपया)\b/i)) {
+      return createResponse('CONVERSION', isHindi ? "विनिमय दर देख रही हूँ..." : "Checking exchange rate...");
+    }
+    if (lowerText.match(/\b(kilometer|km|किलोमीटर)\b/i) && lowerText.match(/\b(mile|मील)\b/i)) {
+      return createResponse('CONVERSION', isHindi ? "किलोमीटर को मील में बदल रही हूँ।" : "Converting kilometers to miles.");
+    }
+    if (lowerText.match(/\b(celsius|centigrade|सेल्सियस)\b/i) && lowerText.match(/\b(fahrenheit|फारेनहाइट)\b/i)) {
+      return createResponse('CONVERSION', isHindi ? "सेल्सियस को फारेनहाइट में बदल रही हूँ।" : "Converting Celsius to Fahrenheit.");
+    }
+    return createResponse('CONVERSION', isHindi ? "कनवर्ज़न सुविधा खोल रही हूँ।" : "Opening conversion tool.");
+  }
+
   // ── Social – Jokes ───────────────────────────────────────────────────────
   if (lowerText.match(/\b(joke|mazak|chutkula|funny|hasao|hasa)\b/)) {
     const jokes = isHindi ? JOKES_HI : JOKES_EN;
@@ -440,18 +765,50 @@ export const processTranscript = async (
     return createResponse('HEALTH_SHOW', isHindi ? "स्वास्थ्य डैशबोर्ड खोल रही हूँ।" : "Opening biometrics dashboard.");
   }
 
-  // ── Mindfulness ──────────────────────────────────────────────────────────
+  // ── Security & Surveillance ──────────────────────────────────────────────
+  if (lowerText.match(/\b(sentry mode|security mode|surveillance|activate shields|security protocols|सुरक्षा मोड|संत्री मोड|शील्ड सक्रिय करो)\b/)) {
+    return createResponse(
+      'SENTRY_MODE',
+      isHindi ? "संत्री मोड सक्रिय। सुरक्षा प्रोटोकॉल लोड हो रहे हैं।" : "Sentry mode active. Initializing security protocols."
+    );
+  }
+
+  // ── Mindfulness ────────────────────────────────────────────────────────────
   if (lowerText.match(/\b(breathe|breathing|meditate|meditation|dhyan|relax|calm|shant)\b/)) {
     return createResponse('MINDFULNESS_START', isHindi ? "साँस लेने का व्यायाम शुरू कर रही हूँ।" : "Initiating breathing sequence.");
   }
 
-  // ── Sentry / Security Mode ───────────────────────────────────────────────
-  if (lowerText.match(/\b(sentry|security|suraksha|guard|surveillance|watch)\b/)) {
-    return createResponse('SENTRY_MODE', isHindi ? "निगरानी मोड सक्रिय।" : "Sentry Mode activated.");
+  // Web & Search is handled below
+
+  // ── Web & Search ───────────────────────────────────────────────────────
+  if (lowerText.match(/\b(search|find|look up|dhundo|खोजो|ढूंढो|khojo|pata|what is|define)\b/)) {
+    const query = extractQuery(cleanText, ['search', 'find', 'look', 'up', 'what', 'is', 'the', 'definition', 'of', 'dhundo', 'खोजो', 'ढूंढो', 'khojo', 'pata', 'lagado', 'please']);
+
+    if (query.length >= 2) {
+      return createResponse(
+        'SEARCH_QUERY',
+        isHindi ? `${query} के बारे में खोज रही हूँ।` : `Searching for "${query}".`,
+        undefined,
+        `https://www.google.com/search?q=${encodeURIComponent(query)}`
+      );
+    }
+  }
+
+  // ── Wikipedia ────────────────────────────────────────────────────────────
+  if (lowerText.match(/\b(wikipedia|विकिपीडिया|wiki)\b/)) {
+    const query = extractQuery(cleanText, ['wikipedia', 'विकिपीडिया', 'wiki', 'about', 'on']);
+    if (query.length >= 2) {
+      return createResponse(
+        'WIKIPEDIA_FETCH',
+        isHindi ? `${query} के बारे में जानकारी खोज रही हूँ।` : `Looking up "${query}" on Wikipedia.`,
+        undefined,
+        `https://en.wikipedia.org/wiki/${encodeURIComponent(query.replace(/ /g, '_'))}`
+      );
+    }
   }
 
   // ── Weather ──────────────────────────────────────────────────────────────
-  if (lowerText.match(/\b(weather|mausam|temperature|temp|baarish|rain|sunny|forecast)\b/)) {
+  if (lowerText.match(/\b(weather|mausam|temperature|temp|baarish|rain|sunny|forecast|मौसम|तापमान|बारिश|धूप)\b/)) {
     return createResponse('WEATHER_FETCH', isHindi ? "मौसम की जानकारी ला रही हूँ..." : "Fetching meteorological data...");
   }
 
@@ -491,6 +848,197 @@ export const processTranscript = async (
     }
   }
 
+  // ── App & Web Navigation ──────────────────────────────────────────────────
+  // JARVIS-style Hindi app name → command mapping
+  const HINDI_APP_MAP: Record<string, { action: string; url?: string; label: string; labelHi: string }> = {
+    'notepad': { action: 'OPEN_APP', label: 'Notepad', labelHi: 'नोटपैड' },
+    'नोटपैड': { action: 'OPEN_APP', label: 'Notepad', labelHi: 'नोटपैड' },
+    'calculator': { action: 'OPEN_APP', label: 'Calculator', labelHi: 'कैलकुलेटर' },
+    'कैलकुलेटर': { action: 'OPEN_APP', label: 'Calculator', labelHi: 'कैलकुलेटर' },
+    'vlc': { action: 'OPEN_APP', label: 'VLC', labelHi: 'वीएलसी' },
+    'वीएलसी': { action: 'OPEN_APP', label: 'VLC', labelHi: 'वीएलसी' },
+    'paint': { action: 'OPEN_APP', label: 'Paint', labelHi: 'पेंट' },
+    'पेंट': { action: 'OPEN_APP', label: 'Paint', labelHi: 'पेंट' },
+    'word': { action: 'OPEN_APP', label: 'Word', labelHi: 'वर्ड' },
+    'वर्ड': { action: 'OPEN_APP', label: 'Word', labelHi: 'वर्ड' },
+    'excel': { action: 'OPEN_APP', label: 'Excel', labelHi: 'एक्सेल' },
+    'एक्सेल': { action: 'OPEN_APP', label: 'Excel', labelHi: 'एक्सेल' },
+    'powerpoint': { action: 'OPEN_APP', label: 'PowerPoint', labelHi: 'पॉवरपॉइंट' },
+    'पॉवरपॉइंट': { action: 'OPEN_APP', label: 'PowerPoint', labelHi: 'पॉवरपॉइंट' },
+    'cmd': { action: 'OPEN_APP', label: 'Command Prompt', labelHi: 'कमांड प्रॉम्प्ट' },
+    'कमांड': { action: 'OPEN_APP', label: 'Command Prompt', labelHi: 'कमांड प्रॉम्प्ट' },
+    'terminal': { action: 'OPEN_APP', label: 'Terminal', labelHi: 'टर्मिनल' },
+    'टर्मिनल': { action: 'OPEN_APP', label: 'Terminal', labelHi: 'टर्मिनल' },
+    'vscode': { action: 'OPEN_APP', label: 'VS Code', labelHi: 'बीएस कोड' },
+    'vs code': { action: 'OPEN_APP', label: 'VS Code', labelHi: 'बीएस कोड' },
+    'कोड': { action: 'OPEN_APP', label: 'VS Code', labelHi: 'कोड' },
+    'chrome': { action: 'OPEN_APP', label: 'Chrome', labelHi: 'क्रोम' },
+    'क्रोम': { action: 'OPEN_APP', label: 'Chrome', labelHi: 'क्रोम' },
+    'firefox': { action: 'OPEN_APP', label: 'Firefox', labelHi: 'फायरफॉक्स' },
+    'explorer': { action: 'OPEN_APP', label: 'File Explorer', labelHi: 'फाइल एक्सप्लोरर' },
+    'एक्सप्लोरर': { action: 'OPEN_APP', label: 'File Explorer', labelHi: 'एक्सप्लोरर' },
+    'spotify': { action: 'OPEN_APP', label: 'Spotify', labelHi: 'स्पॉटिफाई' },
+    'स्पॉटिफाई': { action: 'OPEN_APP', label: 'Spotify', labelHi: 'स्पॉटिफाई' },
+    'amazon': { action: 'NAVIGATE', label: 'Amazon', labelHi: 'अमेज़न', url: 'https://www.amazon.in' },
+    'अमेज़न': { action: 'NAVIGATE', label: 'Amazon', labelHi: 'अमेज़न', url: 'https://www.amazon.in' },
+    'flipkart': { action: 'NAVIGATE', label: 'Flipkart', labelHi: 'फ्लिपकार्ट', url: 'https://www.flipkart.com' },
+    'फ्लिपकार्ट': { action: 'NAVIGATE', label: 'Flipkart', labelHi: 'फ्लिपकार्ट', url: 'https://www.flipkart.com' },
+    'wikipedia': { action: 'NAVIGATE', label: 'Wikipedia', labelHi: 'विकिपीडिया', url: 'https://www.wikipedia.org' },
+    'विकिपीडिया': { action: 'NAVIGATE', label: 'Wikipedia', labelHi: 'विकिपीडिया', url: 'https://hi.wikipedia.org' },
+    'github': { action: 'NAVIGATE', label: 'GitHub', labelHi: 'गिटहब', url: 'https://github.com' },
+    'गिटहब': { action: 'NAVIGATE', label: 'GitHub', labelHi: 'गिटहब', url: 'https://github.com' },
+    'gmail': { action: 'NAVIGATE', label: 'Gmail', labelHi: 'जीमेल', url: 'https://mail.google.com' },
+    'जीमेल': { action: 'NAVIGATE', label: 'Gmail', labelHi: 'जीमेल', url: 'https://mail.google.com' },
+    'chatgpt': { action: 'NAVIGATE', label: 'ChatGPT', labelHi: 'चैटजीपीटी', url: 'https://chatgpt.com' },
+    'instagram': { action: 'NAVIGATE', label: 'Instagram', labelHi: 'इंस्टाग्राम', url: 'https://www.instagram.com' },
+    'netflix': { action: 'NAVIGATE', label: 'Netflix', labelHi: 'नेटफ्लिक्स', url: 'https://www.netflix.com' },
+    'twitter': { action: 'NAVIGATE', label: 'Twitter', labelHi: 'ट्विटर', url: 'https://www.twitter.com' },
+    'reddit': { action: 'NAVIGATE', label: 'Reddit', labelHi: 'रेडिट', url: 'https://www.reddit.com' },
+  };
+
+  if (lowerText.match(/\b(open|kholo|launch|chalao|start|ओपन|खोलो|चलाओ|शुरू)\b/)) {
+    const target = extractQuery(cleanText, ['open', 'kholo', 'launch', 'chalao', 'start', 'please', 'app', 'website', 'ओपन', 'खोलो', 'चलाओ', 'the', 'a', 'an']);
+    const targetLower = target.toLowerCase().trim();
+
+    // Check JARVIS-style Hindi app map first
+    const appEntry = HINDI_APP_MAP[targetLower] || HINDI_APP_MAP[target];
+    if (appEntry) {
+      if (appEntry.url) {
+        return createResponse('NAVIGATE', isHindi ? `${appEntry.labelHi} खोल रही हूँ।` : `Opening ${appEntry.label}.`, { target: appEntry.label }, appEntry.url);
+      }
+      return createResponse('OPEN_APP', isHindi ? `${appEntry.labelHi} खोल रही हूँ।` : `Opening ${appEntry.label}.`, { app: appEntry.label.toLowerCase() });
+    }
+
+    if (target.match(/spotify/i)) {
+      return createResponse('MEDIA_PLAY', isHindi ? "Spotify खोल रही हूँ।" : "Opening Spotify.", { title: 'Spotify', isPlaying: true }, 'https://open.spotify.com');
+    }
+    if (target.match(/youtube|यूट्यूब/i)) {
+      return createResponse('SEARCH_QUERY', isHindi ? "YouTube खोल रही हूँ।" : "Opening YouTube.", null, 'https://www.youtube.com');
+    }
+    if (target.match(/whatsapp|व्हाट्सएप/i)) {
+      return createResponse('COMM_MESSAGE_DRAFT', isHindi ? "WhatsApp खोल रही हूँ।" : "Opening WhatsApp.", { type: 'message', contact: 'WhatsApp' }, 'https://web.whatsapp.com');
+    }
+    if (target.match(/google/i)) {
+      return createResponse('NAVIGATE', isHindi ? "Google खोल रही हूँ।" : "Opening Google.", null, 'https://www.google.com');
+    }
+    if (target.match(/github/i)) {
+      return createResponse('NAVIGATE', isHindi ? "GitHub खोल रही हूँ।" : "Opening GitHub.", null, 'https://github.com');
+    }
+    if (target.match(/chatgpt/i)) {
+      return createResponse('NAVIGATE', isHindi ? "ChatGPT खोल रही हूँ।" : "Opening ChatGPT.", null, 'https://chatgpt.com');
+    }
+
+    // Generic navigate
+    if (target.length > 0 && target.length < 20) {
+      return createResponse('NAVIGATE',
+        isHindi ? `${target} खोलने का प्रयास कर रही हूँ।` : `Attempting to open ${target}.`,
+        { target },
+        `https://${target.toLowerCase().replace(/\s+/g, '')}.com`
+      );
+    }
+  }
+
+  // ── Direct App Commands ───────────────────────────────────────────────────
+  if (lowerText.match(/\b(spotify|स्पॉटिफाई)\b/i)) {
+    return createResponse('MEDIA_PLAY', isHindi ? "Spotify खोल रही हूँ।" : "Opening Spotify.", { title: 'Spotify', isPlaying: true }, 'https://open.spotify.com');
+  }
+
+  // ── Open Folders ────────────────────────────────────────────────────────────
+  if (lowerText.match(/\b(downloads|download|डाउनलोड)\b/i)) {
+    return createResponse('OPEN_FOLDER', isHindi ? "Downloads खोल रही हूँ।" : "Opening Downloads folder.", { folder: 'downloads' });
+  }
+  if (lowerText.match(/\b(documents|docs|डॉक्युमेंट्स|डॉक्यूमेंट)\b/i)) {
+    return createResponse('OPEN_FOLDER', isHindi ? "Documents खोल रही हूँ।" : "Opening Documents folder.", { folder: 'documents' });
+  }
+  if (lowerText.match(/\b(desktop|डेस्कटॉप)\b/i)) {
+    return createResponse('OPEN_FOLDER', isHindi ? "Desktop खोल रही हूँ।" : "Opening Desktop folder.", { folder: 'desktop' });
+  }
+  if (lowerText.match(/\b(pictures|photos|images|फोटो|पिक्चर्स|तस्वीरें)\b/i)) {
+    return createResponse('OPEN_FOLDER', isHindi ? "Pictures खोल रही हूँ।" : "Opening Pictures folder.", { folder: 'pictures' });
+  }
+  if (lowerText.match(/\b(videos|movies|वीडियो|मूवी)\b/i)) {
+    return createResponse('OPEN_FOLDER', isHindi ? "Videos खोल रही हूँ।" : "Opening Videos folder.", { folder: 'videos' });
+  }
+  if (lowerText.match(/\b(music|gaana|gaane|गाना|गाने|म्यूजिक)\b/i)) {
+    return createResponse('OPEN_FOLDER', isHindi ? "Music खोल रही हूँ।" : "Opening Music folder.", { folder: 'music' });
+  }
+
+  // ── Power Control ────────────────────────────────────────────────────────
+  if (lowerText.match(/\b(shutdown|band karo|pc band|computer band|system band|शटडाउन|बंद करो)\b/i)) {
+    return createResponse('SHUTDOWN_CONFIRM', isHindi ? "क्या आप वाकई कंप्यूटर बंद करना चाहते हैं?" : "Are you sure you want to shutdown the computer?");
+  }
+  if (lowerText.match(/\b(restart|dobara shuru|fir se chalu|reboot|रीस्टार्ट|दोबारा शुरू)\b/i)) {
+    return createResponse('RESTART_CONFIRM', isHindi ? "क्या आप वाकई कंप्यूटर दोबारा शुरू करना चाहते हैं?" : "Are you sure you want to restart the computer?");
+  }
+  if (lowerText.match(/\b(sleep|sone do|suspend|स्लीप|सोने दो)\b/i)) {
+    return createResponse('SLEEP_CONFIRM', isHindi ? "क्या आप कंप्यूटर को स्लीप मोड में डालना चाहते हैं?" : "Do you want to put the computer to sleep?");
+  }
+
+  // ── Advanced System Info ──────────────────────────────────────────────────
+  if (lowerText.match(/\b(uptime|अपटाइम|कितनी देर|चालू है|up time)\b/)) {
+    return createResponse('UPTIME', isHindi ? "सिस्टम को चालू हुए काफी समय हो गया है।" : "Calculating system uptime...");
+  }
+  if (lowerText.match(/\b(system health|health report|pc status|how is my pc|स्वास्थ्य|हाइत|सिस्टम रिपोर्ट|कैसा है)\b/)) {
+    return createResponse('SYSTEM_HEALTH', isHindi ? "सिस्टम स्वास्थ्य की जाँच कर रही हूँ..." : "Checking system health and vitals...");
+  }
+  if (lowerText.match(/\b(network|ip address|internet status|नेटवर्क|आईपी एड्रेस|इंटरनेट)\b/)) {
+    return createResponse('NETWORK_INFO', isHindi ? "नेटवर्क विवरण प्राप्त कर रही हूँ..." : "Retrieving network configuration...");
+  }
+
+  // ── Desktop Customization ────────────────────────────────────────────────
+  if (lowerText.match(/\b(wallpaper|background|वॉलपेपर|बैकग्राउंड)\b/i)) {
+    return createResponse('CHANGE_WALLPAPER', isHindi ? "वॉलपेपर बदलने के लिए इमेज चुनें।" : "Please provide an image to change the wallpaper.");
+  }
+  if (lowerText.match(/\b(recycle bin|trash|kachra|कूड़ा|कचरा)\b/i)) {
+    return createResponse('EMPTY_RECYCLE_BIN', isHindi ? "रीसायकल बिन खाली कर रही हूँ।" : "Emptying the recycle bin.");
+  }
+  if (lowerText.match(/\b(taskbar|टास्कबार)\b/i)) {
+    return createResponse('TOGGLE_TASKBAR', isHindi ? "टास्कबार टॉगल कर रही हूँ।" : "Toggling taskbar visibility.");
+  }
+
+  // ── Screen Control ─────────────────────────────────────────────────────────
+  // Window snapping (from JARVIS reference)
+  if (lowerText.match(/\b(snap left|bayan snap|window left|khidki bayan|बाईं ओर|बाएं snap|विंडो बाईं|snap window left)\b/i)) {
+    return createResponse('SNAP_LEFT', isHindi ? "विंडो बाईं ओर स्नैप की।" : "Window snapped to the left.");
+  }
+  if (lowerText.match(/\b(snap right|dayan snap|window right|khidki dayan|दाईं ओर|दाएं snap|विंडो दाईं|snap window right)\b/i)) {
+    return createResponse('SNAP_RIGHT', isHindi ? "विंडो दाईं ओर स्नैप की।" : "Window snapped to the right.");
+  }
+  if (lowerText.match(/\b(center window|window center|beech mein|विंडो बीच में|center karo|window ko center|khidki beech mein)\b/i)) {
+    return createResponse('CENTER_WINDOW', isHindi ? "विंडो स्क्रीन के बीच में की।" : "Active window centered on screen.");
+  }
+  // List running apps
+  if (lowerText.match(/\b(list apps|running apps|kaunse apps|show apps|कौनसे ऐप|ऐप सूची|चल रहे ऐप्स)\b/i)) {
+    return createResponse('LIST_APPS', isHindi ? "चल रहे ऐप्स की सूची दिखा रही हूँ।" : "Listing running applications.");
+  }
+
+  if (lowerText.match(/\b(zoom in|bada dikhao|ज़ूम इन|बड़ा दिखाओ)\b/i)) {
+    return createResponse('ZOOM_IN', isHindi ? "ज़ूम इन कर रही हूँ।" : "Zooming in.");
+  }
+  if (lowerText.match(/\b(zoom out|chhota dikhao|ज़ूम आउट|छोटा दिखाओ)\b/i)) {
+    return createResponse('ZOOM_OUT', isHindi ? "ज़ूम आउट कर रही हूँ।" : "Zooming out.");
+  }
+
+  // ── Brightness Control ───────────────────────────────────────────────────
+  if (lowerText.match(/\b(brightness|light|screen|चमक|रोशनी)\b/)) {
+    if (lowerText.match(/\b(up|increase|badhao|tez|zyada|jyada|बढ़ाओ|तेज़|ज्यादा)\b/)) {
+      return createResponse('BRIGHTNESS_UP', isHindi ? "चमक बढ़ा रही हूँ।" : "Increasing brightness.");
+    }
+    if (lowerText.match(/\b(down|decrease|kam|dheere|ghata|कम|घटाओ|धीरे)\b/)) {
+      return createResponse('BRIGHTNESS_DOWN', isHindi ? "चमक कम कर रही हूँ।" : "Decreasing brightness.");
+    }
+  }
+
+  // ── Screenshot ──────────────────────────────────────────────────────────────
+  if (lowerText.match(/\b(screenshot|screen capture|photo|फोटो|स्क्रीनशॉट|कैप्चर|खींचो|खींचिए)\b/i)) {
+    return createResponse('SCREENSHOT', isHindi ? "स्क्रीनशॉट ले रही हूँ।" : "Taking screenshot.");
+  }
+
+  // ── WhatsApp ──────────────────────────────────────────────────────────────
+  if (lowerText.match(/\b(whatsapp|व्हाट्सएप|व्हाट्सapp)\b/i)) {
+    return createResponse('COMM_MESSAGE_DRAFT', isHindi ? "WhatsApp खोल रही हूँ।" : "Opening WhatsApp.", { type: 'message', contact: 'WhatsApp' }, 'https://web.whatsapp.com');
+  }
+
   // ── YouTube Search ───────────────────────────────────────────────────────
   if (lowerText.match(/\b(youtube|video|watch|dekho|dekhna)\b/)) {
     const query = extractQuery(cleanText, ['youtube', 'video', 'watch', 'dekho', 'dekhna', 'search', 'please', 'on', 'in', 'par']);
@@ -500,6 +1048,56 @@ export const processTranscript = async (
       null,
       `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`
     );
+  }
+
+  // ── Clipboard & Keyboard Shortcuts (JARVIS-inspired) ───────────────────────
+  if (lowerText.match(/\b(copy|ctrl c|clipboard copy|copy selection|कॉपी|कॉपी करो|चुनाव कॉपी)\b/i) &&
+    !lowerText.match(/\b(paste|pasting)\b/i)) {
+    return createResponse('CLIPBOARD_COPY', isHindi ? "सेलेक्शन कॉपी कर रही हूँ।" : "Copying selection.");
+  }
+  if (lowerText.match(/\b(paste|ctrl v|clipboard paste|पेस्ट|पेस्ट करो|चिपकाओ)\b/i)) {
+    return createResponse('CLIPBOARD_PASTE', isHindi ? "क्लिपबोर्ड पेस्ट कर रही हूँ।" : "Pasting clipboard.");
+  }
+  if (lowerText.match(/\b(get clipboard|clipboard text|what is in clipboard|clipboard mein kya|क्लिपबोर्ड क्या है|क्लिपबोर्ड पढ़ो)\b/i)) {
+    return createResponse('GET_CLIPBOARD', isHindi ? "क्लिपबोर्ड पढ़ रही हूँ।" : "Reading clipboard contents.");
+  }
+  if (lowerText.match(/\b(save file|ctrl s|file save|document save|सेव करो|फाइल सेव|बचाओ)\b/i)) {
+    return createResponse('HOTKEY_SAVE', isHindi ? "फ़ाइल सेव कर रही हूँ।" : "Saving file.");
+  }
+  if (lowerText.match(/\b(undo|ctrl z|last action|undo karo|वापस करो|अनडू)\b/i)) {
+    return createResponse('HOTKEY_UNDO', isHindi ? "पिछला काम वापस ले रही हूँ।" : "Undoing last action.");
+  }
+  if (lowerText.match(/\b(new tab|open tab|ctrl t|नया टैब|टैब खोलो)\b/i)) {
+    return createResponse('NEW_TAB', isHindi ? "नया टैब खोल रही हूँ।" : "Opening new tab.");
+  }
+  if (lowerText.match(/\b(close tab|ctrl w|current tab close|टैब बंद|टैब बंद करो)\b/i)) {
+    return createResponse('CLOSE_TAB', isHindi ? "टैब बंद कर रही हूँ।" : "Closing current tab.");
+  }
+  if (lowerText.match(/\b(scroll up|upar scroll|page up|ऊपर स्क्रॉल|ऊपर जाओ)\b/i)) {
+    return createResponse('SCROLL_UP', isHindi ? "ऊपर स्क्रॉल कर रही हूँ।" : "Scrolling up.");
+  }
+  if (lowerText.match(/\b(scroll down|neeche scroll|page down|नीचे स्क्रॉल|नीचे जाओ)\b/i)) {
+    return createResponse('SCROLL_DOWN', isHindi ? "नीचे स्क्रॉल कर रही हूँ।" : "Scrolling down.");
+  }
+
+  // ── Vision & OCR (Phase 21) ────────────────────────────────────────────────
+  if (lowerText.match(/\b(extract text|ocr|image to text|फोटो से टेक्स्ट|टेक्स्ट निकालो)\b/i)) {
+    return createResponse('OCR_IMAGE', isHindi ? "फोटो से टेक्स्ट निकाल रही हूँ।" : "Extracting text from image.");
+  }
+  if (lowerText.match(/\b(narrate screen|read screen|what's on screen|screen par kya|स्क्रीन पढ़ो|स्क्रीन पर क्या है)\b/i)) {
+    return createResponse('NARRATE_SCREEN', isHindi ? "स्क्रीन पर जो है वो पढ़ रही हूँ।" : "Narrating what's on your screen.");
+  }
+  if (lowerText.match(/\b(screen summary|summary of screen|screen detail|स्क्रीन का सारांश)\b/i)) {
+    return createResponse('SCREEN_SUMMARY', isHindi ? "स्क्रीन का सारांश दे रही हूँ।" : "Generating summary of your screen.");
+  }
+  if (lowerText.match(/\b(read pdf|pdf read|पीडीएफ पढ़ो|pdf सुनाओ)\b/i)) {
+    return createResponse('READ_PDF', isHindi ? "पीडीएफ पढ़ रही हूँ।" : "Reading the PDF for you.");
+  }
+  if (lowerText.match(/\b(get selected text|selected text|what is selected|क्या चुना है|चुना हुआ टेक्स्ट)\b/i)) {
+    return createResponse('GET_SELECTED_TEXT', isHindi ? "चुना हुआ टेक्स्ट पढ़ रही हूँ।" : "Retrieving the selected text.");
+  }
+  if (lowerText.match(/\b(make drawing|draw|paint|mspaint|ड्राइइंग बनाओ|पेंट खोलें)\b/i)) {
+    return createResponse('MAKE_DRAWING', isHindi ? "पेंट खोल रही हूँ।" : "Opening drawing application.");
   }
 
   // ── Math / Calculator ────────────────────────────────────────────────────
@@ -518,29 +1116,80 @@ export const processTranscript = async (
   }
 
   // ── Help ─────────────────────────────────────────────────────────────────
-  if (lowerText.match(/\b(help|madad|what can|kya kar|capabilities|features)\b/)) {
-    const enHelp = "I can help you with: Media playback, Smart Home, Weather, News, Health, Tasks, Timers, Calculations, Communication, Jokes, and more. Just ask!";
-    const hiHelp = "मैं इन चीजों में मदद कर सकती हूँ: संगीत, स्मार्ट होम, मौसम, समाचार, स्वास्थ्य, कार्य, टाइमर, गणना, संचार, मजाक और बहुत कुछ।";
+  if (lowerText.match(/\b(help|madad|what can|kya kar|capabilities|features|commands list|सहायता|मदद|क्या कर सकती हो)\b/)) {
+    const enHelp = "I can help you with: Media playback, Smart Home, Weather, News, Health, Tasks, Timers, Calculations, Communication, Jokes, Facts, Drawing, Sentry Mode, and more. Just ask!";
+    const hiHelp = "मैं इन चीजों में मदद कर सकती हूँ: संगीत, स्मार्ट होम, मौसम, समाचार, स्वास्थ्य, कार्य, टाइमर, गणना, संचार, मजाक, तथ्य, ड्रॉइंग, निगरानी मोड और बहुत कुछ। बस पूछो!";
     return createResponse('HELP', isHindi ? hiHelp : enHelp);
+  }
+
+  // ── Settings ────────────────────────────────────────────────────────────
+  if (lowerText.match(/\b(settings|preferences|config|options|configuration|सेटिंग्स|विकल्प)\b/)) {
+    return createResponse('SETTINGS_OPEN', isHindi ? "सेटिंग्स खोल रही हूँ।" : "Opening settings.");
+  }
+
+  // ── Display / Show ─────────────────────────────────────────────────────
+  if (lowerText.match(/\b(show|display|list|open|dikhao|दिखाओ|खोलो|kholo)\b/)) {
+    if (lowerText.match(/\b(task|todo|kaam|कार्य)\b/)) {
+      return createResponse('TASK_SHOW', isHindi ? "कार्य सूची दिख रही है।" : "Displaying task list.");
+    }
+    if (lowerText.match(/\b(news|samachar|खबर)\b/)) {
+      return createResponse('NEWS_FETCH', isHindi ? "समाचार फीड लोड हो रही है..." : "Accessing global news feeds...");
+    }
+    if (lowerText.match(/\b(weather|mausam|मौसम)\b/)) {
+      return createResponse('WEATHER_FETCH', isHindi ? "मौसम की जानकारी ला रही हूँ..." : "Fetching meteorological data...");
+    }
+    if (lowerText.match(/\b(automation status|task list|scheduled tasks|ऑटोमेशन स्टेटस|टास्क लिस्ट)\b/)) {
+      return createResponse('AUTOMATION_STATUS', isHindi ? "ऑटोमेशन स्टेटस दिखा रही हूँ।" : "Showing automation status.");
+    }
+  }
+
+  // ── Automation & Macros ────────────────────────────────────────────────────
+  if (lowerText.match(/\b(run macro|macro chalao|automation|मैक्रो चलाओ|ऑटोमेशन शुरू करो)\b/i)) {
+    const macroName = extractQuery(cleanText, ['run', 'macro', 'chalao', 'automation', 'मैक्रो', 'चलाओ', 'ऑटोमेशन', 'शुरू', 'करो']);
+    return createResponse('RUN_MACRO', isHindi ? `मैक्रो "${macroName}" चला रही हूँ।` : `Running macro: ${macroName}`, { macro: macroName });
   }
 
   // ── AI Fallback ──────────────────────────────────────────────────────────
   const aiResponse = await AIService.getAIResponse(cleanText, detectedLang);
-  if (aiResponse) {
+  if (aiResponse && aiResponse.length > 0) {
     return createResponse('AI_RESPONSE', aiResponse);
   }
 
   // ── Web Search (final fallback) ──────────────────────────────────────────
   const query = extractQuery(cleanText, ['search', 'find', 'google', 'look up', 'dhundo', 'khojo', 'please']);
 
-  // Final safety check: If query is just a greeting, don't search
-  if (query.match(/^(hello|hi|hey|namaste|नमस्ते)$/i)) {
-    return createResponse('SYSTEM_STATUS', isHindi ? "नमस्ते! मैं आपकी क्या सहायता कर सकती हूँ?" : "Hello! How can I help you today?");
+  // Final safety check: If query is very short and not AI-handled, don't search
+  if (query.length < 2 || query.match(/^(hello|hi|hey|namaste|नमस्ते|ok|okay|bye|goodbye|thanks|thank|dhanyavad|shukriya)$/i)) {
+    const enResponses = [
+      "Hello! How can I help you today?",
+      "Hi there! What would you like me to do?",
+      "I'm listening. What do you need?",
+      "Yes? How can I assist you?"
+    ];
+    const hiResponses = [
+      "नमस्ते! मैं आपकी क्या सहायता कर सकती हूँ?",
+      "हाँ, बताइए क्या चाहिए?",
+      "मैं सुन रही हूँ। क्या करना है?",
+      "जी, बताइए!"
+    ];
+    const fallback = isHindi
+      ? hiResponses[Math.floor(Math.random() * hiResponses.length)]
+      : enResponses[Math.floor(Math.random() * enResponses.length)];
+    return createResponse('SYSTEM_STATUS', fallback);
+  }
+
+  // Refine Search Response: Only search if explicitly asked or very likely a question
+  const searchTriggers = ['what', 'how', 'who', 'where', 'when', 'why', 'meaning', 'tell me about', 'kya', 'kaise', 'kaun', 'kab', 'kyun', 'kahan', 'kisne', 'batao', 'khojo', 'search', 'find'];
+  const explicitSearch = lowerText.match(/\b(search|find|google|look up|dhundo|khojo|pata lagao|खोजो|ढूंढो)\b/i);
+  const informationalTrigger = searchTriggers.some(t => lowerText.startsWith(t) || lowerText.endsWith(t));
+
+  if (!explicitSearch && !informationalTrigger && query.length < 25) {
+    return createResponse('UNKNOWN_COMMAND', isHindi ? "क्षमा करें, मुझे समझ नहीं आया। क्या आप 'खोज' या किसी और चीज़ में मदद चाहते हैं?" : "I didn't quite catch that. Would you like me to search the web for you?");
   }
 
   return createResponse(
     'SEARCH_QUERY',
-    isHindi ? `खोज रही हूँ: "${query}"` : `Searching the web for "${query}"`,
+    isHindi ? `वेब पर खोज रही हूँ: "${query}"` : `Searching the web for "${query}"`,
     undefined,
     `https://www.google.com/search?q=${encodeURIComponent(query || cleanText)}`
   );

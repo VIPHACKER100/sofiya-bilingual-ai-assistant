@@ -6,18 +6,32 @@ class VoiceService {
   private synthesis: SpeechSynthesis = window.speechSynthesis;
   private isListening: boolean = false;
   private currentPersonality: PersonalityMode = PersonalityMode.DEFAULT;
+  private restartTimeout: ReturnType<typeof setTimeout> | null = null;
+  private continuousMode: boolean = true;
 
   constructor() {
-    // Initialize Speech Recognition
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
       this.recognition = new SpeechRecognition();
-      this.recognition.continuous = false; // Stop after one command for cleaner UX
+      this.recognition.continuous = this.continuousMode;
       this.recognition.interimResults = true;
-      this.recognition.maxAlternatives = 1;
+      this.recognition.maxAlternatives = 3;
+      this.recognition.lang = 'en-US';
+      this.recognition.restartTimeout = 500;
     } else {
       console.error("Speech Recognition API not supported in this browser.");
     }
+  }
+
+  public setContinuousMode(enabled: boolean) {
+    this.continuousMode = enabled;
+    if (this.recognition) {
+      this.recognition.continuous = enabled;
+    }
+  }
+
+  public isSupported(): boolean {
+    return this.recognition !== null;
   }
 
   public setLanguage(lang: Language) {
@@ -45,21 +59,51 @@ class VoiceService {
     }
 
     this.recognition.onresult = (event: any) => {
-      const result = event.results[event.resultIndex];
-      const transcript = result[0].transcript;
-      const isFinal = result.isFinal;
-      onResult(transcript, isFinal);
+      const results = event.results;
+      const lastResult = results[results.length - 1];
+      const transcript = lastResult[0].transcript.trim();
+      const isFinal = lastResult.isFinal;
+      
+      if (transcript.length > 0) {
+        onResult(transcript, isFinal);
+      }
     };
 
     this.recognition.onerror = (event: any) => {
+      console.warn("Speech recognition error:", event.error);
+      
+      const errorMap: Record<string, string> = {
+        'no-speech': 'no-speech',
+        'audio-capture': 'mic-disconnected',
+        'not-allowed': 'permission-denied',
+        'network': 'network-error',
+        'aborted': 'aborted'
+      };
+      
+      const mappedError = errorMap[event.error] || event.error;
+      
       if (event.error !== 'no-speech') {
-        onError(event.error);
+        onError(mappedError);
       }
     };
 
     this.recognition.onend = () => {
       this.isListening = false;
-      onEnd();
+      if (this.continuousMode) {
+        this.restartTimeout = setTimeout(() => {
+          if (!this.isListening) {
+            try {
+              this.recognition.start();
+              this.isListening = true;
+            } catch (e) {
+              console.warn("Failed to restart recognition:", e);
+              onEnd();
+            }
+          }
+        }, 300);
+      } else {
+        onEnd();
+      }
     };
 
     try {
@@ -67,12 +111,30 @@ class VoiceService {
       this.isListening = true;
     } catch (e) {
       console.warn("Recognition start failed:", e);
-      this.isListening = false;
-      onError('start-failed');
+      if (e instanceof DOMException && e.name === 'InvalidStateError') {
+        this.recognition.stop();
+        setTimeout(() => {
+          try {
+            this.recognition.start();
+            this.isListening = true;
+          } catch (e2) {
+            this.isListening = false;
+            onError('start-failed');
+          }
+        }, 100);
+      } else {
+        this.isListening = false;
+        onError('start-failed');
+      }
     }
   }
 
   public stopListening() {
+    if (this.restartTimeout) {
+      clearTimeout(this.restartTimeout);
+      this.restartTimeout = null;
+    }
+    
     if (this.recognition && this.isListening) {
       try {
         this.recognition.stop();
