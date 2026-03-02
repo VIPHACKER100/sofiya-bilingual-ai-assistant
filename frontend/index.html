@@ -1,32 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
   <!-- Primary SEO -->
   <title>SOFIYA — Bilingual AI Assistant | English & Hindi Voice Commands</title>
+  <meta name="title" content="SOFIYA — Bilingual AI Assistant" />
   <meta name="description"
-    content="SOFIYA is a futuristic, voice-controlled bilingual AI assistant that understands English, Hindi, and Hinglish commands for smart home, media, health, and more." />
+    content="SOFIYA is a next-generation, voice-controlled bilingual AI assistant. Advanced English, Hindi, and Hinglish integration for smart home, media, health, and research." />
   <meta name="keywords"
-    content="AI assistant, bilingual, Hindi, English, Hinglish, voice commands, smart home, SOFIYA, VIPHACKER100" />
+    content="AI assistant, bilingual AI, Hindi voice control, Hinglish AI, smart home assistant, SOFIYA, VIPHACKER100, jarvis clone" />
   <meta name="author" content="VIPHACKER100" />
   <meta name="theme-color" content="#8b5cf6" />
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="SOFIYA — Bilingual AI Assistant" />
-  <meta property="og:description"
-    content="Voice-controlled AI that speaks English & Hindi. Control smart home, media, health and more." />
+  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://sofiya-ai.vercel.app" />
+  <meta property="og:title" content="SOFIYA — Bilingual AI Assistant" />
+  <meta property="og:description"
+    content="Experience the future of bilingual interaction. Voice-controlled AI that masters English and Hindi seamlessly." />
+  <meta property="og:image" content="https://sofiya-ai.vercel.app/og-image.png" />
 
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://sofiya-ai.vercel.app" />
+  <meta property="twitter:title" content="SOFIYA — Bilingual AI Assistant" />
+  <meta property="twitter:description"
+    content="Experience the future of bilingual interaction. Voice-controlled AI that masters English and Hindi seamlessly." />
+
+  <!-- Resources -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Inter:wght@400;500;600&display=swap"
     rel="stylesheet">
+
+  <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@19.0.0",
+        "react-dom": "https://esm.sh/react-dom@19.0.0",
+        "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
+        "framer-motion": "https://esm.sh/framer-motion@12.4.7",
+        "lucide-react": "https://esm.sh/lucide-react@0.475.0"
+      }
+    }
+  </script>
+
   <style>
     :root {
       --primary-glow: 139, 92, 246;
@@ -35,23 +60,24 @@
     .font-mono {
       font-family: 'Share Tech Mono', monospace;
     }
+
+    /* Initial splash screen style to avoid white flash */
+    body {
+      background-color: #02040c;
+    }
   </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react/": "https://esm.sh/react@^19.2.4/",
-    "react": "https://esm.sh/react@^19.2.4",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/"
-  }
-}
-</script>
   <link rel="stylesheet" href="/index.css">
 </head>
 
-<body>
+<body class="bg-black selection:bg-violet-500/30">
   <div id="root"></div>
+
+  <!-- Atmospheric Overlays -->
   <div class="scanline"></div>
+  <div class="data-line"></div>
   <div class="vignette"></div>
+
+  <!-- Global mounting point for modules -->
   <script type="module" src="/index.tsx"></script>
 </body>
 
