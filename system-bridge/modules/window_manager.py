@@ -7,7 +7,7 @@ import platform
 import re
 import webbrowser
 from typing import List, Dict, Optional, Tuple
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 
 try:
     import psutil
@@ -83,7 +83,7 @@ class WindowManager:
                 pass
         return processes
 
-    def open_application(self, app_name: str) -> Dict:
+    async def open_application(self, app_name: str) -> Dict:
         """Open an application by name or path"""
         try:
             if is_windows():
@@ -111,7 +111,7 @@ class WindowManager:
                 'error': str(e)
             }
 
-    def close_application(self, app_name: str) -> Dict:
+    async def close_application(self, app_name: str) -> Dict:
         """Close an application by name"""
         try:
             if not psutil:
@@ -136,7 +136,7 @@ class WindowManager:
                 'error': str(e)
             }
 
-    def list_applications(self) -> Dict:
+    async def list_applications(self) -> Dict:
         """List running applications"""
         try:
             processes = self._get_running_processes()
@@ -204,10 +204,17 @@ class WindowManager:
             
         return windows
 
-    def minimize_window(self, window_title: str = "") -> Dict:
+    async def minimize_window(self, window_title: str = "", language: str = 'en') -> Dict:
         """Minimize a window by title or foreground window"""
         try:
             if is_windows() and self.win32gui and self.win32con:
+                if window_title and not isinstance(window_title, str) and not isinstance(window_title, dict):
+                    # If language was passed as second arg instead of window_title
+                    window_title = ""
+                
+                if isinstance(window_title, dict):
+                    window_title = window_title.get('window', window_title.get('title', ""))
+
                 if window_title:
                     windows = self._get_window_list_windows()
                     best_match = self._find_best_window_match(window_title, windows)
@@ -224,10 +231,16 @@ class WindowManager:
         except Exception as e:
             return {'success': False, 'error': str(e)}
 
-    def maximize_window(self, window_title: str = "") -> Dict:
+    async def maximize_window(self, window_title: str = "", language: str = 'en') -> Dict:
         """Maximize a window by title or foreground window"""
         try:
             if is_windows() and self.win32gui and self.win32con:
+                if window_title and not isinstance(window_title, str) and not isinstance(window_title, dict):
+                     window_title = ""
+
+                if isinstance(window_title, dict):
+                    window_title = window_title.get('window', window_title.get('title', ""))
+
                 if window_title:
                     windows = self._get_window_list_windows()
                     best_match = self._find_best_window_match(window_title, windows)
@@ -244,7 +257,7 @@ class WindowManager:
         except Exception as e:
             return {'success': False, 'error': str(e)}
 
-    def close_window(self, window_title: str = "") -> Dict:
+    async def close_window(self, window_title: str = "") -> Dict:
         """Close a window by title or foreground window"""
         try:
             if is_windows() and self.win32gui and self.win32con:
@@ -264,7 +277,7 @@ class WindowManager:
         except Exception as e:
             return {'success': False, 'error': str(e)}
 
-    def snap_window(self, side: str, window_title: str = "") -> Dict:
+    async def snap_window(self, side: str, language: str = 'en', window_title: str = "") -> Dict:
         """Snap window to left or right side of screen"""
         try:
             if is_windows() and self.win32gui:
@@ -278,7 +291,6 @@ class WindowManager:
                 
                 if hwnd:
                     # Generic implementation: half screen width
-                    # In a real app, we'd use GetSystemMetrics
                     from ctypes import windll
                     user32 = windll.user32
                     sw = user32.GetSystemMetrics(0)
@@ -295,7 +307,7 @@ class WindowManager:
         except Exception as e:
             return {'success': False, 'error': str(e)}
 
-    def center_window(self, window_title: str = "") -> Dict:
+    async def center_window(self, language: str = 'en', window_title: str = "") -> Dict:
         """Center a window on the screen"""
         try:
             if is_windows() and self.win32gui:
@@ -327,7 +339,7 @@ class WindowManager:
         except Exception as e:
             return {'success': False, 'error': str(e)}
 
-    def show_desktop(self) -> Dict:
+    async def show_desktop(self, language: str = 'en') -> Dict:
         """Minimize all windows to show desktop"""
         try:
             if is_windows() and self.win32gui and self.win32con:
@@ -340,11 +352,39 @@ class WindowManager:
         except Exception as e:
             return {'success': False, 'error': str(e)}
 
+    async def open_app(self, app_name: str, language: str = 'en') -> Dict:
+        """Alias for open_application for consistency with main.py"""
+        return await self.open_application(app_name)
+
+    async def close_app(self, app_name: str, language: str = 'en', confirmed: bool = False) -> Dict:
+        """Alias for close_application for consistency with main.py"""
+        # Handle confirmation if it was passed (though not used in close_application yet)
+        return await self.close_application(app_name)
+
+    async def get_window_list(self) -> Dict:
+        """Get list of windows formatted for API"""
+        windows = self._get_window_list_windows()
+        return {
+            'success': True,
+            'windows': [asdict(w) for w in windows],
+            'count': len(windows)
+        }
+
+    async def list_running_apps(self) -> Dict:
+        """Alias for list_applications for consistency with main.py"""
+        return await self.list_applications()
+
     def _find_best_window_match(self, query: str, windows: List[WindowInfo]) -> Optional[WindowInfo]:
         """Find the best matching window title using fuzzy logic"""
         if not windows or not query:
             return None
             
+        # Clean query if it's a dict or other type
+        if isinstance(query, dict):
+            query = query.get('window', query.get('title', str(query)))
+        
+        query = str(query)
+
         if not process or not fuzz:
             # Fallback to simple matching
             for win in windows:
@@ -361,8 +401,8 @@ class WindowManager:
                     return win
         return None
 
-    def activate_window(self, window_title: str) -> Dict:
-        """Bring a window to the formal and activate it"""
+    async def activate_window(self, window_title: str, language: str = 'en') -> Dict:
+        """Bring a window to the front and activate it"""
         try:
             if is_windows() and self.win32gui and self.win32con:
                 windows = self._get_window_list_windows()
@@ -375,3 +415,11 @@ class WindowManager:
             return {'success': False, 'error': 'Window not found'}
         except Exception as e:
             return {'success': False, 'error': str(e)}
+
+    async def close_window_by_title(self, window_title: str, language: str = 'en') -> Dict:
+        """Alias for close_window for consistency with main.py"""
+        return await self.close_window(window_title)
+
+
+# Singleton instance
+window_manager = WindowManager()
