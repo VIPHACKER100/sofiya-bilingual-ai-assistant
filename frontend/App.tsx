@@ -186,14 +186,15 @@ const App: React.FC = () => {
       <StatusBadges accentColor={currentProtocol.primary} />
 
       {/* Main UI Container */}
-      <div className="relative z-10 w-full min-h-screen h-full flex flex-col p-4 lg:p-8 pt-20 lg:pt-8 pb-16">
+      <div className="relative z-10 w-full max-w-[1600px] mx-auto min-h-screen h-full flex flex-col p-4 lg:p-8 pt-20 lg:pt-8 pb-16">
 
         {/* Superior Header */}
-        <header className="flex flex-col xl:flex-row justify-between items-center xl:items-start gap-6 z-50 w-full">
+        {/* Superior Header */}
+        <header className="relative flex flex-col xl:flex-row justify-between items-center xl:items-start gap-6 z-50 w-full">
           <motion.div
-            initial={{ x: -50, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            className="flex flex-col gap-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex flex-col gap-2 shrink-0"
           >
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shadow-inner group cursor-pointer hover:bg-white/10 transition-all overflow-hidden relative">
@@ -230,9 +231,9 @@ const App: React.FC = () => {
 
           {/* Quick Actions - New Addition */}
           <motion.div
-            initial={{ x: 50, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            className="flex flex-col xl:items-end items-center gap-4 w-full xl:w-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex flex-col xl:items-end items-center gap-4 w-full xl:w-fit max-w-full"
           >
             {/* Quick Action Buttons */}
             <div className="flex flex-wrap justify-center items-center gap-2 p-2 bg-black/40 rounded-2xl border border-white/5 backdrop-blur-md">
@@ -340,7 +341,7 @@ const App: React.FC = () => {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="flex items-center gap-6 py-2 px-4 bg-white/5 rounded-lg border border-white/5 w-fit mt-2"
+          className="hidden md:flex flex-wrap items-center gap-2 lg:gap-6 py-2 px-4 bg-white/5 rounded-lg border border-white/5 w-full md:w-fit mt-2 max-w-full"
         >
           <KeyboardHint keys={['Space']} label="Voice" />
           <KeyboardHint keys={['L']} label="Lang" />
@@ -372,7 +373,7 @@ const App: React.FC = () => {
                     initial={{ y: 20, opacity: 0, scale: 0.9 }}
                     animate={{ y: 0, opacity: 1, scale: 1 }}
                     exit={{ y: -20, opacity: 0, scale: 0.9 }}
-                    className="absolute bottom-full mb-6 w-[20rem] lg:w-[24rem] text-center pointer-events-none z-50"
+                    className="absolute bottom-full mb-6 w-[90vw] md:w-[20rem] lg:w-[24rem] max-w-sm text-center pointer-events-none z-50"
                   >
                     <div className="glass-panel px-6 py-3 rounded-[2rem] border-t border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.5)] bg-black/40 backdrop-blur-md">
                       <p className="text-lg lg:text-xl font-medium text-white/90 italic leading-relaxed line-clamp-2">
@@ -397,7 +398,7 @@ const App: React.FC = () => {
             <AnimatePresence>
               <WeatherWidget data={assistant.weatherData} loading={assistant.isWeatherLoading} language={assistant.language === Language.HINDI ? 'hi' : 'en'} accentColor={currentProtocol.primary} textColorClass={currentProtocol.textClass} />
 
-              <div className="absolute top-0 right-0 pointer-events-auto hidden xl:block flex flex-col gap-4 items-end">
+              <div className="absolute top-0 right-0 pointer-events-auto hidden xl:flex flex-col gap-4 items-end">
                 <StatusPanel />
                 <SystemStatus status={assistant.systemStatus} />
               </div>
