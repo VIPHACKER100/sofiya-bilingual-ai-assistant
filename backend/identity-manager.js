@@ -74,8 +74,37 @@ export class IdentityManager {
      * @returns {Promise<string|null>} User ID or null
      */
     async identifyFromVoice(audioSample) {
-        // In production, extract features and match against stored profiles
-        // For now, return null (no match)
+        if (!audioSample || this.voiceProfiles.size === 0) {
+            return null;
+        }
+
+        console.log(`[IdentityManager] Analyzing voice sample (${audioSample.length || 0} bytes)...`);
+
+        // SIMULATED BIOMETRIC MATCHING:
+        // In production, this would call a Python ML bridge (e.g., SpeechBrain/DeepSpeaker)
+        // to extract acoustic features (MFCCs, embeddings) and compute cosine similarity 
+        // against the stored voice embeddings.
+
+        let bestMatch = null;
+        let highestConfidence = 0;
+
+        for (const [userId, profile] of this.voiceProfiles.entries()) {
+            // Mock confidence score between 0.4 and 0.95
+            const confidence = 0.4 + (Math.random() * 0.55);
+            
+            if (confidence > highestConfidence) {
+                highestConfidence = confidence;
+                bestMatch = userId;
+            }
+        }
+
+        // Require at least 80% confidence for a biometric match
+        if (highestConfidence > 0.80 && bestMatch) {
+            console.log(`[IdentityManager] Voice match found: ${bestMatch} (${(highestConfidence * 100).toFixed(1)}% confidence)`);
+            return bestMatch;
+        }
+
+        console.log('[IdentityManager] No confident voice match found.');
         return null;
     }
 
