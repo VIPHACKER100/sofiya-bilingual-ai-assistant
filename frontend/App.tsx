@@ -357,15 +357,24 @@ const App: React.FC = () => {
         <main className="flex-1 flex flex-col items-center justify-center relative">
           <div className="relative flex flex-col items-center gap-8 z-20">
             <div className="relative">
+              <ArcReactor
+                isActive={assistant.mode !== AppMode.IDLE}
+                onClick={assistant.toggleActivation}
+                language={assistant.language === Language.HINDI ? 'hi' : 'en'}
+                color={currentProtocol.primary}
+              />
+            </div>
+
+            <div className="w-full max-w-lg relative flex flex-col items-center">
               <AnimatePresence>
                 {assistant.transcript && (
                   <motion.div
                     initial={{ y: 20, opacity: 0, scale: 0.9 }}
                     animate={{ y: 0, opacity: 1, scale: 1 }}
                     exit={{ y: -20, opacity: 0, scale: 0.9 }}
-                    className="absolute -top-28 left-1/2 -translate-x-1/2 w-[20rem] lg:w-[24rem] text-center pointer-events-none"
+                    className="absolute bottom-full mb-6 w-[20rem] lg:w-[24rem] text-center pointer-events-none z-50"
                   >
-                    <div className="glass-panel px-6 py-3 rounded-[2rem] border-t border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.5)]">
+                    <div className="glass-panel px-6 py-3 rounded-[2rem] border-t border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.5)] bg-black/40 backdrop-blur-md">
                       <p className="text-lg lg:text-xl font-medium text-white/90 italic leading-relaxed line-clamp-2">
                         &ldquo;{assistant.transcript}&rdquo;
                       </p>
@@ -377,18 +386,10 @@ const App: React.FC = () => {
                   </motion.div>
                 )}
               </AnimatePresence>
-
-              <ArcReactor
-                isActive={assistant.mode !== AppMode.IDLE}
-                onClick={assistant.toggleActivation}
-                language={assistant.language === Language.HINDI ? 'hi' : 'en'}
-                color={currentProtocol.primary}
-              />
-            </div>
-
-            <div className="w-full max-w-lg">
               <Waveform mode={assistant.mode} color={currentProtocol.primary} />
             </div>
+
+
           </div>
 
           {/* HUD Widget Layers */}
