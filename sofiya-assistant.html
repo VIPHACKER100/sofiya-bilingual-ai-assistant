@@ -1756,8 +1756,12 @@
         if (e.error === 'no-speech') {
           if (shouldRestart) { restartListen(); } return;
         }
-        if (e.error === 'not-allowed') {
-          showResponse('ERROR', 'Microphone denied. / माइक्रोफ़ोन अस्वीकार।');
+        if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+          const isFile = window.location.protocol === 'file:';
+          const msg = isFile 
+            ? 'Mic denied. Browsers block Speech API on file://. Please use a local web server (http://localhost). / ब्राउज़र सुरक्षा के कारण लोकल सर्वर का उपयोग करें।'
+            : 'Microphone denied. Please check site permissions. / माइक्रोफ़ोन अस्वीकार।';
+          showResponse('ERROR', msg);
           deactivate();
           return;
         }
@@ -1782,13 +1786,31 @@
       try { recognition.start(); } catch (_) { }
     }
 
-    function activate() {
+    async function activate() {
+      if (isActive) return;
       isActive = true; shouldRestart = true;
       reactorBtn.classList.add('active');
       reactorText.innerHTML = 'DEACTIVATE<br/>निष्क्रिय करें';
+      setStatus('Requesting Mic…', 'माइक्रोफ़ोन अनुमति…', true);
+      
+      try {
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          stream.getTracks().forEach(t => t.stop());
+        }
+      } catch (err) {
+        const isFile = window.location.protocol === 'file:';
+        const msg = isFile
+          ? 'Mic denied. Speech API blocked on file://. Please use a local web server (http://localhost). / ब्राउज़र सुरक्षा के कारण लोकल सर्वर का उपयोग करें।'
+          : 'Microphone access denied. Please allow microphone permissions. / माइक्रोफ़ोन अनुमति अस्वीकार की गई।';
+        showResponse('ERROR', msg);
+        deactivate();
+        return;
+      }
+
       setStatus('Listening…', 'सुन रहा हूँ…', true);
       recognition = initRecognition();
-      if (recognition) { try { recognition.start(); } catch (_) { } }
+      if (recognition) { try { recognition.start(); } catch (err) { console.error(err); } }
     }
 
     function deactivate() {
