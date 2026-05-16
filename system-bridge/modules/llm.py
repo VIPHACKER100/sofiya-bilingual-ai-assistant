@@ -20,6 +20,7 @@ class LLMModule:
         self.api_key = os.getenv("OPENROUTER_API_KEY")
         self.base_url = "https://openrouter.ai/api/v1/chat/completions"
         self.models = [
+            "nvidia/nemotron-3-super-120b-a12b:free",
             "google/gemini-2.0-flash-lite-preview-02-05:free",
             "google/gemini-2.0-flash-exp:free",
             "deepseek/deepseek-r1:free",
