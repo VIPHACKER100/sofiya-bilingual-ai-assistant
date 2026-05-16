@@ -1064,7 +1064,12 @@
     let mediaTitle = '';
     let timerInterval = null;
     let timerRemaining = 0;
-    let tasks = JSON.parse(localStorage.getItem('sofiya_tasks') || '[]');
+    let tasks = [];
+    try {
+      tasks = JSON.parse(localStorage.getItem('sofiya_tasks') || '[]');
+    } catch (e) {
+      tasks = [];
+    }
 
     /* ── OPENROUTER AI CONFIG ── */
     let OPENROUTER_API_KEY = localStorage.getItem('sofiya_api_key') || '';
@@ -1113,10 +1118,16 @@
           }),
         });
         const data = await resp.json();
+        
+        if (data.error) {
+          console.error('OpenRouter API Error:', data.error);
+          return (lang === 'hi' ? '[AI त्रुटि]: ' : '[AI Error]: ') + (data.error.message || 'Unknown API error');
+        }
+        
         return data.choices?.[0]?.message?.content || '';
       } catch (err) {
         console.error('OpenRouter error:', err);
-        return '';
+        return lang === 'hi' ? '[कनेक्शन त्रुटि] AI सर्वर से नहीं जुड़ सका।' : '[Connection Error] Failed to reach AI server.';
       }
     }
 
@@ -1275,7 +1286,19 @@
 
     /* ── COMMAND PROCESSOR ── */
     async function processCommand(text) {
-      const raw = text.trim();
+      let raw = text.trim();
+
+      // Remove trailing punctuation added by speech recognition
+      raw = raw.replace(/[.?!।]+$/, '').trim();
+
+      // Remove wake word variations from the beginning
+      const wakeWordRegex = /^(?:hey|hi|hello|ok|okay)?\s*(?:sofiya|sofia|sophia|sufiya|सोफिया|सोफ़िया)(?:\s+ai)?\b[, ]*/i;
+      raw = raw.replace(wakeWordRegex, '').trim();
+      if (!raw) raw = text.replace(/[.?!।]+$/, '').trim(); // Fallback if they just said the wake word
+
+      // Remove polite words at the end
+      raw = raw.replace(/\s+(?:please|kripya|कृपया)$/i, '').trim();
+
       const low = raw.toLowerCase();
       const lang = detectLang(raw);
       setLangDisplay(lang);

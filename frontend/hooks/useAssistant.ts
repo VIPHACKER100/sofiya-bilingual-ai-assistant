@@ -363,7 +363,7 @@ export const useAssistant = () => {
                 else if (result.actionType === 'NEWS_HIDE') setShowNews(false);
                 else if (result.actionType === 'CALCULATION' && result.data) { setCalcData(result.data); setShowCalc(true); soundService.playUIConfirm(); analyticsService.trackWidgetOpen('calculator'); }
                 else if (result.actionType === 'TIMER' && result.data) { setActiveTimer(result.data); soundService.playUIConfirm(); analyticsService.trackWidgetOpen('timer'); }
-                else if (result.actionType === 'TASK_ADD' && result.data?.task) { addTask(result.data.task); setShowTasks(true); analyticsService.trackWidgetOpen('tasks'); }
+                else if (result.actionType === 'TASK_ADD' && result.data?.task) { addTask(result.data.task as string); setShowTasks(true); analyticsService.trackWidgetOpen('tasks'); }
                 else if (result.actionType === 'TASK_SHOW') { setShowTasks(true); analyticsService.trackWidgetOpen('tasks'); }
                 else if (result.actionType === 'DRAWING_MODE') { setShowDrawingCanvas(true); analyticsService.trackWidgetOpen('drawing'); }
                 else if (result.actionType === 'SENTRY_MODE') { setShowSentryMode(true); analyticsService.trackWidgetOpen('sentry'); }

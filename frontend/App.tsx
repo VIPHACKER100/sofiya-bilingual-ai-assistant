@@ -162,7 +162,7 @@ const App: React.FC = () => {
   if (assistant.isBooting) return <BootSequence onComplete={handleBootComplete} language={assistant.language === Language.HINDI ? 'hi' : 'en'} />;
 
   return (
-    <div className="min-h-screen w-full relative overflow-hidden bg-black text-slate-200 font-sans selection:bg-cyan-500/30">
+    <div className="min-h-screen w-full relative overflow-x-hidden overflow-y-auto bg-black text-slate-200 font-sans selection:bg-cyan-500/30">
       {/* Cinematic Environmental FX */}
       <div className="scanline opacity-[0.03]"></div>
       <div className="vignette opacity-60"></div>
@@ -186,10 +186,10 @@ const App: React.FC = () => {
       <StatusBadges accentColor={currentProtocol.primary} />
 
       {/* Main UI Container */}
-      <div className="relative z-10 w-full h-screen flex flex-col p-4 lg:p-8">
+      <div className="relative z-10 w-full min-h-screen h-full flex flex-col p-4 lg:p-8 pt-20 lg:pt-8 pb-16">
 
         {/* Superior Header */}
-        <header className="flex justify-between items-start z-50">
+        <header className="flex flex-col xl:flex-row justify-between items-center xl:items-start gap-6 z-50 w-full">
           <motion.div
             initial={{ x: -50, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
@@ -232,10 +232,10 @@ const App: React.FC = () => {
           <motion.div
             initial={{ x: 50, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            className="flex flex-col items-end gap-4"
+            className="flex flex-col xl:items-end items-center gap-4 w-full xl:w-auto"
           >
             {/* Quick Action Buttons */}
-            <div className="flex items-center gap-2 p-2 bg-black/40 rounded-2xl border border-white/5 backdrop-blur-md">
+            <div className="flex flex-wrap justify-center items-center gap-2 p-2 bg-black/40 rounded-2xl border border-white/5 backdrop-blur-md">
               <QuickActionButton
                 icon={assistant.mode === AppMode.LISTENING ? MicOff : Mic}
                 label={assistant.mode === AppMode.LISTENING ? 'Stop (M)' : 'Voice (M)'}
@@ -277,7 +277,7 @@ const App: React.FC = () => {
             </div>
 
             {/* Language & Theme Controls */}
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap justify-center xl:justify-end items-center gap-4">
               <button
                 onClick={() => { soundService.playUIClick(); assistant.setLanguage(l => l === Language.ENGLISH ? Language.HINDI : Language.ENGLISH) }}
                 className="group relative px-4 py-2 rounded-xl bg-white/5 border border-white/10 flex items-center gap-3 transition-all hover:bg-white/10 active:scale-95"
@@ -463,7 +463,7 @@ const App: React.FC = () => {
         </main>
 
         {/* Master Console Footer */}
-        <div className="h-1/3 flex flex-col justify-end gap-6 z-20">
+        <div className="mt-auto pt-8 flex flex-col justify-end gap-6 z-20">
           <div className="flex flex-col lg:flex-row gap-8 items-end justify-between border-t border-white/5 pt-6">
             <HistoryLog history={assistant.history} />
 
@@ -523,7 +523,7 @@ const App: React.FC = () => {
 
 
       {/* Command Flow Marquee */}
-      <footer className="absolute bottom-0 w-full bg-black/80 border-t border-white/5 py-2 z-[60] backdrop-blur-xl flex items-center">
+      <footer className="fixed bottom-0 w-full bg-black/80 border-t border-white/5 py-2 z-[60] backdrop-blur-xl flex items-center">
         <div className="px-4 lg:px-6 border-r border-white/10 flex items-center gap-3">
           <Terminal className="w-3.5 h-3.5 text-cyan-500" />
           <span className="text-[10px] font-black font-mono tracking-widest text-slate-500">TRY:</span>

@@ -90,6 +90,35 @@ export class NLPProcessor {
     }
 
     /**
+     * Sanitizes input text by removing wake words, trailing punctuation, and politeness markers
+     * @param {string} text - Raw input text
+     * @returns {string} Sanitized text
+     * @private
+     */
+    sanitize(text) {
+        let cleaned = text.toLowerCase().trim();
+        
+        // Remove trailing punctuation including Hindi Purna Viram
+        cleaned = cleaned.replace(/[.,!?।]+$/g, '').trim();
+        
+        // Strip wake words (handling 'sofiya', 'sofia', 'sofiya ai') with optional leading greetings and trailing punctuation
+        cleaned = cleaned.replace(/^(?:hey|hi|hello)?\s*(?:sofiya|sofia|sofiya\s*ai)\b\s*[.,!?।]*\s*/i, '');
+        
+        // Strip trailing politeness
+        cleaned = cleaned.replace(/\s*(?:please|kripya|कृपया)$/i, '');
+        
+        cleaned = cleaned.trim();
+        
+        // If the command is completely empty after stripping (e.g., user just said "Hey Sofiya"),
+        // restore the original text (minus punctuation) to allow system_status intent to catch it.
+        if (!cleaned) {
+            return text.toLowerCase().replace(/[.,!?।]+$/g, '').trim();
+        }
+        
+        return cleaned;
+    }
+
+    /**
      * Processes raw text to extract intent and entities
      * Supports multi-part requests
      * @param {string} text - Transcribed voice input
@@ -106,25 +135,28 @@ export class NLPProcessor {
             };
         }
 
-        console.log(`[NLP] Processing: "${text}"`);
+        const sanitizedText = this.sanitize(text);
+        console.log(`[NLP] Original: "${text}" | Sanitized: "${sanitizedText}"`);
 
-        // Check for multi-part requests
-        const multiIntents = this.detectMultiIntents(text);
+        // Check for multi-part requests using sanitized text
+        const multiIntents = this.detectMultiIntents(sanitizedText);
 
         if (multiIntents.length > 1) {
             console.log(`[NLP] Detected ${multiIntents.length} intents in request`);
             return {
-                text,
+                text: sanitizedText,
+                originalText: text,
                 intent: 'multi_intent',
                 intents: multiIntents,
-                entities: this.extractEntities(text),
+                entities: this.extractEntities(sanitizedText),
                 confidence: 0.85,
                 timestamp: new Date().toISOString()
             };
         }
 
-        // Single intent processing
-        const result = await this.processSingleIntent(text);
+        // Single intent processing using sanitized text
+        const result = await this.processSingleIntent(sanitizedText);
+        result.originalText = text;
         return result;
     }
 
