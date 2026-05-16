@@ -50,7 +50,11 @@ export class IdentityManager {
 
                 await this.db.query(query, [userId, profileId]);
             } catch (error) {
-                console.error('[IdentityManager] Error registering voice:', error);
+                if (error.code === 'ECONNREFUSED' || (error.message && error.message.includes('ECONNREFUSED'))) {
+                    console.warn('[IdentityManager] PostgreSQL unavailable. Skipping voice profile persistence.');
+                } else {
+                    console.error('[IdentityManager] Error registering voice:', error);
+                }
             }
         }
 
@@ -176,7 +180,11 @@ export class IdentityManager {
                 this.voiceProfiles.set(row.user_id, { profileId: row.profile_id });
             });
         } catch (error) {
-            console.error('[IdentityManager] Error loading profiles:', error);
+            if (error.code === 'ECONNREFUSED' || (error.message && error.message.includes('ECONNREFUSED'))) {
+                console.warn('[IdentityManager] PostgreSQL unavailable. Skipping voice profiles load.');
+            } else {
+                console.error('[IdentityManager] Error loading profiles:', error);
+            }
         }
     }
 }
